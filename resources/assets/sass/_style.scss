@@ -1,0 +1,328 @@
+html,
+body {
+   margin:0;
+   padding:0;
+   height:100%;
+}
+
+.footer {
+    background-color: white;
+    border-top: 1px solid #d3e0e9;
+    position: absolute !important;
+    bottom: 0px !important;
+    height: 60px;
+    min-width: 100%;
+}
+
+.footer p{
+    display: inline;
+    position: absolute;
+    top: 19px;
+}
+
+.footer a{
+    display: inline;
+    float: right;
+    margin-right: 21px;
+    margin-top: 7px;
+    background-color: #E5E4E4;
+    width: 47px;
+    height: 48px;
+    padding-left: 11px;
+    padding-top: 9px;
+    border-radius: 50%;
+}
+
+.footer .fa-youtube-square{
+    color: #e62117;
+}
+
+.footer .fa-facebook-square{
+    color: #3b5998;
+}
+
+.footer .fa-twitter-square{
+    color: #1da1f2;
+}
+
+.customContainer{
+    position: relative !important;
+    min-height: 100% !important;
+}
+
+.content{
+    width: 1170px;
+    margin: 20px 90px 95px;
+}
+
+.appContent{
+    padding-bottom: 90px;
+}
+
+.showEditImg{
+    height: 100px;
+    width: 100px;
+    margin: 10px 0px;
+    border: 1px solid #ddd;
+    padding: 5px;
+}
+
+.preivewBrandImg{
+    width: 50px;
+    height: 50px;
+    margin: 5px 0px 20px 5px; 
+}
+
+.preivewProductImg{
+    width: 310px;
+    height: 233px;
+}
+
+.homeProductsContainer h3{
+    margin: 50px 0px 0px;
+    text-align: center;
+    font-weight: bolder;
+    letter-spacing: 1px;
+    color: black;
+}
+
+.homeProducts{
+    margin: 30px 0px;
+    background-color: white;
+    margin-right: 12px;
+    padding-bottom: 17px;
+    width: 368px;
+}
+
+.homeProducts img{
+    width: 100%;
+    height: 400px;
+    margin-bottom: 5px;
+}
+
+.homeProducts .name{
+    margin: -8px 0px 4px;
+    color: black;
+    font-size: 17px;
+    letter-spacing: 1px;
+    height: 25px;
+    overflow: hidden;
+}
+
+.homeProducts .price{
+    text-align: center;
+}
+
+.homeProducts .brand{
+    font-weight: bold;
+}
+
+.carousel-caption{
+    background-color: rgba(0,0,0,0.8);
+    overflow: hidden;
+}
+
+.wishlist{
+    color: red;
+}
+
+.wishlist:hover{
+    color: #EF5B5B;
+}
+
+.homeCart{
+    margin-top: 9px;
+}
+
+.homeCart a{
+    color: black;
+    font-weight: bold;
+}
+
+.homeCart a:hover{
+    color: #494949;
+    text-decoration: none;
+}
+
+.productImgShowSlide{
+    width: 60px;
+    height: 60px;
+    display: block;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.productImgShowSlideContainer{
+    margin-top: 22px;
+    display: inline-block;
+}
+
+.productImgShow{
+    margin-bottom: 10px;
+    display: inline-block;
+    background-color: white;
+}
+
+.productImgShow img{
+    width: 270px;
+    height: 320px;
+    margin-top: 22px;
+}
+
+.productDetails{
+    display: inline-block;
+    background-color: white;
+    margin-left: 15px;
+    padding: 15px 22px 17px 25px;
+}
+
+.productDetails h3{
+    font-weight: bold;
+    color: black;
+}
+
+.productBrandImg{
+    width: 70px;
+}
+
+.productPrice{
+    font-weight: bold;
+    font-size: 20px;
+    color: black;
+}
+
+.reviewInput{
+    border-radius: 18px;
+    padding: 12px 17px 0px 20px;
+}
+
+.reviewH{
+    margin: 30px 0px;
+}
+
+.showReviews{
+    margin: 65px 0px;
+}
+
+.singleReview{
+    background-color: white;
+    border-radius: 27px;
+    padding: 25px 40px 15px 40px;
+    margin: 33px 0px 33px 0px;
+}
+
+.reviewName{
+    font-weight: bold;
+    font-size: 19px;
+}
+
+#up{
+    margin: 0px 15px;
+    cursor: pointer;
+}
+
+#down{
+    margin: 0px 15px;
+    cursor: pointer;
+}
+
+.notFound{
+    background-color: white;
+    height: 400px;
+    padding: 110px 0px 0px 232px;
+}
+
+.notFound .far{
+    margin: 0px 0px 10px 97px 
+}
+
+.notFound p{
+    margin-left: 40px;
+}
+
+.notFound a{
+    text-decoration: none;
+    margin-left: 94px;
+    color: red;
+}
+
+.messageTop{
+    position: fixed;
+    z-index: 100;
+    display: none;
+    background-color: #252D2F;
+    color: white;
+    border: 1px solid #688B95;
+}
+
+.wishlistTable td{
+    padding: 20px 0px 20px 11px;
+}
+
+.wishlistImg{
+    width: 50px;
+    height: 50px;
+    margin-right: 12px;
+}
+
+.opacityBackground{
+    position: fixed;
+    background-color: rgba(0,0,0,0.5);
+    width: 100%;
+    height: 100%;
+    z-index: 1100;
+    text-align: center;
+    right: 0;
+    display: none;
+}
+
+.messageConfirm{
+    padding: 30px 0px;
+    margin-top: 250px;
+    background-color: white;
+    border-radius: 10px;
+    display: none;
+}
+
+.addressDetails{
+    background-color: white;
+    padding: 10px 0px 5px 30px;
+    margin-bottom: 40px;
+}
+
+.addressDetailsMain{
+    position: relative;
+}
+
+.deliveryMethod{
+    background-color: white;
+    padding: 10px 0px 5px 30px;
+}
+
+.checkoutDone{
+    background-color: white;
+    padding: 10px 0px 5px 30px;
+}
+
+.bold{
+    font-weight: bold;
+}
+
+.tool{
+    margin-bottom: 20px;
+}
+
+.toolsWrap{
+    background-color: white;
+    padding: 25px 0 21px 0px;
+}
+
+.totalPrice{
+    position: absolute;
+    right: 30px;
+    bottom: 0;
+}
+
+.deleteIcon{
+    color: #d9534f;
+}

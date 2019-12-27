@@ -1,0 +1,134 @@
+@extends('layouts.app')
+@section('content')
+    @if($cartProducts->count() > 0)
+    <h3 class="text-center">Cart</h3>
+        <table class="wishlistTable table" style="background-color: white">
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th></th>
+                <th></th>
+            </tr>
+            @foreach ($cartProducts as $key => $item)
+            @foreach ($item->products as $i)
+            <tr class="{{ $i->id }}">
+                <td>
+                    <img src="{{ uploads('productImg/' . $i->productImg[0]->img) }}" class="wishlistImg">
+                    {{ $i->name }}
+                </td>
+                <td class="price{{$key}}">
+                    {{ $i->price }}
+                </td>
+                <td>
+                    <div class="form-group row">
+                        <div class="col-xs-3">
+                            <input type="number" max="{{$i->quantity}}" min="1" name="quantity" role="{{$i->id}}" value="{{ $cartProducts[$key]->quantity }}" class="form-control quantity quantity{{$key}}" placeholder="Quantity">
+                        </div>
+                    </div>
+                    <span id="quantity_validate" class="error" style="color:red"></span>
+                    <p style="color:black">Available Quantity : {{ $i->quantity }}</p>
+                </td>
+                <td>
+                    <a href="{{ url('cart/delete/' . $i->id) }}" class="deleteCart"><i class="fas fa-trash-alt fa-2x deleteIcon"></i></a>
+                </td>
+            </tr>            
+            @endforeach
+            @endforeach
+        </table>
+        <div class="pull-right">
+            <p id="total" style="font-weight: bold;"></p>
+            <a href="{{ url('checkout') }}" class="btn btn-success checkout_anchor"><i class="fas fa-shopping-cart fa-1x"></i> CHECKOUT</a>
+        </div>
+    @else
+    <div class="row">
+        <h3 class="text-center">Cart</h3>
+        <div class="notFound col-xs-offset-2 col-xs-8">
+            <i class="far fa-frown fa-8x"></i>
+            <p>No products found in your cart!</p>
+            <a href="{{ url('/') }}">Go to Home page</a>
+        </div>
+    </div>
+    @endif
+@endsection
+@section('script')
+    <script type="text/javascript">
+    $(document).ready(function(){
+        // calculate total price
+        /**total();
+
+        $('.quantity').on('change', function(){
+            total();
+        });
+
+        function total(){
+
+        var total = 0;
+        for(var i = 0; i < {{ $cartProducts->count() }}; i++){
+            var productPrice = $(`.price${i}`).text();
+            var quantity = $(`.quantity${i}`).val();
+            if(quantity <= 0){
+                quantity = 1;
+            }
+            var price = productPrice * quantity;
+
+            total += price;
+        }
+
+        $('#total').text(`Total: ${total} EGP`);
+
+        }**/
+
+        // delete product from wishlist
+        $('.deleteCart').on('click', function(e){
+            e.preventDefault();
+
+            var url = $(this).attr('href');
+            $.ajax({
+                url: url,
+                method: 'GET',
+                dataType: 'json',
+                success: function(data){
+                    $('.' + data.id).remove();
+                    $('.messageTop').text(data.message).fadeIn();
+                    setTimeout(function(){
+                        $('.messageTop').fadeOut();
+                            }, 3000);
+                },
+            });
+        });
+
+        // update product quantity in cart
+        $('.quantity').on('change', function(){
+            var product_id = $(this).attr('role');
+            var data = $(this).val();
+            var url = "{{ url('cart/updateQuantity') }}" + '/' + {{auth()->user()->id}} + '/' + product_id;
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                url: url,
+                data: {quantity: data},
+                method: 'POST',
+                success: function(data){
+                    $('#quantity_validate').text('');
+                    
+                    $('.checkout_anchor').off('click');
+                },
+                error: function(e){
+  
+                    $('.checkout_anchor').on('click', function(e){
+                        e.preventDefault();
+                    });
+                    
+                    $('#quantity_validate').text(e.responseJSON.quantity[0]);
+                },
+            });
+        });
+    });
+    </script>
+@endsection

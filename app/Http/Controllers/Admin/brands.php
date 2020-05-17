@@ -37,7 +37,7 @@ class brands extends Controller
     
         $data = array(
             'allcategories' => $allcategories,
-            'parentID' => $parentID
+            'parentID' => $parentID ?? [],
         );
         return view('admin.brands.create')->with($data);
     }

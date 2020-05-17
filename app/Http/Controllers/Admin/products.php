@@ -53,7 +53,7 @@ class products extends Controller
     
         $data = array(
             'allcategories' => $allcategories,
-            'parentID' => $parentID
+            'parentID' => $parentID ?? [],
         );
 
         return view('admin.products.create')->with($data);

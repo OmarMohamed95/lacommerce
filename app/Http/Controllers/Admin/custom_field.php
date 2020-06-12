@@ -8,6 +8,11 @@ use App\adminModel\customField;
 use App\adminModel\customFieldCategory;
 use App\adminModel\category;
 
+/**
+ * Custom field Controller
+ * 
+ * @author Omar Mohamed <omar.mo9516@gmail.com>
+ */
 class custom_field extends Controller
 {
     /**
@@ -28,16 +33,16 @@ class custom_field extends Controller
      */
     public function create()
     {
-        $allcategories = category::all();
+        $allCategories = category::all();
         $parents = category::whereNotNull('parentID')->get();
-        foreach ($parents as $item){
-            $parentID[] = $item->parentID; 
+        foreach ($parents as $item) {
+            $parentIds[] = $item->parentID; 
         }
 
-        $data = array(
-            'allcategories' => $allcategories,
-            'parentID' => $parentID
-        );
+        $data = [
+            'allcategories' => $allCategories,
+            'parentID' => $parentIds
+        ];
 
         return view('admin.customField.create')->with($data);
     }
@@ -45,36 +50,53 @@ class custom_field extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id 
+     *  
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        $CF_byCategory = customFieldCategory::with('custom_field')->where('category_id', $id)->get();
+        $customFieldByCategory = customFieldCategory::with('custom_field')
+                            ->where('category_id', $id)
+                            ->get();
 
-        $cf = array();
-        foreach($CF_byCategory as $c){
+        $cf = [];
+        foreach ($customFieldByCategory as $c) {
             array_push($cf, $c->custom_field->first());
         }
 
         return response()->json($cf, 200);   
     }
 
-    public function editProduct($id, $product_id)
+    /**
+     * Edit product
+     *
+     * @param int $id 
+     * @param int $productId 
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function editProduct($id, $productId)
     {
+        $customFieldProduct = customFieldCategory::with(
+            [
+                'custom_field',
+                'custom_field_product' => function ($query) use ($productId) {
+                    $query->where('product_id', '=', $productId);
+                }
+            ]
+        )
+        ->where('category_id', $id)->get();
 
-        $CF_product = customFieldCategory::with(['custom_field', 'custom_field_product' => function ($query) use ($product_id){
-            $query->where('product_id', '=', $product_id);
-        }])->where('category_id', $id)->get();
-
-        return response()->json($CF_product, 200);   
+        return response()->json($customFieldProduct, 200);   
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param \Illuminate\Http\Request $request 
+     * 
+     * @return Redirect
      */
     public function store(Request $request)
     {
@@ -83,25 +105,29 @@ class custom_field extends Controller
             'required' => 'The :attribute is required.',
         ];
 
-        $this->validate($request, [
-            'name' => 'required',
-            'type' => 'required',
-            'show_in_filter' => 'required',
-            'category_id' => 'required',
-        ], $messages);
+        $this->validate(
+            $request,
+            [
+                'name' => 'required',
+                'type' => 'required',
+                'show_in_filter' => 'required',
+                'category_id' => 'required',
+            ],
+            $messages
+        );
 
-        $store_cf = new customField();
+        $customField = new customField();
         
-        $store_cf->name = $request->name;
-        $store_cf->type = $request->type;
-        $store_cf->show_in_filter = $request->show_in_filter;
-        $store_cf->save();
+        $customField->name = $request->name;
+        $customField->type = $request->type;
+        $customField->show_in_filter = $request->show_in_filter;
+        $customField->save();
         
-        foreach($request->category_id as $i){
-            $store_cf_c = new customFieldCategory();
-            $store_cf_c->category_id = $i;
-            $store_cf_c->custom_field_id = $store_cf->id;
-            $store_cf_c->save();
+        foreach ($request->category_id as $i) {
+            $customFieldCategory = new customFieldCategory();
+            $customFieldCategory->category_id = $i;
+            $customFieldCategory->custom_field_id = $store_cf->id;
+            $customFieldCategory->save();
         }
 
         return redirect(aurl('custom_field'));
@@ -110,7 +136,8 @@ class custom_field extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id 
+     * 
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -118,21 +145,21 @@ class custom_field extends Controller
         $single = customField::where('id', $id)->first();
 
         foreach ($single->custom_field_category as $v) {
-            $cf_cate[] = $v->category_id;
+            $customFieldCategories[] = $v->category_id;
         }
 
-        $allcategories = category::all();
+        $allCategories = category::all();
         $parents = category::whereNotNull('parentID')->get();
-        foreach ($parents as $item){
-            $parentID[] = $item->parentID; 
+        foreach ($parents as $item) {
+            $parentIds[] = $item->parentID; 
         }
 
-        $data = array(
+        $data = [
             'single' => $single,
-            'cf_cate' => $cf_cate,
-            'allcategories' => $allcategories,
-            'parentID' => $parentID,
-        );
+            'cf_cate' => $customFieldCategories,
+            'allcategories' => $allCategories,
+            'parentID' => $parentIds,
+        ];
 
         return view('admin.customField.edit')->with($data);
     }
@@ -140,23 +167,27 @@ class custom_field extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param \Illuminate\Http\Request $request 
+     * @param int $id 
+     * 
+     * @return Redirect
      */
     public function update(Request $request, $id)
     {
-
         $messages = [
             'required' => 'The :attribute is required.',
         ];
 
-        $this->validate($request, [
-            'name' => 'required',
-            'type' => 'required',
-            'show_in_filter' => 'required',
-            'category_id' => 'required',
-        ], $messages);
+        $this->validate(
+            $request,
+            [
+                'name' => 'required',
+                'type' => 'required',
+                'show_in_filter' => 'required',
+                'category_id' => 'required',
+            ],
+            $messages
+        );
 
         $update = customField::find($id);
         $update->name = $request->name;
@@ -164,14 +195,14 @@ class custom_field extends Controller
         $update->show_in_filter = $request->show_in_filter;
         $update->save();
 
-        $delete_cf_cat = customFieldCategory::where('custom_field_id', $id);
-        $delete_cf_cat->delete();
+        $customFieldByCategory = customFieldCategory::where('custom_field_id', $id);
+        $customFieldByCategory->delete();
 
-        foreach($request->category_id as $i){
-            $store_cf_c = new customFieldCategory();
-            $store_cf_c->category_id = $i;
-            $store_cf_c->custom_field_id = $update->id;
-            $store_cf_c->save();
+        foreach ($request->category_id as $i) {
+            $customFieldByCategory = new customFieldCategory();
+            $customFieldByCategory->category_id = $i;
+            $customFieldByCategory->custom_field_id = $update->id;
+            $customFieldByCategory->save();
         }
 
         return redirect(aurl('custom_field'));
@@ -180,30 +211,34 @@ class custom_field extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id 
+     * 
      * @return \Illuminate\Http\Response
      */
     public function deleteSingle($id)
     {
-        $delete = customField::where('id', $id);
-        $delete->delete();
+        $customField = customField::where('id', $id);
+        $customField->delete();
         return redirect(aurl('custom_field'));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request 
+     * 
      * @return \Illuminate\Http\Response
      */
     public function deleteMultible(Request $request)
     {
         $id = $request->id;
-        if(empty($id)){
+
+        if (empty($id)) {
             return redirect(aurl('custom_field'));
         }
-        $delete = customField::whereIn('id', $id);
-        $delete->delete();
+
+        $customField = customField::whereIn('id', $id);
+        $customField->delete();
         return redirect(aurl('custom_field'));
     }
 }

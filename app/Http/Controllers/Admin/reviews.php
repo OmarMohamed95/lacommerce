@@ -6,52 +6,73 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\adminModel\review;
 
+/**
+ * Reviews Controller
+ * 
+ * @author Omar Mohamed <omar.mo9516@gmail.com>
+ */
 class reviews extends Controller
 {
-    public function index(){
+    /**
+     * Index mthod
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
 
-        $all = review::paginate(10);
+        $reviews = review::paginate(10);
 
-        return view('admin.reviews.index')->with('all', $all);
+        return view('admin.reviews.index')->with('all', $reviews);
     }
 
-    public function overview($id){
+    /**
+     * Overview method
+     * 
+     * @param int $id 
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function overview($id)
+    {
 
-        $single = review::where('id', $id)->first();
+        $review = review::where('id', $id)->first();
 
-        return view('admin.reviews.overview')->with('single', $single);
+        return view('admin.reviews.overview')->with('single', $review);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id 
+     * 
      * @return \Illuminate\Http\Response
      */
     public function deleteSingle($id)
     {
         //delete reviews from DB
-        $delete = review::where('id', $id);
-        $delete->delete();
+        $review = review::where('id', $id);
+        $review->delete();
         return redirect(aurl('reviews'));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param Request $request 
+     * 
      * @return \Illuminate\Http\Response
      */
     public function deleteMultible(Request $request)
     {
         $id = $request->id;
-        if(empty($id)){
+        if (empty($id)) {
             return redirect(aurl('reviews'));
         }
 
         //delete reviews from DB
-        $delete = review::whereIn('id', $id);
-        $delete->delete();
+        $review = review::whereIn('id', $id);
+        $review->delete();
         return redirect(aurl('reviews'));
     }
 }

@@ -14,6 +14,11 @@ use App\adminModel\categoryBrand;
 use DB;
 use Image;
 
+/**
+ * Products Controller
+ * 
+ * @author Omar Mohamed <omar.mo9516@gmail.com>
+ */
 class products extends Controller
 {
     /**
@@ -30,11 +35,15 @@ class products extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param int $categoryId 
+     * 
      * @return \Illuminate\Http\Response
      */
-    public function getBrandsByCat($cat_id)
+    public function getBrandsByCat($categoryId)
     {
-        $allBrands = categoryBrand::with('brand')->where('category_id', $cat_id)->get();
+        $allBrands = categoryBrand::with('brand')
+                        ->where('category_id', $categoryId)
+                        ->get();
         return response()->json($allBrands, 200);
     }
 
@@ -45,15 +54,15 @@ class products extends Controller
      */
     public function create()
     {
-        $allcategories = category::all();
+        $allCategories = category::all();
         $parents = category::whereNotNull('parentID')->get();
-        foreach ($parents as $item){
-            $parentID[] = $item->parentID; 
+        foreach ($parents as $item) {
+            $parentIds[] = $item->parentID; 
         }
     
         $data = array(
-            'allcategories' => $allcategories,
-            'parentID' => $parentID ?? [],
+            'allcategories' => $allCategories,
+            'parentID' => $parentIds ?? [],
         );
 
         return view('admin.products.create')->with($data);
@@ -62,21 +71,25 @@ class products extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request 
+     * 
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'img.*' => 'bail|image|required|max:3072',
-            'name' => 'required',
-            'desc' => 'required',
-            'price' => 'required|numeric',
-            'brand_id' => 'required',
-            'quantity' => 'required|numeric',
-            'category_id' => 'required',
-            'cf.*' => 'required',
-            ]);    
+        $this->validate(
+            $request,
+            [
+                'img.*' => 'bail|image|required|max:3072',
+                'name' => 'required',
+                'desc' => 'required',
+                'price' => 'required|numeric',
+                'brand_id' => 'required',
+                'quantity' => 'required|numeric',
+                'category_id' => 'required',
+                'cf.*' => 'required',
+            ]
+        );    
 
         //store products to DB
         $product = new product;
@@ -88,7 +101,7 @@ class products extends Controller
         $product->category_id = $request->category_id;
         $product->save();
 
-        if($request->hasFile('img')){
+        if ($request->hasFile('img')) {
 
             foreach ($request->file('img') as $file) {
 
@@ -100,7 +113,7 @@ class products extends Controller
 
                 $ext = $file->getClientOriginalExtension();
 
-                if(in_array($ext, $allowedExt)){
+                if (in_array($ext, $allowedExt)) {
 
                     $finalName = $name . '-' . time() . '.' .  $ext;
 
@@ -122,20 +135,21 @@ class products extends Controller
                     $productImg->img = $finalName;
                     $productImg->save();
 
-                }else{
-                    return redirect(aurl("products/create"))->with('error', 'The ext is not allowed');
+                } else {
+                    return redirect(aurl("products/create"))
+                                ->with('error', 'The ext is not allowed');
                 }
             }
         }
 
         //store custom fields values to DB
-        if($request->cf){
-            foreach($request->cf as $key => $value){
-                $custom_field = new customFieldProduct;
-                $custom_field->product_id = $product->id;
-                $custom_field->custom_field_id = $key;
-                $custom_field->value = $value;
-                $custom_field->save();
+        if ($request->cf) {
+            foreach ($request->cf as $key => $value) {
+                $customFieldProduct = new customFieldProduct;
+                $customFieldProduct->product_id = $product->id;
+                $customFieldProduct->custom_field_id = $key;
+                $customFieldProduct->value = $value;
+                $customFieldProduct->save();
             }
         }
 
@@ -145,7 +159,8 @@ class products extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id 
+     * 
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -162,21 +177,24 @@ class products extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id 
+     *  
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
         $single = product::find($id);
-        $allcategories = category::all();
+        $allCategories = category::all();
         $parents = category::whereNotNull('parentID')->get();
-        foreach ($parents as $item){
-            $parentID[] = $item->parentID; 
+
+        foreach ($parents as $item) {
+            $parentIds[] = $item->parentID; 
         }
+
         $data = array(
             'single' => $single,
-            'allcategories' => $allcategories,
-            'parentID' => $parentID
+            'allcategories' => $allCategories,
+            'parentID' => $parentIds
         ); 
         return view('admin.products.edit')->with($data);
     }
@@ -184,44 +202,48 @@ class products extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request 
+     * @param int $id 
+     * 
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'img.*' => 'bail|image|required|max:3072',
-            'name' => 'required',
-            'desc' => 'required',
-            'price' => 'required|numeric',
-            'brand_id' => 'required',
-            'quantity' => 'required|numeric',
-            'category_id' => 'required',
-            'cf.*' => 'required',
-            ]);   
+        $this->validate(
+            $request,
+            [
+                'img.*' => 'bail|image|required|max:3072',
+                'name' => 'required',
+                'desc' => 'required',
+                'price' => 'required|numeric',
+                'brand_id' => 'required',
+                'quantity' => 'required|numeric',
+                'category_id' => 'required',
+                'cf.*' => 'required',
+            ]
+        );   
 
         //update product in DB
-        $update = product::find($id); 
-        $update->name = $request->name;        
-        $update->desc = $request->desc;
-        $update->brand_id = $request->brand_id;
-        $update->price = $request->price;
-        $update->quantity = $request->quantity;
-        $update->category_id = $request->category_id;
-        $update->save();    
+        $product = product::find($id); 
+        $product->name = $request->name;        
+        $product->desc = $request->desc;
+        $product->brand_id = $request->brand_id;
+        $product->price = $request->price;
+        $product->quantity = $request->quantity;
+        $product->category_id = $request->category_id;
+        $product->save();    
 
-        if($request->hasFile('img')){
+        if ($request->hasFile('img')) {
 
-        //delete the image from the disk
-        $singleD = productImg::where('product_id', $id)->get();
-        foreach ($singleD as $s) {
-            storage::disk('uploads')->delete("productImg/$s->img");
-        }    
+            //delete the image from the disk
+            $singleD = productImg::where('product_id', $id)->get();
+            foreach ($singleD as $s) {
+                storage::disk('uploads')->delete("productImg/$s->img");
+            }    
 
-        //delete image from DB
-        $single = productImg::where('product_id', $id);
-        $single->delete();
+            //delete image from DB
+            $single = productImg::where('product_id', $id);
+            $single->delete();
 
             foreach ($request->file('img') as $file) {
 
@@ -233,7 +255,7 @@ class products extends Controller
 
                 $ext = $file->getClientOriginalExtension();
 
-                if(in_array($ext, $allowedExt)){
+                if (in_array($ext, $allowedExt)) {
 
                     $finalName = $name . '-' . time() . '.' .  $ext;
 
@@ -248,34 +270,37 @@ class products extends Controller
                     $productImg->img = $finalName;
                     $productImg->save();
 
-                }else{
-                    return redirect(aurl("products/$id/edit"))->with('error', 'The ext is not allowed');
+                } else {
+                    return redirect(aurl("products/$id/edit"))
+                                ->with('error', 'The ext is not allowed');
                 }
             }
         }
 
-        if($request->cf){
+        if ($request->cf) {
             //delete old custom field values
-            $delete_cf_product = customFieldProduct::where('product_id', $id);
-            $delete_cf_product->delete();
+            $customFieldProduct = customFieldProduct::where('product_id', $id);
+            $customFieldProduct->delete();
 
             //store custom fields values to DB
-            foreach($request->cf as $key => $value){
-                $custom_field = new customFieldProduct;
-                $custom_field->product_id = $update->id;
-                $custom_field->custom_field_id = $key;
-                $custom_field->value = $value;
-                $custom_field->save();
+            foreach ($request->cf as $key => $value) {
+                $customFieldProduct = new customFieldProduct;
+                $customFieldProduct->product_id = $update->id;
+                $customFieldProduct->custom_field_id = $key;
+                $customFieldProduct->value = $value;
+                $customFieldProduct->save();
             }
         }
 
-        return redirect(aurl('products'))->with('success', 'product updated');
+        return redirect(aurl('products'))
+                    ->with('success', 'product updated');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id 
+     * 
      * @return \Illuminate\Http\Response
      */
     public function deleteSingle($id)
@@ -287,25 +312,26 @@ class products extends Controller
         }
 
         //delete image from DB
-        $single = productImg::where('product_id', $id);
-        $single->delete();
+        $productImg = productImg::where('product_id', $id);
+        $productImg->delete();
 
         //delete product from DB
-        $delete = product::where('id', $id);
-        $delete->delete();
+        $product = product::where('id', $id);
+        $product->delete();
         return redirect(aurl('products'));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request 
+     * 
      * @return \Illuminate\Http\Response
      */
     public function deleteMultible(Request $request)
     {
         $id = $request->id;
-        if(empty($id)){
+        if (empty($id)) {
             return redirect(aurl('products'));
         }
 
@@ -316,12 +342,12 @@ class products extends Controller
         }
 
         //delete image from DB
-        $single = productImg::whereIn('product_id', $id);
-        $single->delete();
+        $productImg = productImg::whereIn('product_id', $id);
+        $productImg->delete();
 
         //delete product from DB
-        $delete = product::whereIn('id', $id);
-        $delete->delete();
+        $product = product::whereIn('id', $id);
+        $product->delete();
         return redirect(aurl('products'));
     }
 }

@@ -6,37 +6,61 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\adminModel\checkout;
 
+/**
+ * Checkouts Controller
+ * 
+ * @author Omar Mohamed <omar.mo9516@gmail.com>
+ */
 class checkouts extends Controller
 {
-    public function index(){
+    /**
+     * Index method
+     * 
+     * @return Response
+     */
+    public function index()
+    {
 
         $all = checkout::orderBy('created_at', 'asc')->paginate(10);
 
         return view('admin.checkout.index')->with('all', $all);
     }
 
-    public function overview($order_code){
-
-        $single = checkout::where('order_code', $order_code)->get();
-        //dd($single);
+    /**
+     * Overview method
+     *
+     * @param int $orderCode 
+     * 
+     * @return Response
+     */
+    public function overview($orderCode)
+    {
+        $single = checkout::where('order_code', $orderCode)->get();
 
         return view('admin.checkout.overview')->with('single', $single);
     }
 
-    public function state_multible(Request $request){
+    /**
+     * State multible method
+     *
+     * @param \Illuminate\Http\Request $request 
+     * 
+     * @return Redirect
+     */
+    public function state_multible(Request $request)
+    {
+        $orderCode = $request->order_code;
 
-        $order_code = $request->order_code;
-
-        if(empty($order_code)){
+        if (empty($orderCode)) {
             return redirect(aurl('checkout'));
         }
         
-        foreach ($order_code as $v) {
-            $update = checkout::where('order_code', $v)->get();
+        foreach ($orderCode as $v) {
+            $checkouts = checkout::where('order_code', $v)->get();
 
-            foreach ($update as $u) {
-                $u->state = $request->state_button;
-                $u->save();
+            foreach ($checkouts as $checkout) {
+                $checkout->state = $request->state_button;
+                $checkout->save();
             }
 
         }
@@ -44,12 +68,21 @@ class checkouts extends Controller
         return redirect(aurl('checkout'));
     }
 
-    public function state_single(Request $request, $order_code){
+    /**
+     * State single method
+     *
+     * @param \Illuminate\Http\Request $request 
+     * @param int $orderCode 
+     * 
+     * @return Redirect
+     */
+    public function state_single(Request $request, $orderCode)
+    {
         
-        $update = checkout::where('order_code', $order_code)->get();
-        foreach ($update as $u) {
-            $u->state = $request->state;
-            $u->save();
+        $checkouts = checkout::where('order_code', $orderCode)->get();
+        foreach ($checkouts as $checkout) {
+            $checkout->state = $request->state;
+            $checkout->save();
         }
 
         return redirect(aurl('checkout'));

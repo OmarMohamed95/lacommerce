@@ -9,35 +9,66 @@ use Illuminate\Support\Facades\Hash;
 use App\adminModel\Admin;
 use Illuminate\Validation\Rule;
 
+/**
+ * Admins Controller
+ * 
+ * @author Omar Mohamed <omar.mo9516@gmail.com>
+ */
 class admins extends Controller
 {
+    /**
+     * Index method
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
         return view('admin.login.index');
     }
 
+    /**
+     * AllAdmins method
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function allAdmins()
     {
         $allAdmins = Admin::paginate(10);
         return view('admin.admins.index')->with('allAdmins', $allAdmins);
     }
 
+    /**
+     * Create method
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function create()
     {
         return view('admin.admins.create');
     }
 
+    /**
+     * Store method
+     * 
+     * @param \Illuminate\Http\Request $request 
+     *
+     * @return Redirect
+     */
     public function store(Request $request)
     {
         $messages = [
             'required' => 'The :attribute is required.',
         ];
 
-        $this->validate($request, [
-            'name' => 'required',
-            'email' => 'required|E-Mail|unique:admins',
-            'password' => 'required',
-        ], $messages);
+        $this->validate(
+            $request, 
+            [
+                'name' => 'required',
+                'email' => 'required|E-Mail|unique:admins',
+                'password' => 'required',
+            ],
+            $messages
+        );
 
         $admin = new admin;
         $admin->name = $request->name;
@@ -47,11 +78,28 @@ class admins extends Controller
 
         return redirect(aurl('admins/allAdmins'));
     }
+
+    /**
+     * Edit method
+     * 
+     * @param int $id Admin id
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function edit($id)
     {
         $single = admin::where('id', $id)->first();
         return view('admin.admins.edit')->with('single', $single);
     }
+
+    /**
+     * Update method
+     * 
+     * @param \Illuminate\Http\Request $request 
+     * @param int $id Brand id
+     *
+     * @return Redirect
+     */
     public function update(Request $request, $id)
     {
 
@@ -59,11 +107,15 @@ class admins extends Controller
             'required' => 'The :attribute is required.',
         ];
 
-        $this->validate($request, [
-            'name' => 'required',
-            'email' => 'required|E-Mail',Rule::unique('admins')->ignore($id),
-            'password' => 'required',
-        ], $messages);
+        $this->validate(
+            $request,
+            [
+                'name' => 'required',
+                'email' => 'required|E-Mail',Rule::unique('admins')->ignore($id),
+                'password' => 'required',
+            ],
+            $messages
+        );
 
         $admin = admin::find($id);
         $admin->name = $request->name;
@@ -75,10 +127,11 @@ class admins extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete single admin
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id Admin id
+     * 
+     * @return Redirect
      */
     public function deleteSingle($id)
     {
@@ -89,15 +142,16 @@ class admins extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete multiple admins
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param \Illuminate\Http\Request $request 
+     * 
+     * @return Redirect
      */
     public function deleteMultible(Request $request)
     {
         $id = $request->id;
-        if(empty($id)){
+        if (empty($id)) {
             return redirect(aurl('admins/allAdmins'));
         }
 
@@ -107,16 +161,27 @@ class admins extends Controller
         return redirect(aurl('admins/allAdmins'));
     }
 
+    /**
+     * Check login
+     *
+     * @param \Illuminate\Http\Request $request 
+     * 
+     * @return Redirect
+     */
     public function checkLogin(Request $request)
     {
-        if(Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password]))
-        {
+        if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password])) {
             return redirect('admin/home');
-        }else{
+        } else {
             return redirect('admin/login');
         }
     }
 
+    /**
+     * Logout method
+     *
+     * @return Redirect
+     */
     public function logout()
     {
         Auth::guard('admin')->logout();

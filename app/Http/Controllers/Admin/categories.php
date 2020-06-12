@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Auth;
 use App\adminModel\category;
 use DB;
 
+/**
+ * Categories Controller
+ * 
+ * @author Omar Mohamed <omar.mo9516@gmail.com>
+ */
 class categories extends Controller
 {
     /**
@@ -17,8 +22,8 @@ class categories extends Controller
      */
     public function index()
     {
-        $allCate = category::paginate(10);
-        return view('admin.categories.index')->with('allCategories', $allCate);
+        $allCategories = category::paginate(10);
+        return view('admin.categories.index')->with('allCategories', $allCategories);
     }
 
     /**
@@ -28,35 +33,40 @@ class categories extends Controller
      */
     public function create()
     {
-        $allCategores = DB::select("SELECT * FROM categories where parentID is NULL");
+        $allCategories = DB::select("SELECT * FROM categories where parentID is NULL");
 
-        return view('admin.categories.create')->with('allCategores', $allCategores);
+        return view('admin.categories.create')->with('allCategores', $allCategories);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param \Illuminate\Http\Request $request 
+     * 
+     * @return Redirect
      */
     public function store(Request $request)
     {
 
-        $this->validate($request, [
-            'name' => 'required',
-            'parentID' => 'required',
-            'status' => 'required',
-            'sort' => 'required|numeric',
-            'home' => 'required',
-            ]);
+        $this->validate(
+            $request,
+            [
+                'name' => 'required',
+                'parentID' => 'required',
+                'status' => 'required',
+                'sort' => 'required|numeric',
+                'home' => 'required',
+            ]
+        );
 
         $category = new category;
         $category->name = $request->name;
 
-        if($request->parentID === 'FALSE')
-        $category->parentID = NULL;
-        else
-        $category->parentID = $request->parentID;
+        if ($request->parentID === 'FALSE') {
+            $category->parentID = null;
+        } else {
+            $category->parentID = $request->parentID;
+        }
         
         $category->status = $request->status;
         $category->sort = $request->sort;
@@ -70,49 +80,58 @@ class categories extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id Category id
+     * 
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
-        $allCat = DB::select("SELECT * FROM categories where parentID is NULL");
+        $allCategories = DB::select("SELECT * FROM categories where parentID is NULL");
         $single = category::where('id', $id)->first();
-        $data = array('allCat' => $allCat,
-                      'single' => $single);
+        $data = [
+            'allCat' => $allCategories,
+            'single' => $single
+        ];
+        
         return view('admin.categories.edit')->with($data);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param \Illuminate\Http\Request $request 
+     * @param int $id Category id
+     * 
+     * @return Redirect
      */
     public function update(Request $request, $id)
     {
 
-        $this->validate($request, [
-            'name' => 'required',
-            'parentID' => 'required',
-            'status' => 'required',
-            'sort' => 'required|numeric',
-            'home' => 'required',
-            ]);
+        $this->validate(
+            $request,
+            [
+                'name' => 'required',
+                'parentID' => 'required',
+                'status' => 'required',
+                'sort' => 'required|numeric',
+                'home' => 'required',
+            ]
+        );
 
-        $update = category::find($id);
-        $update->name = $request->name;
+        $category = category::find($id);
+        $category->name = $request->name;
 
-        if($request->parentID === 'FALSE')
-        $update->parentID = NULL;
-        else
-        $update->parentID = $request->parentID;
+        if ($request->parentID === 'FALSE') {
+            $category->parentID = null;
+        } else {
+            $category->parentID = $request->parentID;
+        }
 
-        $update->status = $request->status;
-        $update->sort = $request->sort;
-        $update->home = $request->home;
-        $update->admin_id = Auth::guard('admin')->user()->id;
-        $update->save();
+        $category->status = $request->status;
+        $category->sort = $request->sort;
+        $category->home = $request->home;
+        $category->admin_id = Auth::guard('admin')->user()->id;
+        $category->save();
 
         return redirect(aurl('categories'));
     }
@@ -120,8 +139,9 @@ class categories extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id Category id
+     * 
+     * @return Redirect
      */
     public function deleteSingle($id)
     {
@@ -133,15 +153,18 @@ class categories extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param \Illuminate\Http\Request $request 
+     * 
+     * @return Redirect
      */
     public function deleteMultible(Request $request)
     {
         $id = $request->id;
-        if(empty($id)){
+
+        if (empty($id)) {
             return redirect(aurl('categories'));
         }
+
         $delete = category::whereIn('id', $id);
         $delete->delete();
         return redirect(aurl('categories'));

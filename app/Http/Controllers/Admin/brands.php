@@ -9,6 +9,11 @@ use App\adminModel\category;
 use App\adminModel\categoryBrand;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * Brands Controller
+ * 
+ * @author Omar Mohamed <omar.mo9516@gmail.com>
+ */
 class brands extends Controller
 {
     /**
@@ -29,46 +34,53 @@ class brands extends Controller
      */
     public function create()
     {
-        $allcategories = category::all();
+        $allCategories = category::all();
         $parents = category::whereNotNull('parentID')->get();
-        foreach ($parents as $item){
-            $parentID[] = $item->parentID; 
+        foreach ($parents as $item) {
+            $parentId[] = $item->parentID; 
         }
     
-        $data = array(
-            'allcategories' => $allcategories,
-            'parentID' => $parentID ?? [],
-        );
+        $data = [
+            'allcategories' => $allCategories,
+            'parentID' => $parentId ?? [],
+        ];
         return view('admin.brands.create')->with($data);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request Request object
+     * 
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'img' => 'image|nullable|max:2048',
-            'name' => 'required',
-            'category_id' => 'required',
-            ]);
+        $this->validate(
+            $request,
+            [
+                'img' => 'image|nullable|max:2048',
+                'name' => 'required',
+                'category_id' => 'required',
+            ]
+        );
 
-        if($request->hasFile('img')){
-            $allowedExt = array('png','jpg', 'jpe', 'jpeg');
+        if ($request->hasFile('img')) {
+            $allowedExt = ['png','jpg', 'jpe', 'jpeg'];
             $fullName = $request->file('img')->getClientOriginalName();
             $name = pathinfo($fullName, PATHINFO_FILENAME);
             $ext = $request->file('img')->getClientOriginalExtension();
-            if(in_array($ext, $allowedExt)){
+            if (in_array($ext, $allowedExt)) {
                 $finalName = $name . '-' . time() . '.' .  $ext;
                 $storePath = 'brandImg/';
-                $request->file('img')->storePubliclyAs($storePath, $finalName, 'uploads');
-            }else{
-                return redirect(aurl("brands/$id/edit"))->with('error', 'The ext is not allowed');
+                $request
+                    ->file('img')
+                    ->storePubliclyAs($storePath, $finalName, 'uploads');
+            } else {
+                return redirect(aurl("brands/$id/edit"))
+                            ->with('error', 'The ext is not allowed');
             } 
-        }else{
+        } else {
             $finalName = 'no-image-available.jpg';
         }
         
@@ -78,10 +90,10 @@ class brands extends Controller
         $brand->save();
         
         foreach ($request->category_id as $v) {
-            $category_brand = new categoryBrand();
-            $category_brand->category_id = $v;
-            $category_brand->brand_id = $brand->id;
-            $category_brand->save();
+            $categoryBrand = new categoryBrand();
+            $categoryBrand->category_id = $v;
+            $categoryBrand->brand_id = $brand->id;
+            $categoryBrand->save();
         }
 
         return redirect(aurl('brands'));
@@ -90,45 +102,53 @@ class brands extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id The brand id
+     * 
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
         $single = brand::find($id);
-        $allcategories = category::all();
+        $allCategories = category::all();
         $parents = category::whereNotNull('parentID')->get();
-        foreach ($parents as $item){
-            $parentID[] = $item->parentID; 
+
+        foreach ($parents as $item) {
+            $parentId[] = $item->parentID; 
         }
-        $data = array(
+
+        $data = [
             'single' => $single,
-            'allcategories' => $allcategories,
-            'parentID' => $parentID
-        ); 
+            'allcategories' => $allCategories,
+            'parentID' => $parentId
+        ];
+
         return view('admin.brands.edit')->with($data);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request Request object
+     * @param int $id Brand id
+     * 
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'img' => 'image|nullable|max:2048',
-            'name' => 'required',
-            'category_id' => 'required',
-            ]);
+        $this->validate(
+            $request,
+            [
+                'img' => 'image|nullable|max:2048',
+                'name' => 'required',
+                'category_id' => 'required',
+            ]
+        );
 
         $single = brand::find($id);
 
-        if($request->hasFile('img')){ 
+        if ($request->hasFile('img')) { 
 
-            $allowedExt = array('png','jpg', 'jpe', 'jpeg');
+            $allowedExt = ['png','jpg', 'jpe', 'jpeg'];
 
             $fullName = $request->file('img')->getClientOriginalName();
 
@@ -136,18 +156,21 @@ class brands extends Controller
 
             $ext = $request->file('img')->getClientOriginalExtension();
 
-            if(in_array($ext, $allowedExt)){
+            if (in_array($ext, $allowedExt)) {
 
-            //delete the privious image
-            storage::disk('uploads')->delete("brandImg/$single->img");
+                //delete the privious image
+                storage::disk('uploads')->delete("brandImg/$single->img");
 
                 $finalName = $name . '-' . time() . '.' .  $ext;
                 $storePath = 'brandImg/';
-                $request->file('img')->storePubliclyAs($storePath, $finalName, 'uploads');
-            }else{
-                return redirect(aurl("brands/$id/edit"))->with('error', 'The ext is not allowed');
+                $request
+                    ->file('img')
+                    ->storePubliclyAs($storePath, $finalName, 'uploads');
+            } else {
+                return redirect(aurl("brands/$id/edit"))
+                            ->with('error', 'The ext is not allowed');
             } 
-        }else{
+        } else {
             $finalName = $single->img;
         }
 
@@ -156,14 +179,14 @@ class brands extends Controller
         $single->img = $finalName;
         $single->save();
 
-        $del_cat_brand = categoryBrand::where('brand_id', $id);
-        $del_cat_brand->delete();
+        $categoryBrand = categoryBrand::where('brand_id', $id);
+        $categoryBrand->delete();
         
         foreach ($request->category_id as $v) {
-            $category_brand = new categoryBrand();
-            $category_brand->category_id = $v;
-            $category_brand->brand_id = $single->id;
-            $category_brand->save();
+            $categoryBrand = new categoryBrand();
+            $categoryBrand->category_id = $v;
+            $categoryBrand->brand_id = $single->id;
+            $categoryBrand->save();
         }
 
         return redirect(aurl('brands'));
@@ -172,7 +195,8 @@ class brands extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id Brand id
+     * 
      * @return \Illuminate\Http\Response
      */
     public function deleteSingle($id)
@@ -181,11 +205,11 @@ class brands extends Controller
         $single = brand::find($id);
         storage::disk('uploads')->delete("brandImg/$single->img");
 
-        $delete = brand::where('id', $id);
-        $delete->delete();
+        $brand = brand::where('id', $id);
+        $brand->delete();
 
-        $del_cat_brand = categoryBrand::where('brand_id', $id);
-        $del_cat_brand->delete();
+        $categoryBrand = categoryBrand::where('brand_id', $id);
+        $categoryBrand->delete();
 
         return redirect(aurl('brands'));
     }
@@ -193,13 +217,14 @@ class brands extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request Request object
+     * 
      * @return \Illuminate\Http\Response
      */
     public function deleteMultible(Request $request)
     {
         $id = $request->id;
-        if(empty($id)){
+        if (empty($id)) {
             return redirect(aurl('brands'));
         }
 
@@ -209,11 +234,11 @@ class brands extends Controller
             storage::disk('uploads')->delete("brandImg/$single->img");
         }
 
-        $delete = brand::whereIn('id', $id);
-        $delete->delete();
+        $brand = brand::whereIn('id', $id);
+        $brand->delete();
 
-        $del_cat_brand = categoryBrand::whereIn('brand_id', $id);
-        $del_cat_brand->delete();
+        $categoryBrand = categoryBrand::whereIn('brand_id', $id);
+        $categoryBrand->delete();
 
         return redirect(aurl('brands'));
     }

@@ -1,3 +1,3 @@
 # Lacommerce
 
-Ecommerce app made with Laravel
+Ecommerce app built with Laravel

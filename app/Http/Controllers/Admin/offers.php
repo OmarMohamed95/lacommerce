@@ -60,10 +60,10 @@ class offers extends Controller
             $parentIds[] = $item->parentID; 
         }
     
-        $data = array(
+        $data = [
             'allcategories' => $allCategories,
             'parentID' => $parentIds
-        );
+        ];
 
         return view('admin.offers.create')->with($data);
     }
@@ -106,7 +106,7 @@ class offers extends Controller
 
             foreach ($request->file('img') as $file) {
 
-                $allowedExt = array('png','jpg', 'jpe', 'jpeg');
+                $allowedExt = ['png','jpg', 'jpe', 'jpeg'];
 
                 $fullName = $file->getClientOriginalName();
 
@@ -160,10 +160,10 @@ class offers extends Controller
     {
         $single = product::where('id', $id)->first();
         $productImg = productImg::where('product_id', $id)->get();
-        $data = array(
+        $data = [
             'single' => $single,
             'productImg' => $productImg
-        );
+        ];
         return view('admin.offers.preview')->with($data);
     }
 
@@ -184,11 +184,11 @@ class offers extends Controller
             $parentIds[] = $item->parentID; 
         }
 
-        $data = array(
+        $data = [
             'single' => $single,
             'allcategories' => $allCategories,
             'parentID' => $parentIds
-        );
+        ];
 
         return view('admin.offers.edit')->with($data);
     }
@@ -243,7 +243,7 @@ class offers extends Controller
 
             foreach ($request->file('img') as $file) {
 
-                $allowedExt = array('png','jpg', 'jpe', 'jpeg');
+                $allowedExt = ['png','jpg', 'jpe', 'jpeg'];
 
                 $fullName = $file->getClientOriginalName();
 

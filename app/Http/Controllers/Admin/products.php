@@ -60,10 +60,10 @@ class products extends Controller
             $parentIds[] = $item->parentID; 
         }
     
-        $data = array(
+        $data = [
             'allcategories' => $allCategories,
             'parentID' => $parentIds ?? [],
-        );
+        ];
 
         return view('admin.products.create')->with($data);
     }
@@ -105,7 +105,7 @@ class products extends Controller
 
             foreach ($request->file('img') as $file) {
 
-                $allowedExt = array('png','jpg', 'jpe', 'jpeg');
+                $allowedExt = ['png','jpg', 'jpe', 'jpeg'];
 
                 $fullName = $file->getClientOriginalName();
 
@@ -167,10 +167,10 @@ class products extends Controller
     {
         $single = product::where('id', $id)->first();
         $productImg = productImg::where('product_id', $id)->get();
-        $data = array(
+        $data = [
             'single' => $single,
             'productImg' => $productImg
-        );
+        ];
         return view('admin.products.preview')->with($data);
     }
 
@@ -191,11 +191,11 @@ class products extends Controller
             $parentIds[] = $item->parentID; 
         }
 
-        $data = array(
+        $data = [
             'single' => $single,
             'allcategories' => $allCategories,
             'parentID' => $parentIds
-        ); 
+        ]; 
         return view('admin.products.edit')->with($data);
     }
 
@@ -247,7 +247,7 @@ class products extends Controller
 
             foreach ($request->file('img') as $file) {
 
-                $allowedExt = array('png','jpg', 'jpe', 'jpeg');
+                $allowedExt = ['png','jpg', 'jpe', 'jpeg'];
 
                 $fullName = $file->getClientOriginalName();
 

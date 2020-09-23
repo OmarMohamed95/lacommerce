@@ -5,6 +5,7 @@ namespace App\Http\Controllers\app;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\adminModel\product;
+use App\adminModel\wishlist;
 use Illuminate\Support\Facades\Auth;
 use App\adminModel\review;
 use DB;
@@ -16,32 +17,35 @@ class products extends Controller
         $this->middleware('auth', ['except' => 'index']);
     }
 
-    public function index($id){
+    /**
+     * Show product
+     *
+     * @param int $id product ID
+     * 
+     * @return \Illuminate\View\View
+     */
+    public function index(int $id)
+    {
         $product = product::find($id);
 
         $review = review::where('product_id', $id)->orderBy('id', 'desc')->get();
 
-        if(Auth::check()){
-            $wishlist = DB::table('wishlists')
-                                    ->where('user_id', Auth::user()->id)
-                                    ->select('product_id')
-                                    ->get();
+        $isWishlisted = false;
+        if (Auth::check()) {
+            $isWishlisted = wishlist::where('user_id', Auth::user()->id)
+                ->where('product_id', $id)
+                ->select('product_id')
+                ->first();
 
-            if($wishlist->count() > 0){
-                foreach ($wishlist as $value) {
-                    $wishlists[] = $value->product_id;
-                }
-            }else{
-                $wishlists = [];
+            if ($isWishlisted) {
+                $isWishlisted = true;
             }
-        }else{
-            $wishlists = [];
-        }    
+        }
 
         $data = array(
             'product' => $product,
             'review' => $review,
-            'wishlists' => $wishlists,
+            'isWishlisted' => $isWishlisted,
         );
 
         return view('app.product.index')->with($data);

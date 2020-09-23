@@ -19,7 +19,7 @@
         <p class="productPrice col-xs-3">EGP {{ $product->price }}</p>
         <a href="{{ url('cart/store/' . $product->id) }}" class="cartButton btn btn-success col-xs-3 pull-right"><i class="fas fa-shopping-cart fa-1x"></i> Buy Now</a>
         <div class="clearfix"></div>
-        <a style="margin-top: 10px;" href="{{ url('wishlist/store/' . $product->id) }}" class="wishlistButton pull-right"><i class="wishlist {{ (in_array($product->id, $wishlists))? 'fas fa-heart':'far fa-heart' }} fa-2x"></i></a>
+        <a style="margin-top: 10px;" href="{{ url('wishlist/store/' . $product->id) }}" class="wishlistButton pull-right"><i class="wishlist {{ ($isWishlisted) ? 'fas fa-heart':'far fa-heart' }} fa-2x"></i></a>
         <p style="color:black">Available Quantity : {{ $product->quantity }}</p>
     </div>
     <div class="col-xs-12">

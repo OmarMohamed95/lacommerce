@@ -185,7 +185,10 @@ return [
         Collective\Html\HtmlServiceProvider::class,
 
         //intervention image thumpnail
-        Intervention\Image\ImageServiceProvider::class
+        Intervention\Image\ImageServiceProvider::class,
+
+        // PhotoService
+        App\Providers\PhotoServiceProvider::class,
 
     ],
 

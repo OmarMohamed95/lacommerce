@@ -16,10 +16,10 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function(){
         Route::post('/categories/deleteMultible', 'categories@deleteMultible');
 
         // products
-        Route::resource('products', 'products');
-        Route::get('/products/getBrandsByCat/{id}', 'products@getBrandsByCat');
-        Route::get('/products/deleteSingle/{id}', 'products@deleteSingle');
-        Route::post('/products/deleteMultible', 'products@deleteMultible');
+        Route::resource('products', 'ProductController');
+        Route::get('/products/getBrandsByCat/{id}', 'ProductController@getBrandsByCat');
+        Route::get('/products/deleteSingle/{id}', 'ProductController@deleteSingle');
+        Route::post('/products/deleteMultible', 'ProductController@deleteMultible');
 
         // offers
         Route::resource('offers', 'offers');

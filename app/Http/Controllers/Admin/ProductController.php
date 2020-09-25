@@ -13,14 +13,28 @@ use App\adminModel\customFieldProduct;
 use App\adminModel\categoryBrand;
 use DB;
 use Image;
+use App\Contracts\PhotoServiceInterface;
+use App\Exceptions\PhotoExtensionNotAllowedException;
 
 /**
- * Products Controller
+ * ProductController
  * 
  * @author Omar Mohamed <omar.mo9516@gmail.com>
  */
-class products extends Controller
+class ProductController extends Controller
 {
+    /**
+     * Photo Service
+     *
+     * @param PhotoServiceInterface $PhotoService
+     */
+    private $PhotoService;
+
+    public function __construct(PhotoServiceInterface $PhotoService)
+    {
+        $this->PhotoService = $PhotoService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -74,6 +88,8 @@ class products extends Controller
      * @param \Illuminate\Http\Request $request 
      * 
      * @return \Illuminate\Http\Response
+     * 
+     * @throws PhotoExtensionNotAllowedException
      */
     public function store(Request $request)
     {
@@ -91,7 +107,17 @@ class products extends Controller
             ]
         );    
 
-        //store products to DB
+        if ($request->hasFile('img')) {
+            try {
+                $storedPhotosNames = $this->PhotoService
+                    ->setStorePath('productImg/')
+                    ->store();
+            } catch (PhotoExtensionNotAllowedException $th) {
+                return redirect(aurl("products/create"))
+                    ->with('error', __('messages.product.error.ext_not_allowed', ['ext' => $th->getMessage()]));
+            }
+        }
+
         $product = new product;
         $product->name = $request->name;        
         $product->desc = $request->desc;
@@ -101,48 +127,15 @@ class products extends Controller
         $product->category_id = $request->category_id;
         $product->save();
 
-        if ($request->hasFile('img')) {
-
-            foreach ($request->file('img') as $file) {
-
-                $allowedExt = ['png','jpg', 'jpe', 'jpeg'];
-
-                $fullName = $file->getClientOriginalName();
-
-                $name = pathinfo($fullName, PATHINFO_FILENAME);
-
-                $ext = $file->getClientOriginalExtension();
-
-                if (in_array($ext, $allowedExt)) {
-
-                    $finalName = $name . '-' . time() . '.' .  $ext;
-
-                    $storePath = 'productImg/';
-
-                    $file->storePubliclyAs($storePath, $finalName, 'uploads');
-
-                    //Resize image - main img
-                    //$img = Image::make($file)->resize(350, 400);
-                    //$location = Storage::disk('uploads')->put('productImgThumbnailMain/' . $finalName, (string) $img->encode());
-
-                    //Resize image here - galary img
-                    //$img = Image::make($file)->resize(270, 320);
-                    //$location = Storage::disk('uploads')->put('productImgThumbnailGallary/' . $finalName, (string) $img->encode());
-
-                    // store images to DB
-                    $productImg = new productImg;
-                    $productImg->product_id = $product->id;
-                    $productImg->img = $finalName;
-                    $productImg->save();
-
-                } else {
-                    return redirect(aurl("products/create"))
-                                ->with('error', 'The ext is not allowed');
-                }
+        if (isset($storedPhotosNames) && $storedPhotosNames) {
+            foreach ($storedPhotosNames as $photoName) {
+                $productImg = new productImg;
+                $productImg->product_id = $product->id;
+                $productImg->img = $photoName;
+                $productImg->save();
             }
         }
 
-        //store custom fields values to DB
         if ($request->cf) {
             foreach ($request->cf as $key => $value) {
                 $customFieldProduct = new customFieldProduct;

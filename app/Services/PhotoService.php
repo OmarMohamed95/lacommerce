@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Contracts\PhotoServiceInterface;
 use Illuminate\Http\Request;
 use App\Exceptions\PhotoExtensionNotAllowedException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class PhotoService implements PhotoServiceInterface
 {
@@ -38,27 +39,74 @@ class PhotoService implements PhotoServiceInterface
      */
     public function store(): array
     {
-        foreach ($this->request->file('img') as $file) {
-
-            $fullName = $file->getClientOriginalName();
-            $nameWithoutExt = pathinfo($fullName, PATHINFO_FILENAME);
-            $ext = $file->getClientOriginalExtension();
-
-            if ($this->isValidExtension($ext)) {
-                $uniqueName = $nameWithoutExt . '-' . time() . '.' .  $ext;
-                $storePath = $this->getStorePath();
-
-                if (!$storePath) {
-                    throw new \Exception('Store path is not set yet!');
-                }
-
-                $file->storePubliclyAs($storePath, $uniqueName, self::STORAGE_DIR);
-                $this->saveStoredFileName($uniqueName);
-            } else {
-                throw new PhotoExtensionNotAllowedException($ext);
-            }
+        $files = $this->request->file('img');
+        if (is_array($files)) {
+            $this->storeMultipleFiles($files);
+        } else {
+            $this->storeSingleFile($files);
         }
+        
         return $this->getStoredFilesNames();
+    }
+
+    /**
+     * Store multiple files
+     *
+     * @param array $files
+     * 
+     * @return void
+     *
+     * @throws PhotoExtensionNotAllowedException
+     */
+    private function storeMultipleFiles(array $files)
+    {
+        foreach ($files as $file) {
+            $this->handleStoring($file);
+        }
+    }
+
+    /**
+     * Store single file
+     *
+     * @param UploadedFile $file
+     * 
+     * @return void
+     *
+     * @throws PhotoExtensionNotAllowedException
+     */
+    private function storeSingleFile(UploadedFile $file)
+    {
+        $this->handleStoring($file);
+    }
+
+    /**
+     * Handle storing the files
+     *
+     * @param UploadedFile $file
+     * 
+     * @return void
+     *
+     * @throws PhotoExtensionNotAllowedException
+     */
+    private function handleStoring(UploadedFile $file)
+    {
+        $fullName = $file->getClientOriginalName();
+        $nameWithoutExt = pathinfo($fullName, PATHINFO_FILENAME);
+        $ext = $file->getClientOriginalExtension();
+
+        if ($this->isValidExtension($ext)) {
+            $uniqueName = $nameWithoutExt . '-' . time() . '.' .  $ext;
+            $storePath = $this->getStorePath();
+
+            if (!$storePath) {
+                throw new \Exception('Store path is not set yet!');
+            }
+
+            $file->storePubliclyAs($storePath, $uniqueName, self::STORAGE_DIR);
+            $this->saveStoredFileName($uniqueName);
+        } else {
+            throw new PhotoExtensionNotAllowedException($ext);
+        }
     }
 
     /**

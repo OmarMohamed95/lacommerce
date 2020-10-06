@@ -16,7 +16,7 @@ use App\Contracts\PhotoServiceInterface;
  * 
  * @author Omar Mohamed <omar.mo9516@gmail.com>
  */
-class BrandsController extends Controller
+class BrandController extends Controller
 {
     /**
      * Photo Service
@@ -79,17 +79,16 @@ class BrandsController extends Controller
             ]
         );
 
+        $storedPhotosNames[] = 'no-image-available.jpg';
         if ($request->hasFile('img')) {
             try {
                 $storedPhotosNames = $this->PhotoService
                     ->setStorePath('brandImg/')
                     ->store();
             } catch (PhotoExtensionNotAllowedException $th) {
-                return redirect(aurl("brands/$id/edit"))
-                    ->with('error', __('messages.product.error.ext_not_allowed', ['ext' => $th->getMessage()]));
+                return redirect(aurl("brands/create"))
+                    ->with('error', __('messages.error.ext_not_allowed', ['ext' => $th->getMessage()]));
             }
-        } else {
-            $storedPhotosNames[] = 'no-image-available.jpg';
         }
         
         $brand = new brand();

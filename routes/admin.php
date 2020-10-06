@@ -27,9 +27,9 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function(){
         Route::post('/offers/deleteMultible', 'offers@deleteMultible');
 
         // brands
-        Route::resource('brands', 'brands');
-        Route::get('/brands/deleteSingle/{id}', 'brands@deleteSingle');
-        Route::post('/brands/deleteMultible', 'brands@deleteMultible');
+        Route::resource('brands', 'BrandsController');
+        Route::get('/brands/deleteSingle/{id}', 'BrandsController@deleteSingle');
+        Route::post('/brands/deleteMultible', 'BrandsController@deleteMultible');
 
         // custom field
         Route::resource('custom_field', 'custom_field');

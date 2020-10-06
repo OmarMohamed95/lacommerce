@@ -114,7 +114,7 @@ class ProductController extends Controller
                     ->store();
             } catch (PhotoExtensionNotAllowedException $th) {
                 return redirect(aurl("products/create"))
-                    ->with('error', __('messages.product.error.ext_not_allowed', ['ext' => $th->getMessage()]));
+                    ->with('error', __('messages.error.ext_not_allowed', ['ext' => $th->getMessage()]));
             }
         }
 

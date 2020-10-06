@@ -8,14 +8,28 @@ use App\adminModel\brand;
 use App\adminModel\category;
 use App\adminModel\categoryBrand;
 use Illuminate\Support\Facades\Storage;
+use App\Exceptions\PhotoExtensionNotAllowedException;
+use App\Contracts\PhotoServiceInterface;
 
 /**
  * Brands Controller
  * 
  * @author Omar Mohamed <omar.mo9516@gmail.com>
  */
-class brands extends Controller
+class BrandsController extends Controller
 {
+    /**
+     * Photo Service
+     *
+     * @param PhotoServiceInterface $PhotoService
+     */
+    private $PhotoService;
+
+    public function __construct(PhotoServiceInterface $PhotoService)
+    {
+        $this->PhotoService = $PhotoService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -66,27 +80,21 @@ class brands extends Controller
         );
 
         if ($request->hasFile('img')) {
-            $allowedExt = ['png','jpg', 'jpe', 'jpeg'];
-            $fullName = $request->file('img')->getClientOriginalName();
-            $name = pathinfo($fullName, PATHINFO_FILENAME);
-            $ext = $request->file('img')->getClientOriginalExtension();
-            if (in_array($ext, $allowedExt)) {
-                $finalName = $name . '-' . time() . '.' .  $ext;
-                $storePath = 'brandImg/';
-                $request
-                    ->file('img')
-                    ->storePubliclyAs($storePath, $finalName, 'uploads');
-            } else {
+            try {
+                $storedPhotosNames = $this->PhotoService
+                    ->setStorePath('brandImg/')
+                    ->store();
+            } catch (PhotoExtensionNotAllowedException $th) {
                 return redirect(aurl("brands/$id/edit"))
-                            ->with('error', 'The ext is not allowed');
-            } 
+                    ->with('error', __('messages.product.error.ext_not_allowed', ['ext' => $th->getMessage()]));
+            }
         } else {
-            $finalName = 'no-image-available.jpg';
+            $storedPhotosNames[] = 'no-image-available.jpg';
         }
         
         $brand = new brand();
         $brand->name = $request->name;
-        $brand->img = $finalName;
+        $brand->img = $storedPhotosNames[0];
         $brand->save();
         
         foreach ($request->category_id as $v) {

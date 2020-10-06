@@ -115,18 +115,20 @@ class BrandController extends Controller
      */
     public function edit($id)
     {
-        $single = brand::find($id);
+        $brand = brand::find($id);
         $allCategories = category::all();
         $parents = category::whereNotNull('parentID')->get();
 
-        foreach ($parents as $item) {
-            $parentId[] = $item->parentID; 
+        if ($parents) {
+            foreach ($parents as $parent) {
+                $parentId[] = $parent->parentID; 
+            }
         }
 
         $data = [
-            'single' => $single,
+            'single' => $brand,
             'allcategories' => $allCategories,
-            'parentID' => $parentId
+            'parentID' => $parentId ?? []
         ];
 
         return view('admin.brands.edit')->with($data);
@@ -151,40 +153,23 @@ class BrandController extends Controller
             ]
         );
 
-        $single = brand::find($id);
+        $brand = brand::find($id);
 
-        if ($request->hasFile('img')) { 
-
-            $allowedExt = ['png','jpg', 'jpe', 'jpeg'];
-
-            $fullName = $request->file('img')->getClientOriginalName();
-
-            $name = pathinfo($fullName, PATHINFO_FILENAME);
-
-            $ext = $request->file('img')->getClientOriginalExtension();
-
-            if (in_array($ext, $allowedExt)) {
-
-                //delete the privious image
-                storage::disk('uploads')->delete("brandImg/$single->img");
-
-                $finalName = $name . '-' . time() . '.' .  $ext;
-                $storePath = 'brandImg/';
-                $request
-                    ->file('img')
-                    ->storePubliclyAs($storePath, $finalName, 'uploads');
-            } else {
+        $storedPhotosNames[] = $brand->img;
+        if ($request->hasFile('img')) {
+            try {
+                $storedPhotosNames = $this->PhotoService
+                    ->setStorePath('brandImg/')
+                    ->store();
+            } catch (PhotoExtensionNotAllowedException $th) {
                 return redirect(aurl("brands/$id/edit"))
-                            ->with('error', 'The ext is not allowed');
-            } 
-        } else {
-            $finalName = $single->img;
+                    ->with('error', __('messages.error.ext_not_allowed', ['ext' => $th->getMessage()]));
+            }
         }
 
-                
-        $single->name = $request->name;
-        $single->img = $finalName;
-        $single->save();
+        $brand->name = $request->name;
+        $brand->img = $storedPhotosNames[0];
+        $brand->save();
 
         $categoryBrand = categoryBrand::where('brand_id', $id);
         $categoryBrand->delete();
@@ -192,7 +177,7 @@ class BrandController extends Controller
         foreach ($request->category_id as $v) {
             $categoryBrand = new categoryBrand();
             $categoryBrand->category_id = $v;
-            $categoryBrand->brand_id = $single->id;
+            $categoryBrand->brand_id = $brand->id;
             $categoryBrand->save();
         }
 
@@ -202,20 +187,16 @@ class BrandController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id Brand id
+     * @param int $brandId Brand id
      * 
      * @return \Illuminate\Http\Response
      */
-    public function deleteSingle($id)
+    public function deleteSingle($brandId)
     {
-        //delete the image from the disk
-        $single = brand::find($id);
-        storage::disk('uploads')->delete("brandImg/$single->img");
-
-        $brand = brand::where('id', $id);
+        $brand = brand::find($brandId);
         $brand->delete();
 
-        $categoryBrand = categoryBrand::where('brand_id', $id);
+        $categoryBrand = categoryBrand::where('brand_id', $brandId);
         $categoryBrand->delete();
 
         return redirect(aurl('brands'));
@@ -230,21 +211,15 @@ class BrandController extends Controller
      */
     public function deleteMultible(Request $request)
     {
-        $id = $request->id;
-        if (empty($id)) {
+        $brandIDs = $request->id;
+        if (empty($brandIDs)) {
             return redirect(aurl('brands'));
         }
 
-        //delete the images from the disk
-        foreach ($id as $v) {
-            $single = brand::find($v);
-            storage::disk('uploads')->delete("brandImg/$single->img");
-        }
-
-        $brand = brand::whereIn('id', $id);
+        $brand = brand::whereIn('id', $brandIDs);
         $brand->delete();
 
-        $categoryBrand = categoryBrand::whereIn('brand_id', $id);
+        $categoryBrand = categoryBrand::whereIn('brand_id', $brandIDs);
         $categoryBrand->delete();
 
         return redirect(aurl('brands'));

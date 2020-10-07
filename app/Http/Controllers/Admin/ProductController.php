@@ -227,46 +227,27 @@ class ProductController extends Controller
         $product->save();    
 
         if ($request->hasFile('img')) {
+            try {
+                $productImages = productImg::where('product_id', $id);
+                $this->PhotoService
+                    ->setStorePath('productImg/')
+                    ->delete($productImages->get());
 
-            //delete the image from the disk
-            $singleD = productImg::where('product_id', $id)->get();
-            foreach ($singleD as $s) {
-                storage::disk('uploads')->delete("productImg/$s->img");
-            }    
+                $productImages->delete();
 
-            //delete image from DB
-            $single = productImg::where('product_id', $id);
-            $single->delete();
+                $storedPhotosNames = $this->PhotoService
+                    ->setStorePath('productImg/')
+                    ->store();
+            } catch (PhotoExtensionNotAllowedException $th) {
+                return redirect(aurl("products/$id/edit"))
+                    ->with('error', __('messages.error.ext_not_allowed', ['ext' => $th->getMessage()]));
+            }
 
-            foreach ($request->file('img') as $file) {
-
-                $allowedExt = ['png','jpg', 'jpe', 'jpeg'];
-
-                $fullName = $file->getClientOriginalName();
-
-                $name = pathinfo($fullName, PATHINFO_FILENAME);
-
-                $ext = $file->getClientOriginalExtension();
-
-                if (in_array($ext, $allowedExt)) {
-
-                    $finalName = $name . '-' . time() . '.' .  $ext;
-
-                    $storePath = 'productImg/';
-
-                    //store the new image
-                    $file->storePubliclyAs($storePath, $finalName, 'uploads');
-
-                    // store images to DB
-                    $productImg = new productImg;
-                    $productImg->product_id = $update->id;
-                    $productImg->img = $finalName;
-                    $productImg->save();
-
-                } else {
-                    return redirect(aurl("products/$id/edit"))
-                                ->with('error', 'The ext is not allowed');
-                }
+            foreach ($storedPhotosNames as $photo) {
+                $productImg = new productImg;
+                $productImg->product_id = $product->id;
+                $productImg->img = $photo;
+                $productImg->save();
             }
         }
 
@@ -278,7 +259,7 @@ class ProductController extends Controller
             //store custom fields values to DB
             foreach ($request->cf as $key => $value) {
                 $customFieldProduct = new customFieldProduct;
-                $customFieldProduct->product_id = $update->id;
+                $customFieldProduct->product_id = $product->id;
                 $customFieldProduct->custom_field_id = $key;
                 $customFieldProduct->value = $value;
                 $customFieldProduct->save();
@@ -298,17 +279,14 @@ class ProductController extends Controller
      */
     public function deleteSingle($id)
     {
-        //delete the image from the disk
-        $singleD = productImg::where('product_id', $id)->get();
-        foreach ($singleD as $s) {
-            storage::disk('uploads')->delete("productImg/$s->img");
-        }
+        $productImages = productImg::where('product_id', $id);
+        
+        $this->PhotoService
+            ->setStorePath('productImg/')
+            ->delete($productImages->get());
 
-        //delete image from DB
-        $productImg = productImg::where('product_id', $id);
-        $productImg->delete();
+        $productImages->delete();
 
-        //delete product from DB
         $product = product::where('id', $id);
         $product->delete();
         return redirect(aurl('products'));
@@ -328,17 +306,13 @@ class ProductController extends Controller
             return redirect(aurl('products'));
         }
 
-        //delete the image from the disk
-        $singleD = productImg::whereIn('product_id', $id)->get();
-        foreach ($singleD as $s) {
-            storage::disk('uploads')->delete("productImg/$s->img");
-        }
+        $productImages = productImg::whereIn('product_id', $ids);
+        $this->PhotoService
+            ->setStorePath('productImg/')
+            ->delete($productImages->get());
 
-        //delete image from DB
-        $productImg = productImg::whereIn('product_id', $id);
-        $productImg->delete();
+        $productImages->delete();
 
-        //delete product from DB
         $product = product::whereIn('id', $id);
         $product->delete();
         return redirect(aurl('products'));

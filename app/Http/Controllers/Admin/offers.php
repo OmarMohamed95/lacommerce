@@ -4,7 +4,6 @@ namespace App\Http\Controllers\admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Storage;
 use App\adminModel\offer;
 use App\adminModel\product;
 use App\adminModel\brand;
@@ -13,6 +12,8 @@ use App\adminModel\category;
 use App\adminModel\customFieldProduct;
 use App\adminModel\categoryBrand;
 use Image;
+use App\Contracts\PhotoServiceInterface;
+use App\Exceptions\PhotoExtensionNotAllowedException;
 
 /**
  * Offers Controller
@@ -21,6 +22,18 @@ use Image;
  */
 class offers extends Controller
 {
+    /**
+     * Photo Service
+     *
+     * @param PhotoServiceInterface $PhotoService
+     */
+    private $PhotoService;
+
+    public function __construct(PhotoServiceInterface $PhotoService)
+    {
+        $this->PhotoService = $PhotoService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -103,36 +116,21 @@ class offers extends Controller
         $product->save();    
 
         if ($request->hasFile('img')) {
-
-            foreach ($request->file('img') as $file) {
-
-                $allowedExt = ['png','jpg', 'jpe', 'jpeg'];
-
-                $fullName = $file->getClientOriginalName();
-
-                $name = pathinfo($fullName, PATHINFO_FILENAME);
-
-                $ext = $file->getClientOriginalExtension();
-
-                if (in_array($ext, $allowedExt)) {
-
-                    $finalName = $name . '-' . time() . '.' .  $ext;
-
-                    $storePath = 'productImg/';
-
-                    $file->storePubliclyAs($storePath, $finalName, 'uploads');
-
-                    // store images to DB
-                    $productImg = new productImg;
-                    $productImg->product_id = $product->id;
-                    $productImg->img = $finalName;
-                    $productImg->save();
-
-                } else {
-                    return redirect(aurl("offers/create"))
-                                ->with('error', 'The ext is not allowed');
-                }
+            try {
+                $storedPhotosNames = $this->PhotoService
+                    ->setStorePath('productImg/')
+                    ->store();
+            } catch (PhotoExtensionNotAllowedException $th) {
+                return redirect(aurl("offers/create"))
+                    ->with('error', __('messages.error.ext_not_allowed', ['ext' => $th->getMessage()]));
             }
+        }
+
+        foreach ($storedPhotosNames as $photo) {
+            $productImg = new productImg;
+            $productImg->product_id = $product->id;
+            $productImg->img = $photo;
+            $productImg->save();
         }
 
         //store custom fields values to DB
@@ -229,48 +227,28 @@ class offers extends Controller
         $product->save();    
 
         if ($request->hasFile('img')) {
+            try {
+                $productImages = productImg::where('product_id', $id)->get();
+                $this->PhotoService
+                    ->setStorePath('productImg/')
+                    ->delete($productImages);
 
-            //delete the image from the disk
-            $singleD = productImg::where('product_id', $id)->get();
+                $productImages->delete();
 
-            foreach ($singleD as $s) {
-                storage::disk('uploads')->delete("productImg/$s->img");
-            }    
-
-            //delete image from DB
-            $single = productImg::where('product_id', $id);
-            $single->delete();
-
-            foreach ($request->file('img') as $file) {
-
-                $allowedExt = ['png','jpg', 'jpe', 'jpeg'];
-
-                $fullName = $file->getClientOriginalName();
-
-                $name = pathinfo($fullName, PATHINFO_FILENAME);
-
-                $ext = $file->getClientOriginalExtension();
-
-                if (in_array($ext, $allowedExt)) {
-
-                    $finalName = $name . '-' . time() . '.' .  $ext;
-
-                    $storePath = 'productImg/';
-
-                    //store the new image
-                    $file->storePubliclyAs($storePath, $finalName, 'uploads');
-
-                    // store images to DB
-                    $productImg = new productImg;
-                    $productImg->product_id = $update->id;
-                    $productImg->img = $finalName;
-                    $productImg->save();
-
-                } else {
-                    return redirect(aurl("offers/$id/edit"))
-                                ->with('error', 'The ext is not allowed');
-                }
+                $storedPhotosNames = $this->PhotoService
+                    ->setStorePath('productImg/')
+                    ->store();
+            } catch (PhotoExtensionNotAllowedException $th) {
+                return redirect(aurl("offers/$id/edit"))
+                    ->with('error', __('messages.error.ext_not_allowed', ['ext' => $th->getMessage()]));
             }
+        }
+
+        foreach ($storedPhotosNames as $photo) {
+            $productImg = new productImg;
+            $productImg->product_id = $product->id;
+            $productImg->img = $photo;
+            $productImg->save();
         }
 
         if ($request->cf) {
@@ -300,19 +278,16 @@ class offers extends Controller
      */
     public function deleteSingle($id)
     {
-        //delete the image from the disk
-        $singleD = productImg::where('product_id', $id)->get();
-        foreach ($singleD as $s) {
-            storage::disk('uploads')->delete("productImg/$s->img");
-        }
+        $productImages = productImg::where('product_id', $id);
+        
+        $this->PhotoService
+            ->setStorePath('productImg/')
+            ->delete($productImages->get());
 
-        //delete image from DB
-        $single = productImg::where('product_id', $id);
-        $single->delete();
+        $productImages->delete();
 
-        //delete product from DB
-        $delete = product::where('id', $id);
-        $delete->delete();
+        $product = product::where('id', $id);
+        $product->delete();
         return redirect(aurl('offers'));
     }
 
@@ -325,24 +300,20 @@ class offers extends Controller
      */
     public function deleteMultible(Request $request)
     {
-        $id = $request->id;
-        if (empty($id)) {
+        $ids = $request->id;
+        if (empty($ids)) {
             return redirect(aurl('offers'));
         }
 
-        //delete the image from the disk
-        $singleD = productImg::whereIn('product_id', $id)->get();
-        foreach ($singleD as $s) {
-            storage::disk('uploads')->delete("productImg/$s->img");
-        }
+        $productImages = productImg::whereIn('product_id', $ids);
+        $this->PhotoService
+            ->setStorePath('productImg/')
+            ->delete($productImages->get());
 
-        //delete image from DB
-        $single = productImg::whereIn('product_id', $id);
-        $single->delete();
+        $productImages->delete();
 
-        //delete product from DB
-        $delete = product::whereIn('id', $id);
-        $delete->delete();
+        $product = product::whereIn('id', $ids);
+        $product->delete();
         return redirect(aurl('offers'));
     }
 }

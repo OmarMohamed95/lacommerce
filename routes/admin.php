@@ -44,10 +44,10 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function(){
         Route::post('/reviews/deleteMultible', 'reviews@deleteMultible');
 
         // checkout
-        Route::get('/checkout', 'checkouts@index');
-        Route::get('/checkout/overview/{id}', 'checkouts@overview');
-        Route::post('/checkout/state_multible', 'checkouts@state_multible');
-        Route::post('/checkout/state_single/{state}', 'checkouts@state_single');
+        Route::get('/checkout', 'CheckoutController@index');
+        Route::get('/checkout/overview/{id}', 'CheckoutController@overview');
+        Route::post('/checkout/state_multible', 'CheckoutController@state_multible');
+        Route::post('/checkout/state_single/{state}', 'CheckoutController@state_single');
 
         // sittings
         Route::get('/sittings', 'sittings@index');

@@ -11,7 +11,7 @@ use App\adminModel\checkout;
  * 
  * @author Omar Mohamed <omar.mo9516@gmail.com>
  */
-class checkouts extends Controller
+class CheckoutController extends Controller
 {
     /**
      * Index method

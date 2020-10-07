@@ -6,6 +6,8 @@ use App\Contracts\PhotoServiceInterface;
 use Illuminate\Http\Request;
 use App\Exceptions\PhotoExtensionNotAllowedException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Collection;
 
 class PhotoService implements PhotoServiceInterface
 {
@@ -47,6 +49,28 @@ class PhotoService implements PhotoServiceInterface
         }
         
         return $this->getStoredFilesNames();
+    }
+
+    /**
+     * Delete photos from disk storage
+     *
+     * @param Collection $photos
+     *
+     * @return void
+     *
+     * @throws \Exception
+     */
+    public function delete(Collection $photos): void
+    {
+        $storePath = $this->getStorePath();
+        if (!$storePath) {
+            throw new \Exception('Store path is not set yet!');
+        }
+
+        foreach ($photos as $photo) {
+            storage::disk(self::STORAGE_DIR)
+                ->delete("$storePath/$photo->img");
+        }
     }
 
     /**

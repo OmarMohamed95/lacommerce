@@ -2,6 +2,8 @@
 
 namespace App\Contracts;
 
+use Illuminate\Database\Eloquent\Collection;
+
 interface PhotoServiceInterface
 {
     /**
@@ -28,4 +30,15 @@ interface PhotoServiceInterface
      * @return self
      */
     public function setStorePath(string $path);
+
+    /**
+     * Delete photos from disk storage
+     *
+     * @param Collection $photos
+     *
+     * @return void
+     *
+     * @throws \Exception
+     */
+    public function delete(Collection $photos): void;
 }

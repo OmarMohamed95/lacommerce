@@ -14,6 +14,7 @@ use App\adminModel\categoryBrand;
 use Image;
 use App\Contracts\PhotoServiceInterface;
 use App\Exceptions\PhotoExtensionNotAllowedException;
+use App\Http\Requests\OfferRequest;
 
 /**
  * Offers Controller
@@ -84,27 +85,12 @@ class OfferController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request 
+     * @param App\Http\Requests\OfferRequest $request 
      * 
      * @return Redirect
      */
-    public function store(Request $request)
-    {
-        $this->validate(
-            $request,
-            [
-                'img.*' => 'bail|image|required|max:3072',
-                'name' => 'required',
-                'desc' => 'required',
-                'price' => 'required|numeric',
-                'brand_id' => 'required',
-                'quantity' => 'required|numeric',
-                'category_id' => 'required',
-                'cf.*' => 'required',
-            ]
-        );  
-            
-        //store products to DB
+    public function store(OfferRequest $request)
+    {       
         $product = new product;
         $product->name = $request->name;        
         $product->desc = $request->desc;
@@ -133,7 +119,6 @@ class OfferController extends Controller
             $productImg->save();
         }
 
-        //store custom fields values to DB
         if ($request->cf) {
             foreach ($request->cf as $key => $value) {
                 $customField = new customFieldProduct;
@@ -194,28 +179,13 @@ class OfferController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request 
+     * @param App\Http\Requests\OfferRequest $request 
      * @param int $id 
      * 
      * @return Redirect
      */
-    public function update(Request $request, $id)
+    public function update(OfferRequest $request, $id)
     {
-        $this->validate(
-            $request,
-            [
-                'img.*' => 'bail|image|required|max:3072',
-                'name' => 'required',
-                'desc' => 'required',
-                'price' => 'required|numeric',
-                'brand_id' => 'required',
-                'quantity' => 'required|numeric',
-                'category_id' => 'required',
-                'cf.*' => 'required',
-            ]
-        );    
-
-        //update product in DB
         $product = product::find($id);
         $product->name = $request->name;        
         $product->desc = $request->desc;

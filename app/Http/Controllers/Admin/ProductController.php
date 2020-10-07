@@ -15,6 +15,7 @@ use DB;
 use Image;
 use App\Contracts\PhotoServiceInterface;
 use App\Exceptions\PhotoExtensionNotAllowedException;
+use App\Http\Requests\ProductRequest;
 
 /**
  * ProductController
@@ -85,28 +86,14 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request 
+     * @param App\Http\Requests\ProductRequest $request 
      * 
      * @return \Illuminate\Http\Response
      * 
      * @throws PhotoExtensionNotAllowedException
      */
-    public function store(Request $request)
-    {
-        $this->validate(
-            $request,
-            [
-                'img.*' => 'bail|image|required|max:3072',
-                'name' => 'required',
-                'desc' => 'required',
-                'price' => 'required|numeric',
-                'brand_id' => 'required',
-                'quantity' => 'required|numeric',
-                'category_id' => 'required',
-                'cf.*' => 'required',
-            ]
-        );    
-
+    public function store(ProductRequest $request)
+    { 
         if ($request->hasFile('img')) {
             try {
                 $storedPhotosNames = $this->PhotoService
@@ -195,28 +182,13 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request 
+     * @param App\Http\Requests\ProductRequest $request 
      * @param int $id 
      * 
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ProductRequest $request, $id)
     {
-        $this->validate(
-            $request,
-            [
-                'img.*' => 'bail|image|required|max:3072',
-                'name' => 'required',
-                'desc' => 'required',
-                'price' => 'required|numeric',
-                'brand_id' => 'required',
-                'quantity' => 'required|numeric',
-                'category_id' => 'required',
-                'cf.*' => 'required',
-            ]
-        );   
-
-        //update product in DB
         $product = product::find($id); 
         $product->name = $request->name;        
         $product->desc = $request->desc;

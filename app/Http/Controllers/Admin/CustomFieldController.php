@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\adminModel\customField;
 use App\adminModel\customFieldCategory;
 use App\adminModel\category;
+use App\Http\Requests\CustomFieldRequest;
 
 /**
  * Custom field Controller
@@ -94,28 +95,12 @@ class CustomFieldController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request 
+     * @param App\Http\Requests\CustomFieldRequest $request 
      * 
      * @return Redirect
      */
-    public function store(Request $request)
+    public function store(CustomFieldRequest $request)
     {
-
-        $messages = [
-            'required' => 'The :attribute is required.',
-        ];
-
-        $this->validate(
-            $request,
-            [
-                'name' => 'required',
-                'type' => 'required',
-                'show_in_filter' => 'required',
-                'category_id' => 'required',
-            ],
-            $messages
-        );
-
         $customField = new customField();
         
         $customField->name = $request->name;
@@ -167,28 +152,13 @@ class CustomFieldController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request 
+     * @param App\Http\Requests\CustomFieldRequest $request 
      * @param int $id 
      * 
      * @return Redirect
      */
-    public function update(Request $request, $id)
+    public function update(CustomFieldRequest $request, $id)
     {
-        $messages = [
-            'required' => 'The :attribute is required.',
-        ];
-
-        $this->validate(
-            $request,
-            [
-                'name' => 'required',
-                'type' => 'required',
-                'show_in_filter' => 'required',
-                'category_id' => 'required',
-            ],
-            $messages
-        );
-
         $update = customField::find($id);
         $update->name = $request->name;
         $update->type = $request->type;

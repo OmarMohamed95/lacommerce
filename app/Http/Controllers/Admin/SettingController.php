@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SettingRequest;
 use App\adminModel\sitting;
 
 /**
@@ -27,30 +28,12 @@ class SettingController extends Controller
     /**
      * Create mthod
      *
-     * @param Request $request 
+     * @param SettingRequest $request 
      * 
      * @return Redirect
      */
-    public function create(Request $request)
+    public function create(SettingRequest $request)
     {
-
-        $messages = [
-            'required' => 'The :attribute is required.',
-            'E-Mail' => 'The :attribute is not valid Email.',
-            'URL' => 'The :attribute is not valid URL.',
-        ];
-
-        $this->validate(
-            $request,
-            [
-                'email' => 'required|E-Mail',
-                'fb' => 'required|URL',
-                'tw' => 'required|URL',
-                'yt' => 'required|URL',
-            ],
-            $messages
-        );
-
         $sittings = new sitting;
         $sittings->email = $request->email;
         $sittings->fb = $request->fb;
@@ -64,29 +47,13 @@ class SettingController extends Controller
     /**
      * Update mthod
      *
-     * @param Request $request 
+     * @param SettingRequest $request 
      * @param int $id 
      * 
      * @return Redirect
      */
-    public function update(Request $request, $id)
+    public function update(SettingRequest $request, $id)
     {
-
-        $messages = [
-            'required' => 'The :attribute is required.',
-        ];
-
-        $this->validate(
-            $request,
-            [
-                'email' => 'required|E-Mail',
-                'fb' => 'required|URL',
-                'tw' => 'required|URL',
-                'yt' => 'required|URL',
-            ],
-            $messages
-        );
-
         $sittings = sitting::find($id);
         $sittings->email = $request->email;
         $sittings->fb = $request->fb;

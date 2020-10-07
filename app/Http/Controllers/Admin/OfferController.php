@@ -228,10 +228,10 @@ class OfferController extends Controller
 
         if ($request->hasFile('img')) {
             try {
-                $productImages = productImg::where('product_id', $id)->get();
+                $productImages = productImg::where('product_id', $id);
                 $this->PhotoService
                     ->setStorePath('productImg/')
-                    ->delete($productImages);
+                    ->delete($productImages->get());
 
                 $productImages->delete();
 
@@ -259,7 +259,7 @@ class OfferController extends Controller
             //store custom fields values to DB
             foreach ($request->cf as $key => $value) {
                 $customFieldProduct = new customFieldProduct;
-                $customFieldProduct->product_id = $update->id;
+                $customFieldProduct->product_id = $product->id;
                 $customFieldProduct->custom_field_id = $key;
                 $customFieldProduct->value = $value;
                 $customFieldProduct->save();

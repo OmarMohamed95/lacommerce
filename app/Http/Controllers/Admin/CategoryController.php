@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\adminModel\category;
 use DB;
+use App\Http\Requests\CategoryRequest;
 
 /**
  * Categories Controller
@@ -41,24 +42,12 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request 
+     * @param App\Http\Requests\CategoryRequest $request 
      * 
      * @return Redirect
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-
-        $this->validate(
-            $request,
-            [
-                'name' => 'required',
-                'parentID' => 'required',
-                'status' => 'required',
-                'sort' => 'required|numeric',
-                'home' => 'required',
-            ]
-        );
-
         $category = new category;
         $category->name = $request->name;
 
@@ -99,25 +88,13 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request 
+     * @param App\Http\Requests\CategoryRequest $request 
      * @param int $id Category id
      * 
      * @return Redirect
      */
-    public function update(Request $request, $id)
+    public function update(CategoryRequest $request, $id)
     {
-
-        $this->validate(
-            $request,
-            [
-                'name' => 'required',
-                'parentID' => 'required',
-                'status' => 'required',
-                'sort' => 'required|numeric',
-                'home' => 'required',
-            ]
-        );
-
         $category = category::find($id);
         $category->name = $request->name;
 

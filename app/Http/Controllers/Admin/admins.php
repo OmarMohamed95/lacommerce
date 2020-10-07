@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\adminModel\Admin;
 use Illuminate\Validation\Rule;
-
+use App\Http\Requests\AdminRequest;
 /**
  * Admins Controller
  * 
@@ -50,26 +50,12 @@ class admins extends Controller
     /**
      * Store method
      * 
-     * @param \Illuminate\Http\Request $request 
+     * @param App\Http\Requests\AdminRequest $request 
      *
      * @return Redirect
      */
-    public function store(Request $request)
+    public function store(AdminRequest $request)
     {
-        $messages = [
-            'required' => 'The :attribute is required.',
-        ];
-
-        $this->validate(
-            $request, 
-            [
-                'name' => 'required',
-                'email' => 'required|E-Mail|unique:admins',
-                'password' => 'required',
-            ],
-            $messages
-        );
-
         $admin = new admin;
         $admin->name = $request->name;
         $admin->email = $request->email;
@@ -100,23 +86,8 @@ class admins extends Controller
      *
      * @return Redirect
      */
-    public function update(Request $request, $id)
+    public function update(AdminRequest $request, $id)
     {
-
-        $messages = [
-            'required' => 'The :attribute is required.',
-        ];
-
-        $this->validate(
-            $request,
-            [
-                'name' => 'required',
-                'email' => 'required|E-Mail',Rule::unique('admins')->ignore($id),
-                'password' => 'required',
-            ],
-            $messages
-        );
-
         $admin = admin::find($id);
         $admin->name = $request->name;
         $admin->email = $request->email;

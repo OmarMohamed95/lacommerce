@@ -11,7 +11,7 @@ use App\adminModel\review;
  * 
  * @author Omar Mohamed <omar.mo9516@gmail.com>
  */
-class reviews extends Controller
+class ReviewController extends Controller
 {
     /**
      * Index mthod

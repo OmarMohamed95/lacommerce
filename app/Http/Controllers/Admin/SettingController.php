@@ -11,7 +11,7 @@ use App\adminModel\sitting;
  * 
  * @author Omar Mohamed <omar.mo9516@gmail.com>
  */
-class sittings extends Controller
+class SettingController extends Controller
 {
     /**
      * Index mthod

@@ -13,7 +13,7 @@ use App\adminModel\category;
  * 
  * @author Omar Mohamed <omar.mo9516@gmail.com>
  */
-class custom_field extends Controller
+class CustomFieldController extends Controller
 {
     /**
      * Display a listing of the resource.

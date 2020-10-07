@@ -10,7 +10,7 @@ use App\Http\Controllers\Controller;
  * 
  * @author Omar Mohamed <omar.mo9516@gmail.com>
  */
-class homes extends Controller
+class HomeController extends Controller
 {
     /**
      * Index method.

@@ -14,7 +14,7 @@ use App\Http\Requests\AdminRequest;
  * 
  * @author Omar Mohamed <omar.mo9516@gmail.com>
  */
-class admins extends Controller
+class AdminController extends Controller
 {
     /**
      * Index method

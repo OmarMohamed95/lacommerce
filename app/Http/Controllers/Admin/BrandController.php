@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BrandRequest;
 use App\adminModel\brand;
 use App\adminModel\category;
 use App\adminModel\categoryBrand;
@@ -64,21 +65,12 @@ class BrandController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request Request object
+     * @param App\Http\Requests\BrandRequest $request Request object
      * 
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(BrandRequest $request)
     {
-        $this->validate(
-            $request,
-            [
-                'img' => 'image|nullable|max:2048',
-                'name' => 'required',
-                'category_id' => 'required',
-            ]
-        );
-
         $storedPhotosNames[] = 'no-image-available.jpg';
         if ($request->hasFile('img')) {
             try {
@@ -137,22 +129,13 @@ class BrandController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request Request object
+     * @param App\Http\Requests\BrandRequest $request Request object
      * @param int $id Brand id
      * 
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(BrandRequest $request, $id)
     {
-        $this->validate(
-            $request,
-            [
-                'img' => 'image|nullable|max:2048',
-                'name' => 'required',
-                'category_id' => 'required',
-            ]
-        );
-
         $brand = brand::find($id);
 
         $storedPhotosNames[] = $brand->img;

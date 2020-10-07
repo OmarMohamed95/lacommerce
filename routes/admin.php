@@ -22,9 +22,9 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function(){
         Route::post('/products/deleteMultible', 'ProductController@deleteMultible');
 
         // offers
-        Route::resource('offers', 'offers');
-        Route::get('/offers/deleteSingle/{id}', 'offers@deleteSingle');
-        Route::post('/offers/deleteMultible', 'offers@deleteMultible');
+        Route::resource('offers', 'OfferController');
+        Route::get('/offers/deleteSingle/{id}', 'OfferController@deleteSingle');
+        Route::post('/offers/deleteMultible', 'OfferController@deleteMultible');
 
         // brands
         Route::resource('brands', 'BrandController');

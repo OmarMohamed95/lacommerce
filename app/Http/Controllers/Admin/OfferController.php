@@ -20,7 +20,7 @@ use App\Exceptions\PhotoExtensionNotAllowedException;
  * 
  * @author Omar Mohamed <omar.mo9516@gmail.com>
  */
-class offers extends Controller
+class OfferController extends Controller
 {
     /**
      * Photo Service

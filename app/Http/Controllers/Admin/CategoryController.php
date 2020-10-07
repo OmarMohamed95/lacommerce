@@ -13,7 +13,7 @@ use DB;
  * 
  * @author Omar Mohamed <omar.mo9516@gmail.com>
  */
-class categories extends Controller
+class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.

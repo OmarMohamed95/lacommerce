@@ -4,9 +4,9 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function(){
 
     Config::set('auth.defines', 'admin');
 
-    Route::get('/login', 'admins@index');
-    Route::post('/login', 'admins@checkLogin')->name('admin.login.submit');
-    Route::get('/', 'admins@index');
+    Route::get('/login', 'AdminController@index');
+    Route::post('/login', 'AdminController@checkLogin')->name('admin.login.submit');
+    Route::get('/', 'AdminController@index');
 
     Route::group(['middleware' => 'admin:admin'], function(){
 

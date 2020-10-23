@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Services\PhotoService;
 use Illuminate\Http\Request;
+use App\Contracts\PhotoServiceInterface;
 
 class PhotoServiceProvider extends ServiceProvider
 {
@@ -26,7 +27,7 @@ class PhotoServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(
-            'App\Contracts\PhotoServiceInterface',
+            PhotoServiceInterface::class,
             function () {
                 $request = $this->app->make(Request::class);
                 return new PhotoService($request);

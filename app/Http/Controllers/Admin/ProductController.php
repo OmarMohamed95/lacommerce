@@ -27,13 +27,13 @@ class ProductController extends Controller
     /**
      * Photo Service
      *
-     * @param PhotoServiceInterface $PhotoService
+     * @param PhotoServiceInterface $photoService
      */
-    private $PhotoService;
+    private $photoService;
 
-    public function __construct(PhotoServiceInterface $PhotoService)
+    public function __construct(PhotoServiceInterface $photoService)
     {
-        $this->PhotoService = $PhotoService;
+        $this->photoService = $photoService;
     }
 
     /**
@@ -96,7 +96,7 @@ class ProductController extends Controller
     { 
         if ($request->hasFile('img')) {
             try {
-                $storedPhotosNames = $this->PhotoService
+                $storedPhotosNames = $this->photoService
                     ->setStorePath('productImg/')
                     ->store();
             } catch (PhotoExtensionNotAllowedException $th) {
@@ -201,13 +201,13 @@ class ProductController extends Controller
         if ($request->hasFile('img')) {
             try {
                 $productImages = productImg::where('product_id', $id);
-                $this->PhotoService
+                $this->photoService
                     ->setStorePath('productImg/')
                     ->delete($productImages->get());
 
                 $productImages->delete();
 
-                $storedPhotosNames = $this->PhotoService
+                $storedPhotosNames = $this->photoService
                     ->setStorePath('productImg/')
                     ->store();
             } catch (PhotoExtensionNotAllowedException $th) {
@@ -253,7 +253,7 @@ class ProductController extends Controller
     {
         $productImages = productImg::where('product_id', $id);
         
-        $this->PhotoService
+        $this->photoService
             ->setStorePath('productImg/')
             ->delete($productImages->get());
 
@@ -279,7 +279,7 @@ class ProductController extends Controller
         }
 
         $productImages = productImg::whereIn('product_id', $ids);
-        $this->PhotoService
+        $this->photoService
             ->setStorePath('productImg/')
             ->delete($productImages->get());
 

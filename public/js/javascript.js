@@ -43,44 +43,41 @@ $(document).ready(function(){
             url: url,
             method: 'GET',
             dataType: 'JSON',
-            success: function(data){
-                if(data.available === true){
-
-                $('body').css('overflow', 'hidden');
-                $('.opacityBackground').show();
-                $('.messageConfirm').show().prepend('<p>' + data.msg + '</p>' +
-                "<button class='cartConfirm btn btn-success'>" + data.confirm + "</button> " +
-                "<button class='cartCancel btn btn-primary'>" + data.cancel + "</button>"
-                );
-
-                // redirect to cart index page
-                $('.cartConfirm').on('click', function(){
-                    window.location.replace(data.redirect);
-                });
-
-                // continue shopping
-                $('.cartCancel').on('click', function(){
-                    $('body').css('overflow', 'visible');
-                    $('.opacityBackground').hide();
-                    $('.messageConfirm').hide();
-                    $('.messageConfirm').children().remove();
-                });
-
-                }else if(data.available === false){
-
+            success: function(data, statusCode, xhr) {
+                if (xhr.status === 200) {
                     $('body').css('overflow', 'hidden');
                     $('.opacityBackground').show();
-                    $('.messageConfirm').show().prepend('<p>' + data.msg + '</p>' +
-                    "<button class='cartCancel btn btn-primary'>" + data.cancel + "</button>"
+                    $('.messageConfirm').show().prepend('<p>The product has been added to your cart.</p>' +
+                    "<button class='cartConfirm btn btn-success'>View Cart and Checkout</button> " +
+                    "<button class='cartCancel btn btn-primary'>Continue Shopping</button>"
+                    );
+
+                    // redirect to cart index page
+                    $('.cartConfirm').on('click', function(){
+                        window.location.replace(data.redirect);
+                    });
+
+                    // continue shopping
+                    $('.cartCancel').on('click', function(){
+                        $('body').css('overflow', 'visible');
+                        $('.opacityBackground').hide();
+                        $('.messageConfirm').hide();
+                        $('.messageConfirm').children().remove();
+                    });
+                } else if (xhr.status === 204) {
+                    $('body').css('overflow', 'hidden');
+                    $('.opacityBackground').show();
+                    $('.messageConfirm').show().prepend('<p>This product does not have more available stock.</p>' +
+                    "<button class='cartCancel btn btn-primary'>Continue Shopping</button>"
                     );
 
                     // continue shopping
                     $('.cartCancel').on('click', function(){
-                    $('body').css('overflow', 'visible');
-                    $('.opacityBackground').hide();
-                    $('.messageConfirm').hide();
-                    $('.messageConfirm').children().remove();
-                });
+                        $('body').css('overflow', 'visible');
+                        $('.opacityBackground').hide();
+                        $('.messageConfirm').hide();
+                        $('.messageConfirm').children().remove();
+                    });
 
                 }
             },

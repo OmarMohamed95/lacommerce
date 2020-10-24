@@ -100,9 +100,9 @@
 
         // update product quantity in cart
         $('.quantity').on('change', function(){
-            var product_id = $(this).attr('role');
+            var productId = $(this).attr('role');
             var data = $(this).val();
-            var url = "{{ url('cart/updateQuantity') }}" + '/' + {{auth()->user()->id}} + '/' + product_id;
+            var url = "{{ url('cart/updateQuantity') }}";
 
             $.ajaxSetup({
                 headers: {
@@ -112,7 +112,11 @@
 
             $.ajax({
                 url: url,
-                data: {quantity: data},
+                data: {
+                    userId: {{auth()->user()->id}},
+                    productId: productId,
+                    quantity: data,
+                },
                 method: 'POST',
                 success: function(data){
                     $('#quantity_validate').text('');

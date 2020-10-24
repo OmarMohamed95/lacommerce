@@ -190,6 +190,12 @@ return [
         // PhotoService
         App\Providers\PhotoServiceProvider::class,
 
+        // CartService
+        App\Providers\CartServiceProvider::class,
+
+        // RepositoryService
+        App\Providers\RepositoryServiceProvider::class,
+
     ],
 
     /*

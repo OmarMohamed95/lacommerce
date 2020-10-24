@@ -11,7 +11,7 @@
 |
 */
 
-Route::group(['namespace' => 'app'], function(){
+Route::group(['namespace' => 'App'], function(){
     
     // home
     Route::get('/', 'home@index');
@@ -37,10 +37,10 @@ Route::group(['namespace' => 'app'], function(){
     Route::get('wishlist/delete/{id}', 'wishlists@delete');
 
     // cart
-    Route::get('cart/index/{id}', 'carts@index');
-    Route::post('cart/updateQuantity/{use_id}/{product_id}', 'carts@updateQuantity');
-    Route::get('cart/store/{id}', 'carts@store');
-    Route::get('cart/delete/{id}', 'carts@delete');
+    Route::get('cart/index/{id}', 'CartController@index');
+    Route::post('cart/updateQuantity', 'CartController@updateQuantity');
+    Route::get('cart/store/{id}', 'CartController@store');
+    Route::get('cart/delete/{id}', 'CartController@delete');
 
     // checkout
     Route::get('checkout', 'checkouts@index');

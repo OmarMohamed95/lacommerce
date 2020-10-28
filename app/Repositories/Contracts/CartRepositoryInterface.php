@@ -2,7 +2,7 @@
 
 namespace App\Repositories\Contracts;
 
-use App\adminModel\cart;
+use App\Model\Cart;
 
 interface CartRepositoryInterface
 {

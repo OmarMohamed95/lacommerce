@@ -22,7 +22,7 @@
                 <li><a href="{{ aurl('custom_field') }}">custom field</a></li>
                 <li><a href="{{ aurl('reviews') }}">reviews</a></li>
                 <li><a href="{{ aurl('checkout') }}">checkouts</a></li>
-                <li><a href="{{ aurl('sittings') }}">sittings</a></li>
+                <li><a href="{{ aurl('sittings') }}">settings</a></li>
                 <li><a href="{{ aurl('admins/allAdmins') }}">admins</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">

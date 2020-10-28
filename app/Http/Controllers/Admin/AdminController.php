@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\adminModel\Admin;
+use App\Model\Admin;
 use Illuminate\Validation\Rule;
 use App\Http\Requests\AdminRequest;
 /**

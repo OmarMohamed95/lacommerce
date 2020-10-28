@@ -4,7 +4,7 @@ namespace App\Http\Controllers\App;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\adminModel\product;
+use App\Model\Product;
 use DB;
 use Auth;
 
@@ -22,7 +22,7 @@ class search extends Controller
 
                 if(!in_array($value,$execlude)){
 
-                    $searchQ[] = product::where('name', 'LIKE', "%$value%")
+                    $searchQ[] = Product::where('name', 'LIKE', "%$value%")
                     //->orWhere('desc', 'LIKE', "%$value%")
                     ->with('productImg', 'brand')
                     ->get();

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\adminModel;
+namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class offer extends Model
+class Offer extends Model
 {
     
 }

@@ -1,10 +1,10 @@
 @extends('layouts.app')
 @section('content')
         <div class="homeProductsContainer">
-            <h3>{{ strtoupper($cat_brand->name) }}</h3>
-            <p style="color: grey; text-align: center;">{{ count($all) }} products found</p>
+            <h3>{{ strtoupper($category->name) }}</h3>
+            <p style="color: grey; text-align: center;">{{ $products->count() }} products found</p>
             <hr>
-            <form action="{{ url('category/tools/' . $cat_brand->id) }}" method="get" id="toolsForm">
+            <form action="{{ url('category/tools/' . $category->id) }}" method="get" id="toolsForm">
                 {{ csrf_field() }}
                 <div class="form-group row toolsWrap">
                     <div class="col-xs-offset-1 col-xs-10">
@@ -23,29 +23,29 @@
                                 <option value="price/desc" {{ (request()->sortBy == "price/desc")? 'selected':'' }}>Highest Price</option>                        
                             </select>
                         </div>
-                        @if(isset($cat_brand->brands))
+                        @if(isset($category->brands))
                         <div class="col-xs-6 col-md-2 tool">
                             <select name="brand" class="form-control tools">
                                 <option value="" hidden selected>Brand</option>
-                                @foreach ($cat_brand->brands as $item)
+                                @foreach ($category->brands as $item)
                                     <option value="{{ $item->id }}" {{ (request()->brand == $item->id)? 'selected':'' }}>{{ $item->name }}</option>                                                            
                                 @endforeach
                             </select>
                         </div>
                         @endif
-                        @if(isset($cf))
-                        @foreach ($cf as $k => $i)
-                        @if ($i->custom_field->count() > 0)    
-                            <div class="col-xs-6 col-md-2 tool">
-                                <select name="cf[{{$k}}]" class="form-control tools">
-                                    <option value="" hidden selected>{{$i->custom_field->first()->name}}</option>
-                                    @foreach ($i->custom_field_product->unique('value') as $p)
-                                    <option value="{{ $p->value }}" {{ (request()->cf[$k] == $p->value)? 'selected':'' }}>{{ $p->value }}</option>                                                            
-                                    @endforeach
-                                </select>
-                            </div>
-                        @endif
-                        @endforeach
+                        @if($customFields->isNotEmpty())
+                            @foreach ($customFields as $k => $i)
+                                @if ($i->custom_field->count() > 0)    
+                                    <div class="col-xs-6 col-md-2 tool">
+                                        <select name="cf[{{$k}}]" class="form-control tools">
+                                            <option value="" hidden selected>{{$i->custom_field->first()->name}}</option>
+                                            @foreach ($i->custom_field_product->unique('value') as $p)
+                                            <option value="{{ $p->value }}" {{ (request()->cf[$k] == $p->value)? 'selected':'' }}>{{ $p->value }}</option>                                                            
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @endif
+                            @endforeach
                         @endif
                         <div class="clearfix"></div>
                         <div class="col-xs-offset-9 col-md-offset-3">
@@ -54,12 +54,12 @@
                     </div>
                 </div>
             </form>
-            @if (count($all) > 0)
-                @foreach ($all as $p)
+            @if ($products->count() > 0)
+                @foreach ($products as $p)
                 <div class="col-xs-12 col-md-4 homeProducts">
                     <img src="{{ uploads("productImg/" . $p->img) }}">
-                    <a href="{{ url('wishlist/store/' . $p->id) }}" class="pull-right wishlistButton"><i class="wishlist {{ (in_array($p->id, $wishlists))? 'fas fa-heart':'far fa-heart' }} fa-2x"></i></a>
-                    <p class="brand">{{ $p->brand_name }}</p>
+                    <a href="{{ url('wishlist/store/' . $p->id) }}" class="pull-right wishlistButton"><i class="wishlist {{ (in_array($p->id, $wishlistProductsIds))? 'fas fa-heart':'far fa-heart' }} fa-2x"></i></a>
+                    <p class="brand">{{ $p->brandName }}</p>
                     <a href="{{ url('product/index/' . $p->id) }}" style="text-decoration:none">
                         <p class="name">{{ strtoupper($p->name) }}</p>
                     </a>
@@ -69,7 +69,7 @@
                 @endforeach
                 <div class="clearfix"></div>
                 <div class="text-center">
-                    {{ $all->appends(request()->input())->links() }}
+                    {{ $products->appends(request()->input())->links() }}
                 </div>
             @else
                 <div class="alert alert-danger">

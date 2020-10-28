@@ -1,15 +1,15 @@
 <?php
 
-namespace App\adminModel;
+namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class categoryBrand extends Model
+class CategoryBrand extends Model
 {
     protected $table = 'category_brand';
     public $timestamps = false;
 
     public function brand(){
-        return $this->belongsTo('App\adminModel\brand');
+        return $this->belongsTo('App\Model\Brand');
     }
 }

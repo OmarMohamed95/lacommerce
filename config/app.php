@@ -195,6 +195,12 @@ return [
 
         // RepositoryService
         App\Providers\RepositoryServiceProvider::class,
+        
+        // CustomFieldService
+        App\Providers\CustomFieldServiceProvider::class,
+        
+        // WishlistService
+        App\Providers\WishlistServiceProvider::class,
 
     ],
 

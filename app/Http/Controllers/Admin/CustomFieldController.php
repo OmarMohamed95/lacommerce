@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\adminModel\customField;
-use App\adminModel\customFieldCategory;
-use App\adminModel\category;
+use App\Model\CustomField;
+use App\Model\CustomFieldCategory;
+use App\Model\Category;
 use App\Http\Requests\CustomFieldRequest;
 
 /**
@@ -23,7 +23,7 @@ class CustomFieldController extends Controller
      */
     public function index()
     {
-        $allCust = customField::paginate(10);
+        $allCust = CustomField::paginate(10);
         return view('admin.customField.index')->with('allCustomField', $allCust);
     }
 
@@ -34,8 +34,8 @@ class CustomFieldController extends Controller
      */
     public function create()
     {
-        $allCategories = category::all();
-        $parents = category::whereNotNull('parentID')->get();
+        $allCategories = Category::all();
+        $parents = Category::whereNotNull('parentID')->get();
         foreach ($parents as $item) {
             $parentIds[] = $item->parentID; 
         }
@@ -57,7 +57,7 @@ class CustomFieldController extends Controller
      */
     public function show($id)
     {
-        $customFieldByCategory = customFieldCategory::with('custom_field')
+        $customFieldByCategory = CustomFieldCategory::with('custom_field')
                             ->where('category_id', $id)
                             ->get();
 
@@ -79,7 +79,7 @@ class CustomFieldController extends Controller
      */
     public function editProduct($id, $productId)
     {
-        $customFieldProduct = customFieldCategory::with(
+        $customFieldProduct = CustomFieldCategory::with(
             [
                 'custom_field',
                 'custom_field_product' => function ($query) use ($productId) {
@@ -101,7 +101,7 @@ class CustomFieldController extends Controller
      */
     public function store(CustomFieldRequest $request)
     {
-        $customField = new customField();
+        $customField = new CustomField();
         
         $customField->name = $request->name;
         $customField->type = $request->type;
@@ -109,7 +109,7 @@ class CustomFieldController extends Controller
         $customField->save();
         
         foreach ($request->category_id as $i) {
-            $customFieldCategory = new customFieldCategory();
+            $customFieldCategory = new CustomFieldCategory();
             $customFieldCategory->category_id = $i;
             $customFieldCategory->custom_field_id = $store_cf->id;
             $customFieldCategory->save();
@@ -127,14 +127,14 @@ class CustomFieldController extends Controller
      */
     public function edit($id)
     {
-        $single = customField::where('id', $id)->first();
+        $single = CustomField::where('id', $id)->first();
 
         foreach ($single->custom_field_category as $v) {
             $customFieldCategories[] = $v->category_id;
         }
 
-        $allCategories = category::all();
-        $parents = category::whereNotNull('parentID')->get();
+        $allCategories = Category::all();
+        $parents = Category::whereNotNull('parentID')->get();
         foreach ($parents as $item) {
             $parentIds[] = $item->parentID; 
         }
@@ -159,17 +159,17 @@ class CustomFieldController extends Controller
      */
     public function update(CustomFieldRequest $request, $id)
     {
-        $update = customField::find($id);
+        $update = CustomField::find($id);
         $update->name = $request->name;
         $update->type = $request->type;
         $update->show_in_filter = $request->show_in_filter;
         $update->save();
 
-        $customFieldByCategory = customFieldCategory::where('custom_field_id', $id);
+        $customFieldByCategory = CustomFieldCategory::where('custom_field_id', $id);
         $customFieldByCategory->delete();
 
         foreach ($request->category_id as $i) {
-            $customFieldByCategory = new customFieldCategory();
+            $customFieldByCategory = new CustomFieldCategory();
             $customFieldByCategory->category_id = $i;
             $customFieldByCategory->custom_field_id = $update->id;
             $customFieldByCategory->save();
@@ -187,7 +187,7 @@ class CustomFieldController extends Controller
      */
     public function deleteSingle($id)
     {
-        $customField = customField::where('id', $id);
+        $customField = CustomField::where('id', $id);
         $customField->delete();
         return redirect(aurl('custom_field'));
     }
@@ -207,7 +207,7 @@ class CustomFieldController extends Controller
             return redirect(aurl('custom_field'));
         }
 
-        $customField = customField::whereIn('id', $id);
+        $customField = CustomField::whereIn('id', $id);
         $customField->delete();
         return redirect(aurl('custom_field'));
     }

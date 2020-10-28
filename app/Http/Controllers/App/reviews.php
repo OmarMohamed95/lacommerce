@@ -5,7 +5,7 @@ namespace App\Http\Controllers\App;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\adminModel\review;
+use App\Model\Review;
 
 class reviews extends Controller
 {

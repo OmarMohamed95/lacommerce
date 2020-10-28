@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\adminModel\cart;
+use App\Model\Cart;
 use App\Repositories\Contracts\CartRepositoryInterface;
 
 class CartRepository implements CartRepositoryInterface
@@ -14,18 +14,18 @@ class CartRepository implements CartRepositoryInterface
      */
     public function all()
     {
-        return cart::all();
+        return Cart::all();
     }
 
     /**
      * Get single cart by id
      *
      * @param int $cartId
-     * @return cart
+     * @return Cart
      */
     public function find(int $cartId)
     {
-        return cart::find($cartId);
+        return Cart::find($cartId);
     }
 
     /**
@@ -38,7 +38,7 @@ class CartRepository implements CartRepositoryInterface
      */
     public function findBy(string $column, $value)
     {
-        return cart::where($column, $value)->get();
+        return Cart::where($column, $value)->get();
     }
 
     /**
@@ -46,12 +46,12 @@ class CartRepository implements CartRepositoryInterface
      *
      * @param array $criteria
      * @param bool $single
-     * @return Illuminate\Support\Collection|cart
+     * @return Illuminate\Support\Collection|Cart
      * @throws QueryException
      */
     public function findByCriteria(array $criteria, bool $single = false)
     {
-        $queryBuilder = cart::query();
+        $queryBuilder = Cart::query();
 
         if (isset($criteria['userId'])) {
             $queryBuilder->where('user_id', $criteria['userId']);

@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\adminModel\cart;
-use App\adminModel\product;
+use App\Model\Cart;
+use App\Model\Product;
 use App\Repositories\Contracts\CartRepositoryInterface;
 
 class CartService
@@ -23,11 +23,11 @@ class CartService
     /**
      * Check if a product available to be added to cart
      *
-     * @param product $product
-     * @param cart|null $cartProduct
+     * @param Product $product
+     * @param Cart|null $cartProduct
      * @return boolean
      */
-    public function canAddProductToCart(product $product, $cartProduct): bool
+    public function canAddProductToCart(Product $product, $cartProduct): bool
     {
         if (($product->quantity > 0 && !$cartProduct)
             || ($product->quantity > 0

@@ -22,8 +22,8 @@ Route::group(['namespace' => 'App'], function(){
     Route::post('/search', 'search@search');
 
     // category
-    Route::get('/category/{id}', 'categories@index');
-    Route::get('/category/tools/{id}', 'categories@tools');
+    Route::get('/category/{id}', 'CategoryController@index');
+    Route::get('/category/tools/{id}', 'CategoryController@tools');
 
     // product
     Route::get('/product/index/{id}', 'products@index');

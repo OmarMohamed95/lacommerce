@@ -4,11 +4,10 @@ namespace App\Http\Controllers\App;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\adminModel\product;
-use App\adminModel\wishlist;
+use App\Model\Product;
+use App\Model\Wishlist;
 use Illuminate\Support\Facades\Auth;
-use App\adminModel\review;
-use DB;
+use App\Model\Review;
 
 class products extends Controller
 {
@@ -26,13 +25,13 @@ class products extends Controller
      */
     public function index(int $id)
     {
-        $product = product::find($id);
+        $product = Product::find($id);
 
-        $review = review::where('product_id', $id)->orderBy('id', 'desc')->get();
+        $review = Review::where('product_id', $id)->orderBy('id', 'desc')->get();
 
         $isWishlisted = false;
         if (Auth::check()) {
-            $isWishlisted = wishlist::where('user_id', Auth::user()->id)
+            $isWishlisted = Wishlist::where('user_id', Auth::user()->id)
                 ->where('product_id', $id)
                 ->select('product_id')
                 ->first();
@@ -64,13 +63,13 @@ class products extends Controller
 
             $validate = $this->validate($request, $rules, $messages);
 
-            $review = new review;
+            $review = new Review;
             $review->content = $request->content;
             $review->product_id = $productID;
             $review->user_id = Auth::user()->id;
             $review->save();
 
-            $review = review::with('user')->where('product_id', $productID)->orderBy('id', 'desc')->first();
+            $review = Review::with('user')->where('product_id', $productID)->orderBy('id', 'desc')->first();
 
             return response()->json(array('review'=> $review), 200);   
         }

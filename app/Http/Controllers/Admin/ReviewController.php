@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\adminModel\review;
+use App\Model\Review;
 
 /**
  * Reviews Controller
@@ -21,7 +21,7 @@ class ReviewController extends Controller
     public function index()
     {
 
-        $reviews = review::paginate(10);
+        $reviews = Review::paginate(10);
 
         return view('admin.reviews.index')->with('all', $reviews);
     }
@@ -36,7 +36,7 @@ class ReviewController extends Controller
     public function overview($id)
     {
 
-        $review = review::where('id', $id)->first();
+        $review = Review::where('id', $id)->first();
 
         return view('admin.reviews.overview')->with('single', $review);
     }
@@ -51,7 +51,7 @@ class ReviewController extends Controller
     public function deleteSingle($id)
     {
         //delete reviews from DB
-        $review = review::where('id', $id);
+        $review = Review::where('id', $id);
         $review->delete();
         return redirect(aurl('reviews'));
     }
@@ -71,7 +71,7 @@ class ReviewController extends Controller
         }
 
         //delete reviews from DB
-        $review = review::whereIn('id', $id);
+        $review = Review::whereIn('id', $id);
         $review->delete();
         return redirect(aurl('reviews'));
     }

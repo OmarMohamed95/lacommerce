@@ -5,9 +5,9 @@ namespace App\Http\Controllers\admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BrandRequest;
-use App\adminModel\brand;
-use App\adminModel\category;
-use App\adminModel\categoryBrand;
+use App\Model\Brand;
+use App\Model\Category;
+use App\Model\CategoryBrand;
 use Illuminate\Support\Facades\Storage;
 use App\Exceptions\PhotoExtensionNotAllowedException;
 use App\Contracts\PhotoServiceInterface;
@@ -38,7 +38,7 @@ class BrandController extends Controller
      */
     public function index()
     {
-        $allBrands = brand::paginate(10);
+        $allBrands = Brand::paginate(10);
         return view('admin.brands.index')->with('allBrands', $allBrands);
     }
 
@@ -49,8 +49,8 @@ class BrandController extends Controller
      */
     public function create()
     {
-        $allCategories = category::all();
-        $parents = category::whereNotNull('parentID')->get();
+        $allCategories = Category::all();
+        $parents = Category::whereNotNull('parentID')->get();
         foreach ($parents as $item) {
             $parentId[] = $item->parentID; 
         }
@@ -83,13 +83,13 @@ class BrandController extends Controller
             }
         }
         
-        $brand = new brand();
+        $brand = new Brand();
         $brand->name = $request->name;
         $brand->img = $storedPhotosNames[0];
         $brand->save();
         
         foreach ($request->category_id as $v) {
-            $categoryBrand = new categoryBrand();
+            $categoryBrand = new CategoryBrand();
             $categoryBrand->category_id = $v;
             $categoryBrand->brand_id = $brand->id;
             $categoryBrand->save();
@@ -107,9 +107,9 @@ class BrandController extends Controller
      */
     public function edit($id)
     {
-        $brand = brand::find($id);
-        $allCategories = category::all();
-        $parents = category::whereNotNull('parentID')->get();
+        $brand = Brand::find($id);
+        $allCategories = Category::all();
+        $parents = Category::whereNotNull('parentID')->get();
 
         if ($parents) {
             foreach ($parents as $parent) {
@@ -136,7 +136,7 @@ class BrandController extends Controller
      */
     public function update(BrandRequest $request, $id)
     {
-        $brand = brand::find($id);
+        $brand = Brand::find($id);
 
         $storedPhotosNames[] = $brand->img;
         if ($request->hasFile('img')) {
@@ -154,11 +154,11 @@ class BrandController extends Controller
         $brand->img = $storedPhotosNames[0];
         $brand->save();
 
-        $categoryBrand = categoryBrand::where('brand_id', $id);
+        $categoryBrand = CategoryBrand::where('brand_id', $id);
         $categoryBrand->delete();
         
         foreach ($request->category_id as $v) {
-            $categoryBrand = new categoryBrand();
+            $categoryBrand = new CategoryBrand();
             $categoryBrand->category_id = $v;
             $categoryBrand->brand_id = $brand->id;
             $categoryBrand->save();
@@ -176,10 +176,10 @@ class BrandController extends Controller
      */
     public function deleteSingle($brandId)
     {
-        $brand = brand::find($brandId);
+        $brand = Brand::find($brandId);
         $brand->delete();
 
-        $categoryBrand = categoryBrand::where('brand_id', $brandId);
+        $categoryBrand = CategoryBrand::where('brand_id', $brandId);
         $categoryBrand->delete();
 
         return redirect(aurl('brands'));
@@ -199,10 +199,10 @@ class BrandController extends Controller
             return redirect(aurl('brands'));
         }
 
-        $brand = brand::whereIn('id', $brandIDs);
+        $brand = Brand::whereIn('id', $brandIDs);
         $brand->delete();
 
-        $categoryBrand = categoryBrand::whereIn('brand_id', $brandIDs);
+        $categoryBrand = CategoryBrand::whereIn('brand_id', $brandIDs);
         $categoryBrand->delete();
 
         return redirect(aurl('brands'));

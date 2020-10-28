@@ -5,7 +5,7 @@ namespace App\Http\Controllers\admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SettingRequest;
-use App\adminModel\sitting;
+use App\Model\Setting;
 
 /**
  * Settings Controller
@@ -21,7 +21,7 @@ class SettingController extends Controller
      */
     public function index()
     {
-        $sittings = sitting::orderBy('id', 'desc')->first();
+        $sittings = Setting::orderBy('id', 'desc')->first();
         return view('admin.sittings.index')->with('sittings', $sittings);
     }
 
@@ -34,7 +34,7 @@ class SettingController extends Controller
      */
     public function create(SettingRequest $request)
     {
-        $sittings = new sitting;
+        $sittings = new Setting;
         $sittings->email = $request->email;
         $sittings->fb = $request->fb;
         $sittings->tw = $request->tw;
@@ -54,7 +54,7 @@ class SettingController extends Controller
      */
     public function update(SettingRequest $request, $id)
     {
-        $sittings = sitting::find($id);
+        $sittings = Setting::find($id);
         $sittings->email = $request->email;
         $sittings->fb = $request->fb;
         $sittings->tw = $request->tw;

@@ -5,8 +5,8 @@ namespace App\Http\Controllers\App;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\adminModel\cart;
-use App\adminModel\product;
+use App\Model\Cart;
+use App\Model\Product;
 use App\Services\CartService;
 use App\Repositories\Contracts\CartRepositoryInterface;
 use App\Http\Requests\App\cartRequest;
@@ -76,7 +76,7 @@ class CartController extends Controller
 
         $cartProduct = $this->cartService->getCartProductByUser($productId, $userId);
         
-        $product = product::where('id', $productId)->first();
+        $product = Product::where('id', $productId)->first();
 
         if (!$this->cartService->canAddProductToCart($product, $cartProduct)) {
             return response()->json([], 204);
@@ -86,7 +86,7 @@ class CartController extends Controller
             $cartProduct->quantity++;
             $cartProduct->save();
         } else {
-            $cart = new cart;
+            $cart = new Cart;
             $cart->product_id = $productId;
             $cart->user_id = $userId;
             $cart->quantity++;

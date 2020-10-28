@@ -4,9 +4,9 @@ namespace App\Http\Controllers\App;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\adminModel\checkout;
-use App\adminModel\cart;
-use App\adminModel\product;
+use App\Model\Checkout;
+use App\Model\Cart;
+use App\Model\Product;
 use Auth;
 
 class checkouts extends Controller
@@ -19,21 +19,21 @@ class checkouts extends Controller
 
     public function index(){
         $id = Auth::user()->id;
-        $cart = cart::where('user_id', $id)->get();
+        $cart = Cart::where('user_id', $id)->get();
 
         return view('app.checkout.index')->with('cart', $cart);
     }
     
     public function checkout(Request $request, $id){
-        $cart = cart::where('user_id', $id)->get();
+        $cart = Cart::where('user_id', $id)->get();
         
         $order_code = Auth::user()->id . rand(999,1000000);
 
         foreach($cart as $c){
 
-            $product = product::find($c->product_id);
+            $product = Product::find($c->product_id);
 
-            $checkout = new checkout;
+            $checkout = new Checkout;
             $checkout->product_id = $c->product_id;
             $checkout->user_id = $id;
             if($c->quantity <= $product->quantity){
@@ -54,7 +54,7 @@ class checkouts extends Controller
             
         }
         
-        $cart = cart::where('user_id', $id);
+        $cart = Cart::where('user_id', $id);
         $cart->delete();
         
         return redirect(url("checkout/done/$checkout->order_code"));
@@ -65,13 +65,13 @@ class checkouts extends Controller
     }
 
     public function orders($id){
-        $orders = checkout::where('user_id', $id)->get();
+        $orders = Checkout::where('user_id', $id)->get();
         //dd($orders[0]->products->productImg);
         return view('app.checkout.orders')->with('orders' ,$orders);
     }
 
     public function track($order_code){
-        $order = checkout::where('order_code', $order_code)->get();
+        $order = Checkout::where('order_code', $order_code)->get();
         return view('app.checkout.track')->with('order' ,$order);
     }
 
@@ -80,7 +80,7 @@ class checkouts extends Controller
     }
 
     public function trackOrderByNumber(Request $request){
-        $order = checkout::where('order_code', $request->order_code)
+        $order = Checkout::where('order_code', $request->order_code)
                             ->where('user_id', Auth::user()->id)
                             ->first();
 

@@ -4,17 +4,16 @@ namespace App\Http\Controllers\App;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\adminModel\product;
-use App\adminModel\productImg;
-use App\adminModel\category;
+use App\Model\Product;
+use App\Model\Category;
 use DB;
 use Auth;
 
 class home extends Controller
 {
     public function index(){
-        $offers = product::where('offer', 1)->orderBy('created_at', 'desc')->take(5)->get();
-        $productsByCat = category::with('products')
+        $offers = Product::where('offer', 1)->orderBy('created_at', 'desc')->take(5)->get();
+        $productsByCat = Category::with('products')
                                 ->where('home', 1)
                                 ->whereNotNull('parentID')
                                 ->get();

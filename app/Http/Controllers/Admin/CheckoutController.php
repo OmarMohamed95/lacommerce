@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\adminModel\checkout;
+use App\Model\Checkout;
 
 /**
  * Checkouts Controller
@@ -21,7 +21,7 @@ class CheckoutController extends Controller
     public function index()
     {
 
-        $all = checkout::orderBy('created_at', 'asc')->paginate(10);
+        $all = Checkout::orderBy('created_at', 'asc')->paginate(10);
 
         return view('admin.checkout.index')->with('all', $all);
     }
@@ -35,7 +35,7 @@ class CheckoutController extends Controller
      */
     public function overview($orderCode)
     {
-        $single = checkout::where('order_code', $orderCode)->get();
+        $single = Checkout::where('order_code', $orderCode)->get();
 
         return view('admin.checkout.overview')->with('single', $single);
     }
@@ -56,7 +56,7 @@ class CheckoutController extends Controller
         }
         
         foreach ($orderCode as $v) {
-            $checkouts = checkout::where('order_code', $v)->get();
+            $checkouts = Checkout::where('order_code', $v)->get();
 
             foreach ($checkouts as $checkout) {
                 $checkout->state = $request->state_button;
@@ -79,7 +79,7 @@ class CheckoutController extends Controller
     public function state_single(Request $request, $orderCode)
     {
         
-        $checkouts = checkout::where('order_code', $orderCode)->get();
+        $checkouts = Checkout::where('order_code', $orderCode)->get();
         foreach ($checkouts as $checkout) {
             $checkout->state = $request->state;
             $checkout->save();

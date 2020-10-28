@@ -1,14 +1,14 @@
 <?php
 
-namespace App\adminModel;
+namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class productImg extends Model
+class ProductImg extends Model
 {
     public $timestamps = false;
 
     public function product(){
-        return $this->belongsTo('App\adminModel\product');
+        return $this->belongsTo('App\Model\Product');
     }
 }

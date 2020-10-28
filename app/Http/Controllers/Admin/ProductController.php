@@ -4,15 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Storage;
-use App\adminModel\product;
-use App\adminModel\brand;
-use App\adminModel\productImg;
-use App\adminModel\category;
-use App\adminModel\customFieldProduct;
-use App\adminModel\categoryBrand;
-use DB;
-use Image;
+use App\Model\Product;
+use App\Model\ProductImg;
+use App\Model\Category;
+use App\Model\CustomFieldProduct;
+use App\Model\CategoryBrand;
 use App\Contracts\PhotoServiceInterface;
 use App\Exceptions\PhotoExtensionNotAllowedException;
 use App\Http\Requests\ProductRequest;
@@ -43,7 +39,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $allProducts = product::where('offer', 0)->paginate(10);
+        $allProducts = Product::where('offer', 0)->paginate(10);
         return view('admin.products.index')->with('allProducts', $allProducts);
     }
 
@@ -56,7 +52,7 @@ class ProductController extends Controller
      */
     public function getBrandsByCat($categoryId)
     {
-        $allBrands = categoryBrand::with('brand')
+        $allBrands = CategoryBrand::with('brand')
                         ->where('category_id', $categoryId)
                         ->get();
         return response()->json($allBrands, 200);
@@ -69,8 +65,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $allCategories = category::all();
-        $parents = category::whereNotNull('parentID')->get();
+        $allCategories = Category::all();
+        $parents = Category::whereNotNull('parentID')->get();
         foreach ($parents as $item) {
             $parentIds[] = $item->parentID; 
         }
@@ -105,7 +101,7 @@ class ProductController extends Controller
             }
         }
 
-        $product = new product;
+        $product = new Product;
         $product->name = $request->name;        
         $product->desc = $request->desc;
         $product->brand_id = $request->brand_id;
@@ -116,7 +112,7 @@ class ProductController extends Controller
 
         if (isset($storedPhotosNames) && $storedPhotosNames) {
             foreach ($storedPhotosNames as $photoName) {
-                $productImg = new productImg;
+                $productImg = new ProductImg;
                 $productImg->product_id = $product->id;
                 $productImg->img = $photoName;
                 $productImg->save();
@@ -125,7 +121,7 @@ class ProductController extends Controller
 
         if ($request->cf) {
             foreach ($request->cf as $key => $value) {
-                $customFieldProduct = new customFieldProduct;
+                $customFieldProduct = new CustomFieldProduct;
                 $customFieldProduct->product_id = $product->id;
                 $customFieldProduct->custom_field_id = $key;
                 $customFieldProduct->value = $value;
@@ -145,8 +141,8 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $single = product::where('id', $id)->first();
-        $productImg = productImg::where('product_id', $id)->get();
+        $single = Product::where('id', $id)->first();
+        $productImg = ProductImg::where('product_id', $id)->get();
         $data = [
             'single' => $single,
             'productImg' => $productImg
@@ -163,9 +159,9 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        $single = product::find($id);
-        $allCategories = category::all();
-        $parents = category::whereNotNull('parentID')->get();
+        $single = Product::find($id);
+        $allCategories = Category::all();
+        $parents = Category::whereNotNull('parentID')->get();
 
         foreach ($parents as $item) {
             $parentIds[] = $item->parentID; 
@@ -189,7 +185,7 @@ class ProductController extends Controller
      */
     public function update(ProductRequest $request, $id)
     {
-        $product = product::find($id); 
+        $product = Product::find($id); 
         $product->name = $request->name;        
         $product->desc = $request->desc;
         $product->brand_id = $request->brand_id;
@@ -200,7 +196,7 @@ class ProductController extends Controller
 
         if ($request->hasFile('img')) {
             try {
-                $productImages = productImg::where('product_id', $id);
+                $productImages = ProductImg::where('product_id', $id);
                 $this->photoService
                     ->setStorePath('productImg/')
                     ->delete($productImages->get());
@@ -216,7 +212,7 @@ class ProductController extends Controller
             }
 
             foreach ($storedPhotosNames as $photo) {
-                $productImg = new productImg;
+                $productImg = new ProductImg;
                 $productImg->product_id = $product->id;
                 $productImg->img = $photo;
                 $productImg->save();
@@ -225,12 +221,12 @@ class ProductController extends Controller
 
         if ($request->cf) {
             //delete old custom field values
-            $customFieldProduct = customFieldProduct::where('product_id', $id);
+            $customFieldProduct = CustomFieldProduct::where('product_id', $id);
             $customFieldProduct->delete();
 
             //store custom fields values to DB
             foreach ($request->cf as $key => $value) {
-                $customFieldProduct = new customFieldProduct;
+                $customFieldProduct = new CustomFieldProduct;
                 $customFieldProduct->product_id = $product->id;
                 $customFieldProduct->custom_field_id = $key;
                 $customFieldProduct->value = $value;
@@ -251,7 +247,7 @@ class ProductController extends Controller
      */
     public function deleteSingle($id)
     {
-        $productImages = productImg::where('product_id', $id);
+        $productImages = ProductImg::where('product_id', $id);
         
         $this->photoService
             ->setStorePath('productImg/')
@@ -259,7 +255,7 @@ class ProductController extends Controller
 
         $productImages->delete();
 
-        $product = product::where('id', $id);
+        $product = Product::where('id', $id);
         $product->delete();
         return redirect(aurl('products'));
     }
@@ -278,14 +274,14 @@ class ProductController extends Controller
             return redirect(aurl('products'));
         }
 
-        $productImages = productImg::whereIn('product_id', $ids);
+        $productImages = ProductImg::whereIn('product_id', $ids);
         $this->photoService
             ->setStorePath('productImg/')
             ->delete($productImages->get());
 
         $productImages->delete();
 
-        $product = product::whereIn('id', $id);
+        $product = Product::whereIn('id', $id);
         $product->delete();
         return redirect(aurl('products'));
     }

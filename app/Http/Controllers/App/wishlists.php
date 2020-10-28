@@ -5,7 +5,7 @@ namespace App\Http\Controllers\App;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\adminModel\wishlist;
+use App\Model\Wishlist;
 
 class wishlists extends Controller
 {
@@ -17,7 +17,7 @@ class wishlists extends Controller
 
     public function index($id){
 
-        $wishlist = wishlist::where('user_id', $id)->get();
+        $wishlist = Wishlist::where('user_id', $id)->get();
         return view('app.wishlist.index')->with('wishlist', $wishlist);
 
     }
@@ -26,14 +26,14 @@ class wishlists extends Controller
 
         $user_id = Auth::user()->id;
 
-        $getWishlist = wishlist::where('product_id', $id)
+        $getWishlist = Wishlist::where('product_id', $id)
                                     ->where('user_id', $user_id)
                                     ->get();
 
         if($getWishlist->count() > 0){
             return response()->json(array('message'=> 'The product is already in your wishlist'), 200);
         }
-        $wishlist = new wishlist;
+        $wishlist = new Wishlist;
         $wishlist->product_id = $id;
         $wishlist->user_id = $user_id;
         $wishlist->save();
@@ -46,7 +46,7 @@ class wishlists extends Controller
 
         $user_id = Auth::user()->id;
 
-        $deleteWishlist = wishlist::where('product_id', $id)
+        $deleteWishlist = Wishlist::where('product_id', $id)
                                     ->where('user_id', $user_id);
         $deleteWishlist->delete();
         

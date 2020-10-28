@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use App\User;
+use App\Model\User;
 use Auth;
 
 class profile extends Controller

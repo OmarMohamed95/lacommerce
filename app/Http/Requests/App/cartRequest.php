@@ -3,7 +3,7 @@
 namespace App\Http\Requests\App;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\adminModel\product;
+use App\Model\Product;
 
 class cartRequest extends FormRequest
 {
@@ -24,7 +24,7 @@ class cartRequest extends FormRequest
      */
     public function rules()
     {
-        $product = product::where('id', $this->productId)->first();
+        $product = Product::where('id', $this->productId)->first();
 
         return [
             'quantity' => "required|Numeric|min:1|max:$product->quantity",

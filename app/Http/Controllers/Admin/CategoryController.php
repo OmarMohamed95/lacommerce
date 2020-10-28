@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\adminModel\category;
+use App\Model\Category;
 use DB;
 use App\Http\Requests\CategoryRequest;
 
@@ -23,7 +23,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $allCategories = category::paginate(10);
+        $allCategories = Category::paginate(10);
         return view('admin.categories.index')->with('allCategories', $allCategories);
     }
 
@@ -48,7 +48,7 @@ class CategoryController extends Controller
      */
     public function store(CategoryRequest $request)
     {
-        $category = new category;
+        $category = new Category;
         $category->name = $request->name;
 
         if ($request->parentID === 'FALSE') {
@@ -76,7 +76,7 @@ class CategoryController extends Controller
     public function edit($id)
     {
         $allCategories = DB::select("SELECT * FROM categories where parentID is NULL");
-        $single = category::where('id', $id)->first();
+        $single = Category::where('id', $id)->first();
         $data = [
             'allCat' => $allCategories,
             'single' => $single
@@ -95,7 +95,7 @@ class CategoryController extends Controller
      */
     public function update(CategoryRequest $request, $id)
     {
-        $category = category::find($id);
+        $category = Category::find($id);
         $category->name = $request->name;
 
         if ($request->parentID === 'FALSE') {
@@ -122,7 +122,7 @@ class CategoryController extends Controller
      */
     public function deleteSingle($id)
     {
-        $delete = category::where('id', $id);
+        $delete = Category::where('id', $id);
         $delete->delete();
         return redirect(aurl('categories'));
     }
@@ -142,7 +142,7 @@ class CategoryController extends Controller
             return redirect(aurl('categories'));
         }
 
-        $delete = category::whereIn('id', $id);
+        $delete = Category::whereIn('id', $id);
         $delete->delete();
         return redirect(aurl('categories'));
     }

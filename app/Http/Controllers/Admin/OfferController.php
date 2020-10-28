@@ -4,14 +4,11 @@ namespace App\Http\Controllers\admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\adminModel\offer;
-use App\adminModel\product;
-use App\adminModel\brand;
-use App\adminModel\productImg;
-use App\adminModel\category;
-use App\adminModel\customFieldProduct;
-use App\adminModel\categoryBrand;
-use Image;
+use App\Model\Product;
+use App\Model\ProductImg;
+use App\Model\Category;
+use App\Model\CustomFieldProduct;
+use App\Model\CategoryBrand;
 use App\Contracts\PhotoServiceInterface;
 use App\Exceptions\PhotoExtensionNotAllowedException;
 use App\Http\Requests\OfferRequest;
@@ -42,7 +39,7 @@ class OfferController extends Controller
      */
     public function index()
     {
-        $allOffers = product::where('offer', 1)->paginate(10);
+        $allOffers = Product::where('offer', 1)->paginate(10);
         return view('admin.offers.index')->with('allOffers', $allOffers);
     }
 
@@ -55,7 +52,7 @@ class OfferController extends Controller
      */
     public function getBrandsByCat($categoryId)
     {
-        $allBrands = categoryBrand::with('brand')
+        $allBrands = CategoryBrand::with('brand')
                         ->where('category_id', $categoryId)
                         ->get();
         return response()->json($allBrands, 200);
@@ -68,8 +65,8 @@ class OfferController extends Controller
      */
     public function create()
     {
-        $allCategories = category::all();
-        $parents = category::whereNotNull('parentID')->get();
+        $allCategories = Category::all();
+        $parents = Category::whereNotNull('parentID')->get();
         foreach ($parents as $item) {
             $parentIds[] = $item->parentID; 
         }
@@ -91,7 +88,7 @@ class OfferController extends Controller
      */
     public function store(OfferRequest $request)
     {       
-        $product = new product;
+        $product = new Product;
         $product->name = $request->name;        
         $product->desc = $request->desc;
         $product->brand_id = $request->brand_id;
@@ -113,7 +110,7 @@ class OfferController extends Controller
         }
 
         foreach ($storedPhotosNames as $photo) {
-            $productImg = new productImg;
+            $productImg = new ProductImg;
             $productImg->product_id = $product->id;
             $productImg->img = $photo;
             $productImg->save();
@@ -121,7 +118,7 @@ class OfferController extends Controller
 
         if ($request->cf) {
             foreach ($request->cf as $key => $value) {
-                $customField = new customFieldProduct;
+                $customField = new CustomFieldProduct;
                 $customField->product_id = $product->id;
                 $customField->custom_field_id = $key;
                 $customField->value = $value;
@@ -141,8 +138,8 @@ class OfferController extends Controller
      */
     public function show($id)
     {
-        $single = product::where('id', $id)->first();
-        $productImg = productImg::where('product_id', $id)->get();
+        $single = Product::where('id', $id)->first();
+        $productImg = ProductImg::where('product_id', $id)->get();
         $data = [
             'single' => $single,
             'productImg' => $productImg
@@ -159,9 +156,9 @@ class OfferController extends Controller
      */
     public function edit($id)
     {
-        $single = product::find($id);
-        $allCategories = category::all();
-        $parents = category::whereNotNull('parentID')->get();
+        $single = Product::find($id);
+        $allCategories = Category::all();
+        $parents = Category::whereNotNull('parentID')->get();
 
         foreach ($parents as $item) {
             $parentIds[] = $item->parentID; 
@@ -186,7 +183,7 @@ class OfferController extends Controller
      */
     public function update(OfferRequest $request, $id)
     {
-        $product = product::find($id);
+        $product = Product::find($id);
         $product->name = $request->name;        
         $product->desc = $request->desc;
         $product->brand_id = $request->brand_id;
@@ -198,7 +195,7 @@ class OfferController extends Controller
 
         if ($request->hasFile('img')) {
             try {
-                $productImages = productImg::where('product_id', $id);
+                $productImages = ProductImg::where('product_id', $id);
                 $this->PhotoService
                     ->setStorePath('productImg/')
                     ->delete($productImages->get());
@@ -215,7 +212,7 @@ class OfferController extends Controller
         }
 
         foreach ($storedPhotosNames as $photo) {
-            $productImg = new productImg;
+            $productImg = new ProductImg;
             $productImg->product_id = $product->id;
             $productImg->img = $photo;
             $productImg->save();
@@ -223,12 +220,12 @@ class OfferController extends Controller
 
         if ($request->cf) {
             //delete old custom field values
-            $customFieldProduct = customFieldProduct::where('product_id', $id);
+            $customFieldProduct = CustomFieldProduct::where('product_id', $id);
             $customFieldProduct->delete();
 
             //store custom fields values to DB
             foreach ($request->cf as $key => $value) {
-                $customFieldProduct = new customFieldProduct;
+                $customFieldProduct = new CustomFieldProduct;
                 $customFieldProduct->product_id = $product->id;
                 $customFieldProduct->custom_field_id = $key;
                 $customFieldProduct->value = $value;
@@ -248,7 +245,7 @@ class OfferController extends Controller
      */
     public function deleteSingle($id)
     {
-        $productImages = productImg::where('product_id', $id);
+        $productImages = ProductImg::where('product_id', $id);
         
         $this->PhotoService
             ->setStorePath('productImg/')
@@ -256,7 +253,7 @@ class OfferController extends Controller
 
         $productImages->delete();
 
-        $product = product::where('id', $id);
+        $product = Product::where('id', $id);
         $product->delete();
         return redirect(aurl('offers'));
     }
@@ -275,14 +272,14 @@ class OfferController extends Controller
             return redirect(aurl('offers'));
         }
 
-        $productImages = productImg::whereIn('product_id', $ids);
+        $productImages = ProductImg::whereIn('product_id', $ids);
         $this->PhotoService
             ->setStorePath('productImg/')
             ->delete($productImages->get());
 
         $productImages->delete();
 
-        $product = product::whereIn('id', $ids);
+        $product = Product::whereIn('id', $ids);
         $product->delete();
         return redirect(aurl('offers'));
     }

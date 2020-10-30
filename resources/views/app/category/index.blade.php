@@ -2,25 +2,25 @@
 @section('content')
         <div class="homeProductsContainer">
             <h3>{{ strtoupper($category->name) }}</h3>
-            <p style="color: grey; text-align: center;">{{ $products->count() }} products found</p>
+            <p style="color: grey; text-align: center;">{{ $products->total() }} products found</p>
             <hr>
-            <form action="{{ url('category/tools/' . $category->id) }}" method="get" id="toolsForm">
+            <form action="{{ url('category/' . $category->id) }}" method="get" id="toolsForm">
                 {{ csrf_field() }}
                 <div class="form-group row toolsWrap">
                     <div class="col-xs-offset-1 col-xs-10">
                         <div class="col-xs-6 col-md-2 tool">
-                            <input type="number" name="min" class="form-control" placeholder="Min" value="{{ request()->min }}">
+                            <input type="number" name="price[min]" class="form-control" placeholder="Min" value="{{ request()->price['max'] && request()->price['min'] > request()->price['max'] ? request()->price['max'] : request()->price['min'] }}">
                         </div>
                         <div class="col-xs-6 col-md-2 tool">
-                            <input type="number" name="max" class="form-control" placeholder="Max" value="{{ request()->max }}">
+                            <input type="number" name="price[max]" class="form-control" placeholder="Max" value="{{ request()->price['max'] && request()->price['min'] > request()->price['max'] ? request()->price['min'] : request()->price['max'] }}">
                         </div>
                         <div class="col-xs-6 col-md-2 tool">
-                            <select name="sortBy" class="form-control tools">
+                            <select name="sort_by" class="form-control tools">
                                 <option value="" hidden selected>Sort By</option>
-                                <option value="created_at/desc" {{ (request()->sortBy == "created_at/desc")? 'selected':'' }}>Newest</option>                        
-                                <option value="created_at/asc" {{ (request()->sortBy == "created_at/asc")? 'selected':'' }}>Oldest</option>                        
-                                <option value="price/asc" {{ (request()->sortBy == "price/asc")? 'selected':'' }}>Lowest Price</option>                        
-                                <option value="price/desc" {{ (request()->sortBy == "price/desc")? 'selected':'' }}>Highest Price</option>                        
+                                <option value="created_at/desc" {{ (request()->sort_by == "created_at/desc")? 'selected':'' }}>Newest</option>                        
+                                <option value="created_at/asc" {{ (request()->sort_by == "created_at/asc")? 'selected':'' }}>Oldest</option>                        
+                                <option value="price/asc" {{ (request()->sort_by == "price/asc")? 'selected':'' }}>Lowest Price</option>                        
+                                <option value="price/desc" {{ (request()->sort_by == "price/desc")? 'selected':'' }}>Highest Price</option>                        
                             </select>
                         </div>
                         @if(isset($category->brands))
@@ -35,12 +35,12 @@
                         @endif
                         @if($customFields->isNotEmpty())
                             @foreach ($customFields as $k => $i)
-                                @if ($i->custom_field->count() > 0)    
+                                @if ($i->customField->count() > 0)    
                                     <div class="col-xs-6 col-md-2 tool">
-                                        <select name="cf[{{$k}}]" class="form-control tools">
-                                            <option value="" hidden selected>{{$i->custom_field->first()->name}}</option>
-                                            @foreach ($i->custom_field_product->unique('value') as $p)
-                                            <option value="{{ $p->value }}" {{ (request()->cf[$k] == $p->value)? 'selected':'' }}>{{ $p->value }}</option>                                                            
+                                        <select name="custom_field[{{$i->name}}]" class="form-control tools">
+                                            <option value="" hidden selected>{{$i->customField->first()->name}}</option>
+                                            @foreach ($i->customFieldProduct->unique('value') as $p)
+                                            <option value="{{ $p->value }}" {{ (request()->custom_field[$i->name] == $p->value)? 'selected':'' }}>{{ $p->value }}</option>                                                            
                                             @endforeach
                                         </select>
                                     </div>

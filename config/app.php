@@ -201,6 +201,9 @@ return [
         
         // WishlistService
         App\Providers\WishlistServiceProvider::class,
+        
+        // SearchFilter
+        App\Providers\SearchFilterServiceProvider::class,
 
     ],
 

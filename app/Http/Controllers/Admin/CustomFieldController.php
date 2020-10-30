@@ -111,7 +111,7 @@ class CustomFieldController extends Controller
         foreach ($request->category_id as $i) {
             $customFieldCategory = new CustomFieldCategory();
             $customFieldCategory->category_id = $i;
-            $customFieldCategory->custom_field_id = $store_cf->id;
+            $customFieldCategory->custom_field_id = $customField->id;
             $customFieldCategory->save();
         }
 

@@ -57,13 +57,13 @@ class CustomFieldController extends Controller
      */
     public function show($id)
     {
-        $customFieldByCategory = CustomFieldCategory::with('custom_field')
-                            ->where('category_id', $id)
-                            ->get();
+        $customFieldByCategory = CustomFieldCategory::with('customField')
+            ->where('category_id', $id)
+            ->get();
 
         $cf = [];
         foreach ($customFieldByCategory as $c) {
-            array_push($cf, $c->custom_field->first());
+            array_push($cf, $c->customField->first());
         }
 
         return response()->json($cf, 200);   
@@ -81,8 +81,8 @@ class CustomFieldController extends Controller
     {
         $customFieldProduct = CustomFieldCategory::with(
             [
-                'custom_field',
-                'custom_field_product' => function ($query) use ($productId) {
+                'customField',
+                'customFieldProduct' => function ($query) use ($productId) {
                     $query->where('product_id', '=', $productId);
                 }
             ]

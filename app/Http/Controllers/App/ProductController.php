@@ -9,7 +9,7 @@ use App\Model\Wishlist;
 use Illuminate\Support\Facades\Auth;
 use App\Model\Review;
 
-class products extends Controller
+class ProductController extends Controller
 {
     public function __construct()
     {

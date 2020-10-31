@@ -9,7 +9,7 @@ use App\Model\Category;
 use DB;
 use Auth;
 
-class home extends Controller
+class DefaultController extends Controller
 {
     public function index(){
         $offers = Product::where('offer', 1)->orderBy('created_at', 'desc')->take(5)->get();

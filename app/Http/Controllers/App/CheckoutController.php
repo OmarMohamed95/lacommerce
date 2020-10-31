@@ -9,7 +9,7 @@ use App\Model\Cart;
 use App\Model\Product;
 use Auth;
 
-class checkouts extends Controller
+class CheckoutController extends Controller
 {
 
     public function __construct()
@@ -75,11 +75,11 @@ class checkouts extends Controller
         return view('app.checkout.track')->with('order' ,$order);
     }
 
-    public function track_order(){
+    public function trackOrder(){
         return view('app.checkout.track_order');
     }
 
-    public function trackOrderByNumber(Request $request){
+    public function trackOrderByCode(Request $request){
         $order = Checkout::where('order_code', $request->order_code)
                             ->where('user_id', Auth::user()->id)
                             ->first();

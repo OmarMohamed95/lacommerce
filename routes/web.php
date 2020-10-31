@@ -16,44 +16,41 @@ Route::group(['namespace' => 'App'], function(){
     // home
     Route::get('/', 'home@index');
     // home
-    Route::get('/home', 'home@index')->name('home');
+    Route::get('/home', 'DefaultController@index')->name('home_index');
 
     // search
-    Route::post('/search', 'search@search');
+    Route::post('/search', 'SearchController@search')->name('search_action');
 
     // category
-    Route::get('/category/{id}', 'CategoryController@index');
-    Route::get('/category/tools/{id}', 'CategoryController@tools');
+    Route::get('/category/{id}', 'CategoryController@index')->name('category_index');
 
     // product
-    Route::get('/product/index/{id}', 'products@index');
-
-    // product review
-    Route::post('products/review/{id}', 'products@review');
+    Route::get('/product/index/{id}', 'ProductController@index')->name('product_index');
+    Route::post('products/review/{id}', 'ProductController@review')->name('product_review');
 
     // wishlist
-    Route::get('wishlist/{id}', 'wishlists@index');
-    Route::get('wishlist/store/{id}', 'wishlists@store');
-    Route::get('wishlist/delete/{id}', 'wishlists@delete');
+    Route::get('wishlist/{id}', 'WishlistController@index')->name('wishlist_index');
+    Route::get('wishlist/store/{id}', 'WishlistController@store')->name('wishlist_store');
+    Route::get('wishlist/delete/{id}', 'WishlistController@delete')->name('wishlist_delete');
 
     // cart
-    Route::get('cart/index/{id}', 'CartController@index');
-    Route::post('cart/updateQuantity', 'CartController@updateQuantity');
-    Route::get('cart/store/{id}', 'CartController@store');
-    Route::get('cart/delete/{id}', 'CartController@delete');
+    Route::get('cart/index/{id}', 'CartController@index')->name('cart_index');
+    Route::post('cart/updateQuantity', 'CartController@updateQuantity')->name('cart_update_quantity');
+    Route::get('cart/store/{id}', 'CartController@store')->name('cart_index')->name('cart_store');
+    Route::get('cart/delete/{id}', 'CartController@delete')->name('cart_index')->name('cart_delete');
 
     // checkout
-    Route::get('checkout', 'checkouts@index');
-    Route::get('checkout/orders/{id}', 'checkouts@orders');
-    Route::get('checkout/done/{order_code}', 'checkouts@done');
-    Route::get('checkout/track_order', 'checkouts@track_order');
-    Route::post('checkouts/trackOrder', 'checkouts@trackOrderByNumber');
-    Route::get('checkout/track/{order_code}', 'checkouts@track');
-    Route::post('checkout/checkout/{id}', 'checkouts@checkout');
+    Route::get('checkout', 'CheckoutController@index')->name('checkout_index');
+    Route::get('checkout/orders/{id}', 'CheckoutController@orders')->name('checkout_orders');
+    Route::get('checkout/done/{order_code}', 'CheckoutController@done')->name('checkout_done');
+    Route::get('checkout/track_order', 'CheckoutController@trackOrder')->name('checkout_track_order');
+    Route::post('checkouts/trackOrder', 'CheckoutController@trackOrderByCode')->name('checkout_track_code');
+    Route::get('checkout/track/{order_code}', 'CheckoutController@track')->name('checkout_track');
+    Route::post('checkout/checkout/{id}', 'CheckoutController@checkout')->name('checkout_action');
 
     //profile
-    Route::get('profile', 'profile@index');
-    Route::post('profile/update', 'profile@update');
+    Route::get('profile', 'ProfileController@index')->name('profile_index');
+    Route::post('profile/update', 'ProfileController@update')->name('profile_update_action');
 
 });
 

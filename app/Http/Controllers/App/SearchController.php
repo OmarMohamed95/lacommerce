@@ -8,7 +8,7 @@ use App\Model\Product;
 use DB;
 use Auth;
 
-class search extends Controller
+class SearchController extends Controller
 {
     public function search(Request $request){
 

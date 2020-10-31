@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 use App\Model\User;
 use Auth;
 
-class profile extends Controller
+class ProfileController extends Controller
 {
 
     public function __construct(){

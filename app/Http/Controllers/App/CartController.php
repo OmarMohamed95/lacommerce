@@ -40,7 +40,7 @@ class CartController extends Controller
      * Index action
      *
      * @param int $id
-     * @return void
+     * @return \Illuminate\View\View
      */
     public function index(int $id)
     {
@@ -68,7 +68,7 @@ class CartController extends Controller
      * Store product in cart
      *
      * @param integer $productId
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(int $productId)
     {
@@ -100,7 +100,7 @@ class CartController extends Controller
      * Delete product from cart
      *
      * @param int $productId
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      */
     public function delete(int $productId)
     {

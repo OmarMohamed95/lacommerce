@@ -10,5 +10,8 @@ return [
         'success_message' => 'The product has been added to your cart.',
         'view_and_checkout' => 'View Cart and Checkout',
         'delete_success_message' => 'The product has been deleted',
+    ],
+    'checkout' => [
+        'invalid_order_code' => 'The order code is invalid, please try again!',
     ]
 ];

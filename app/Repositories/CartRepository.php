@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Model\Cart;
 use App\Repositories\Contracts\CartRepositoryInterface;
+use Illuminate\Database\Eloquent\Builder;
 
 class CartRepository implements CartRepositoryInterface
 {
@@ -74,5 +75,16 @@ class CartRepository implements CartRepositoryInterface
         }
         return $queryBuilder->get();
 
+    }
+
+    /**
+     * Get cart by column
+     *
+     * @param int $userId
+     * @return Builder
+     */
+    public function getCartQuery(int $userId): Builder
+    {
+        return Cart::where('user_id', $userId);
     }
 }

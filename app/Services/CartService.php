@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Model\Cart;
 use App\Model\Product;
 use App\Repositories\Contracts\CartRepositoryInterface;
+use Auth;
+use Illuminate\Database\Eloquent\Builder;
 
 class CartService
 {
@@ -55,5 +57,25 @@ class CartService
             ],
             true
         );
+    }
+
+    /**
+     * Get cart of current user
+     *
+     * @return Cart
+     */
+    public function getCart()
+    {
+        return $this->cartRepository->findBy('user_id', Auth::user()->id);
+    }
+
+    /**
+     * Get cart query of current user
+     *
+     * @return Builder
+     */
+    public function getCartQuery(): Builder
+    {
+        return $this->cartRepository->getCartQuery(Auth::user()->id);
     }
 }

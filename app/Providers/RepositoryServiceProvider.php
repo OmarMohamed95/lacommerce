@@ -7,6 +7,8 @@ use App\Repositories\Contracts\CartRepositoryInterface;
 use App\Repositories\CartRepository;
 use App\Repositories\Contracts\CategoryRepositoryInterface;
 use App\Repositories\CategoryRepository;
+use App\Repositories\CheckoutRepository;
+use App\Repositories\Contracts\CheckoutRepositoryInterface;
 use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Repositories\ProductRepository;
 use App\Repositories\Contracts\CustomFieldRepositoryInterface;
@@ -63,6 +65,11 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(
             WishlistRepositoryInterface::class,
             WishlistRepository::class
+        );
+
+        $this->app->bind(
+            CheckoutRepositoryInterface::class,
+            CheckoutRepository::class
         );
     }
 }

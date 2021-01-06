@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Model\Product;
 use App\Repositories\Contracts\ProductRepositoryInterface;
 
 class ProductService
@@ -27,5 +28,16 @@ class ProductService
     public function getProductsByCategory(int $categoryId)
     {
         return $this->productRepository->getProductsByCategoryQuery($categoryId);
+    }
+
+    /**
+     * Get product by ID
+     *
+     * @param int $productId
+     * @return Product
+     */
+    public function getProductById(int $productId)
+    {
+        return $this->productRepository->find($productId);
     }
 }

@@ -11,29 +11,30 @@
                 <th></th>
             </tr>
             @foreach ($cartProducts as $key => $item)
-            @foreach ($item->products as $i)
-            <tr class="{{ $i->id }}">
+            @php
+                $product = $item->product
+            @endphp
+            <tr class="{{ $product->id }}">
                 <td>
-                    <img src="{{ uploads('productImg/' . $i->productImg[0]->img) }}" class="wishlistImg">
-                    {{ $i->name }}
+                    <img src="{{ uploads('productImg/' . $product->productImg[0]->img) }}" class="wishlistImg">
+                    {{ $product->name }}
                 </td>
                 <td class="price{{$key}}">
-                    {{ $i->price }}
+                    {{ $product->price }}
                 </td>
                 <td>
                     <div class="form-group row">
                         <div class="col-xs-3">
-                            <input type="number" max="{{$i->quantity}}" min="1" name="quantity" role="{{$i->id}}" value="{{ $cartProducts[$key]->quantity }}" class="form-control quantity quantity{{$key}}" placeholder="Quantity">
+                            <input type="number" max="{{$product->quantity}}" min="1" name="quantity" role="{{$product->id}}" value="{{ $cartProducts[$key]->quantity }}" class="form-control quantity quantity{{$key}}" placeholder="Quantity">
                         </div>
                     </div>
                     <span id="quantity_validate" class="error" style="color:red"></span>
-                    <p style="color:black">Available Quantity : {{ $i->quantity }}</p>
+                    <p style="color:black">Available Quantity : {{ $product->quantity }}</p>
                 </td>
                 <td>
-                    <a href="{{ url('cart/delete/' . $i->id) }}" class="deleteCart"><i class="fas fa-trash-alt fa-2x deleteIcon"></i></a>
+                    <a href="{{ url('cart/delete/' . $product->id) }}" class="deleteCart"><i class="fas fa-trash-alt fa-2x deleteIcon"></i></a>
                 </td>
             </tr>            
-            @endforeach
             @endforeach
         </table>
         <div class="pull-right">

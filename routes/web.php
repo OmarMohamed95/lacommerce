@@ -14,7 +14,7 @@
 Route::group(['namespace' => 'App'], function(){
     
     // home
-    Route::get('/', 'home@index');
+    Route::get('/', 'DefaultController@index');
     // home
     Route::get('/home', 'DefaultController@index')->name('home_index');
 
@@ -41,11 +41,9 @@ Route::group(['namespace' => 'App'], function(){
 
     // checkout
     Route::get('checkout', 'CheckoutController@index')->name('checkout_index');
-    Route::get('checkout/orders/{id}', 'CheckoutController@orders')->name('checkout_orders');
+    Route::get('checkout/orders/{id}', 'CheckoutController@myOrders')->name('checkout_orders');
     Route::get('checkout/done/{order_code}', 'CheckoutController@done')->name('checkout_done');
-    Route::get('checkout/track_order', 'CheckoutController@trackOrder')->name('checkout_track_order');
-    Route::post('checkouts/trackOrder', 'CheckoutController@trackOrderByCode')->name('checkout_track_code');
-    Route::get('checkout/track/{order_code}', 'CheckoutController@track')->name('checkout_track');
+    Route::any('checkouts/trackOrder/{orderCode?}', 'CheckoutController@trackOrderByCode')->name('checkout_track_code');
     Route::post('checkout/checkout/{id}', 'CheckoutController@checkout')->name('checkout_action');
 
     //profile

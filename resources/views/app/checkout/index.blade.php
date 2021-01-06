@@ -9,20 +9,21 @@
                 <th>Quantity</th>
             </tr>
             @foreach ($cart as $key => $item)
-            @foreach ($item->products as $i)
-            <tr class="{{ $i->id }}">
+            @php
+                $product = $item->product
+            @endphp
+            <tr class="{{ $product->id }}">
                 <td>
-                    <img src="{{ uploads('productImg/' . $i->productImg[0]->img) }}" class="wishlistImg">
-                    {{ $i->name }}
+                    <img src="{{ uploads('productImg/' . $product->productImg[0]->img) }}" class="wishlistImg">
+                    {{ $product->name }}
                 </td>
                 <td class="price{{$key}}">
-                    {{ $i->price }}
+                    {{ $product->price }}
                 </td>
                 <td class="quantity{{$key}}">
                     {{ $item->quantity }}
                 </td>
             </tr>            
-            @endforeach
             @endforeach
         </table>
         <div class="totalPrice">

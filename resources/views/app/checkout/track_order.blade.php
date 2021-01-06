@@ -13,9 +13,7 @@
         <input type="submit" value="Enter" class="btn btn-info">
     </form>
     @if (isset($msg))
-        <div class="alert alert-danger">
-            <p>{{ $msg }}</p>
-        </div>
+        <p style="color:red">{{ $msg }}</p>
     @endif
 </div>
 @endsection

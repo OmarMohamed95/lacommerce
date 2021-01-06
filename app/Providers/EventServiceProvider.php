@@ -4,6 +4,10 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use App\Events\CheckoutOccur;
+use App\Events\CheckoutDone;
+use App\Listeners\UpdateProductQuantity;
+use App\Listeners\RemoveCart;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -13,8 +17,11 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\Event' => [
-            'App\Listeners\EventListener',
+        CheckoutOccur::class => [
+            UpdateProductQuantity::class,
+        ],
+        CheckoutDone::class => [
+            RemoveCart::class,
         ],
     ];
 

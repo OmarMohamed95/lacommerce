@@ -84,7 +84,7 @@
                                 <a href="{{ url('checkout/orders/' . Auth::user()->id) }}">
                                     My orders
                                 </a>
-                                <a href="{{ url('checkout/track_order') }}">
+                                <a href="{{ route('checkout_track_code') }}">
                                     track order
                                 </a>
                                 <a href="{{ route('logout') }}"

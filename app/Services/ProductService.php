@@ -40,4 +40,15 @@ class ProductService
     {
         return $this->productRepository->find($productId);
     }
+
+    /**
+     * Get offer products for home page
+     *
+     * @param int $productId
+     * @return Collection
+     */
+    public function getOfferProductsForHomePage()
+    {
+        return $this->productRepository->getOfferProductsForHomePage();
+    }
 }

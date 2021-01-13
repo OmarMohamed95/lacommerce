@@ -140,4 +140,17 @@ class ProductRepository implements ProductRepositoryInterface
 
         return $qb;
     }
+
+    /**
+     * Get offer products for home page
+     *
+     * @return Collection
+     */
+    public function getOfferProductsForHomePage()
+    {
+        return Product::where('offer', 1)
+            ->orderBy('created_at', 'desc')
+            ->take(5)
+            ->get();
+    }
 }

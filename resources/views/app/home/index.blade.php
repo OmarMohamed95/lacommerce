@@ -59,14 +59,14 @@
     @endif
     <!-- slider end -->
     <!-- product by category start -->
-    @if (isset($productsByCat))
+    @if (isset($homeCategoryProducts))
     <div class="homeProductsContainer">
-        @foreach ($productsByCat as $item)
+        @foreach ($homeCategoryProducts as $item)
             <h3>{{ strtoupper($item->name) }}</h3>
             @foreach ($item->products->take(3) as $p)
             <div class="col-xs-12 col-md-4 homeProducts">
                 <img src="{{ uploads("productImg/" . $p->productImg[0]->img) }}">
-                <a href="{{ url('wishlist/store/' . $p->id) }}" class="wishlistButton pull-right"><i class="wishlist {{ (in_array($p->id, $wishlists))? 'fas fa-heart':'far fa-heart' }} fa-2x"></i></a>
+                <a href="{{ url('wishlist/store/' . $p->id) }}" class="wishlistButton pull-right"><i class="wishlist {{ (in_array($p->id, $wishlistProducts))? 'fas fa-heart':'far fa-heart' }} fa-2x"></i></a>
                 <p class="brand">{{ $p->brand->name }}</p>
                 <a href="{{ url('product/index/' . $p->id) }}" style="text-decoration:none">
                     <p class="name">{{ strtoupper($p->name) }}</p>

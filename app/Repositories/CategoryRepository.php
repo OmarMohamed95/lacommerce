@@ -40,4 +40,17 @@ class CategoryRepository implements CategoryRepositoryInterface
     {
         return Category::where($column, $value)->get();
     }
+
+    /**
+     * Get categories that have products for home page
+     *
+     * @return Collection
+     */
+    public function getCategoryWithProductsForHomePage()
+    {
+        return Category::with('products')
+            ->where('home', 1)
+            ->whereNotNull('parentID')
+            ->get();
+    }
 }

@@ -6,39 +6,61 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Product;
 use App\Model\Category;
+use App\Services\CategoryService;
+use App\Services\ProductService;
+use App\Services\WishlistService;
 use DB;
 use Auth;
 
 class DefaultController extends Controller
 {
-    public function index(){
-        $offers = Product::where('offer', 1)->orderBy('created_at', 'desc')->take(5)->get();
-        $productsByCat = Category::with('products')
-                                ->where('home', 1)
-                                ->whereNotNull('parentID')
-                                ->get();
-        if(Auth::check()){
-            $wishlist = DB::table('wishlists')
-            ->where('user_id', Auth::user()->id)
-            ->select('product_id')
-            ->get();
-            
-            if($wishlist->count() > 0){
-                foreach ($wishlist as $value) {
-                    $wishlists[] = $value->product_id;
-                }
-            }else{
-                $wishlists = [];
-            }
-        }else{
-            $wishlists = [];
-        }
+    /**
+     * @var ProductService $productService
+     */
+    private $productService;
+    
+    /**
+     * @var CategoryService $categoryService
+     */
+    private $categoryService;
+    
+    /**
+     * @var WishlistService $wishlistService
+     */
+    private $wishlistService;
 
-        $data = array(
+    public function __construct(
+        ProductService $productService,
+        CategoryService $categoryService,
+        WishlistService $wishlistService
+    ) {
+        $this->productService = $productService;
+        $this->categoryService = $categoryService;
+        $this->wishlistService = $wishlistService;
+    }
+
+    /**
+     * Home page
+     *
+     * @return Illuminate\View\View
+     */
+    public function index()
+    {
+        $offers = $this->productService->getOfferProductsForHomePage();
+        
+        $homeCategoryProducts = $this->categoryService
+            ->getCategoryWithProductsForHomePage();
+
+        if (Auth::check()) {
+            $wishlistProducts = $this->wishlistService->getWishlistProductsIds();
+        }
+            
+        $data = [
             'offers' => $offers,
-            'productsByCat' => $productsByCat,
-            'wishlists' => $wishlists,
-        );
+            'homeCategoryProducts' => $homeCategoryProducts,
+            'wishlistProducts' => $wishlistProducts ?? [],
+        ];
+
         return view('app.home.index')->with($data);
     }
 }

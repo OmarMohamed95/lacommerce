@@ -204,7 +204,12 @@ return [
         
         // SearchFilter
         App\Providers\SearchFilterServiceProvider::class,
-
+        
+        // CategoryService
+        App\Providers\CheckoutServiceProvider::class,
+        
+        // CategoryService
+        App\Providers\CategoryServiceProvider::class,
     ],
 
     /*

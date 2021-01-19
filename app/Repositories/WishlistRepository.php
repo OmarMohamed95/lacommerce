@@ -55,4 +55,19 @@ class WishlistRepository implements WishlistRepositoryInterface
             ->pluck('product_id')
             ->toArray();
     }
+
+    /**
+     * Check if the product is wishlisted
+     *
+     * @param int $productId
+     * @param int $userId
+     * @return bool
+     */
+    public function isWishlisted(int $userId, int $productId): bool
+    {
+        return Wishlist::where('user_id', $userId)
+            ->where('product_id', $productId)
+            ->select('product_id')
+            ->first() ? true : false;
+    }
 }

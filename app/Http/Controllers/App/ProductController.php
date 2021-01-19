@@ -2,77 +2,70 @@
 
 namespace App\Http\Controllers\App;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Model\Product;
-use App\Model\Wishlist;
 use Illuminate\Support\Facades\Auth;
-use App\Model\Review;
+use App\Repositories\Contracts\ProductRepositoryInterface;
+use App\Services\ProductService;
+use App\Services\ReviewService;
+use App\Services\WishlistService;
 
 class ProductController extends Controller
 {
-    public function __construct()
-    {
+    /**
+     * @var ProductRepositoryInterface $productRepository
+     */
+    private $productRepository;
+    
+    /**
+     * @var ProductService $productService
+     */
+    private $productService;
+    
+    /**
+     * @var ReviewService $reviewService
+     */
+    private $reviewService;
+    
+    /**
+     * @var WishlistService $wishlistService
+     */
+    private $wishlistService;
+
+    public function __construct(
+        ProductRepositoryInterface $productRepository,
+        ProductService $productService,
+        ReviewService $reviewService,
+        WishlistService $wishlistService
+    ) {
+        $this->productRepository = $productRepository;
+        $this->productService = $productService;
+        $this->reviewService = $reviewService;
+        $this->wishlistService = $wishlistService;
         $this->middleware('auth', ['except' => 'index']);
     }
 
     /**
-     * Show product
+     * Show product details
      *
-     * @param int $id product ID
-     * 
+     * @param int $productId
      * @return \Illuminate\View\View
      */
-    public function index(int $id)
+    public function index(int $productId)
     {
-        $product = Product::find($id);
+        $product = $this->productRepository->find($productId);
 
-        $review = Review::where('product_id', $id)->orderBy('id', 'desc')->get();
+        $reviews = $this->reviewService->getReviewForProductPage($productId);
 
-        $isWishlisted = false;
         if (Auth::check()) {
-            $isWishlisted = Wishlist::where('user_id', Auth::user()->id)
-                ->where('product_id', $id)
-                ->select('product_id')
-                ->first();
-
-            if ($isWishlisted) {
-                $isWishlisted = true;
-            }
+            $isWishlisted = $this->wishlistService->isWishlisted($productId);
         }
 
-        $data = array(
-            'product' => $product,
-            'review' => $review,
-            'isWishlisted' => $isWishlisted,
+        return view('app.product.index')->with(
+            [
+                'product' => $product,
+                'reviews' => $reviews,
+                'isWishlisted' => $isWishlisted,
+            ]
         );
-
-        return view('app.product.index')->with($data);
-    }
-
-    public function review(Request $request, $productID){
-        if($request->ajax()){
-
-            $rules = [
-                'content' => 'required'
-            ];
-
-            $messages = [
-                'required' => 'Review input is required'
-            ];
-
-            $validate = $this->validate($request, $rules, $messages);
-
-            $review = new Review;
-            $review->content = $request->content;
-            $review->product_id = $productID;
-            $review->user_id = Auth::user()->id;
-            $review->save();
-
-            $review = Review::with('user')->where('product_id', $productID)->orderBy('id', 'desc')->first();
-
-            return response()->json(array('review'=> $review), 200);   
-        }
-        //return view('app.product.index');
     }
 }

@@ -30,4 +30,17 @@ class WishlistService
             ->wishlistRepository
             ->getWishlistProductsIds(Auth::user()->id);
     }
+
+    /**
+     * Check if the product is wishlisted
+     *
+     * @param int $productId
+     * @return bool
+     */
+    public function isWishlisted(int $productId): bool
+    {
+        return $this
+            ->wishlistRepository
+            ->isWishlisted(Auth::user()->id, $productId);
+    }
 }

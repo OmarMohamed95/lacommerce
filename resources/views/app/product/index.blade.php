@@ -25,7 +25,7 @@
     <div class="col-xs-12">
         <hr>
         <h2 class="text-center reviewH">reviews</h2>
-        <form action="{{ url('products/review/' . $product->id) }}" method="post" id="review">
+        <form action="{{ url('review/' . $product->id) }}" method="post" id="review">
             {{ csrf_field() }}
             <div class="form-group row">
                 <div class="col-xs-12 col-md-5">
@@ -38,14 +38,14 @@
                 </div>
             </div>
         </form>
-        @if ($review->count() > 0)
+        @if ($reviews->count() > 0)
         <div id="errorMsg"></div>
         <div class="showReviews">
-                @foreach ($review as $item)
+                @foreach ($reviews as $review)
                     <div class="singleReview">
-                        <p class="pull-right">{{ date('D, j F Y',strtotime($item->created_at)) }}</p>
-                        <p class="reviewName">{{ $item->user->name }}</p>
-                        <p>{!! nl2br($item->content) !!}</p>
+                        <p class="pull-right">{{ date('D, j F Y',strtotime($review->created_at)) }}</p>
+                        <p class="reviewName">{{ $review->user->name }}</p>
+                        <p>{!! nl2br($review->content) !!}</p>
                     </div>
                 @endforeach
             </div>

@@ -205,11 +205,14 @@ return [
         // SearchFilter
         App\Providers\SearchFilterServiceProvider::class,
         
-        // CategoryService
+        // CheckoutService
         App\Providers\CheckoutServiceProvider::class,
         
         // CategoryService
         App\Providers\CategoryServiceProvider::class,
+        
+        // ReviewService
+        App\Providers\ReviewServiceProvider::class,
     ],
 
     /*

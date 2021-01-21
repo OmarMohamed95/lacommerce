@@ -15,9 +15,11 @@ use App\Repositories\Contracts\CustomFieldRepositoryInterface;
 use App\Repositories\CustomFieldRepository;
 use App\Repositories\Contracts\CustomFieldCategoryRepositoryInterface;
 use App\Repositories\Contracts\ReviewRepositoryInterface;
+use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Repositories\CustomFieldCategoryRepository;
 use App\Repositories\Contracts\WishlistRepositoryInterface;
 use App\Repositories\ReviewRepository;
+use App\Repositories\UserRepository;
 use App\Repositories\WishlistRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -77,6 +79,11 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(
             ReviewRepositoryInterface::class,
             ReviewRepository::class
+        );
+
+        $this->app->bind(
+            UserRepositoryInterface::class,
+            UserRepository::class
         );
     }
 }

@@ -2,45 +2,54 @@
 
 namespace App\Http\Controllers\App;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
+use App\Http\Requests\ProfileRequest;
 use App\Model\User;
+use App\Repositories\Contracts\UserRepositoryInterface;
 use Auth;
 
 class ProfileController extends Controller
 {
+    /**
+     * @var UserRepositoryInterface $userRepository
+     */
+    private $userRepository;
 
-    public function __construct(){
+    /**
+     * @param UserRepositoryInterface $userRepository
+     */
+    public function __construct(UserRepositoryInterface $userRepository)
+    {
+        $this->userRepository = $userRepository;
         $this->middleware('auth');
     }
 
-    public function index(){
-        $userID = Auth::user()->id;
-
-        $user = User::where('id', $userID)->first();
+    /**
+     * Profile index
+     *
+     * @return \Illuminate\View\View
+     */
+    public function index()
+    {
+        $user = $this->userRepository->find(Auth::user()->id);
 
         return view('app.profile.index')->with('user', $user);
     }
 
-    public function update(Request $request){
-
-        $userID = Auth::user()->id;
-
-        $this->validate($request, [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255',Rule::unique('users')->ignore($userID),
-            'password' => 'required|string|min:6',
-        ]);
-
-
-        $user = User::where('id', $userID)->first();
+    /**
+     * Update profile action
+     *
+     * @param ProfileRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update(ProfileRequest $request)
+    {
+        $user = $this->userRepository->find(Auth::user()->id);
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
         $user->save();
 
-        return redirect(url('profile'));
+        return redirect()->route('profile_index');
     }
 }

@@ -78,7 +78,7 @@
                                 <a href="{{ url('profile') }}">
                                     My Profile
                                 </a>
-                                <a href="{{ url('wishlist/' . Auth::user()->id) }}">
+                                <a href="{{ url('wishlist') }}">
                                     My Wishlist
                                 </a>
                                 <a href="{{ url('checkout/orders/' . Auth::user()->id) }}">

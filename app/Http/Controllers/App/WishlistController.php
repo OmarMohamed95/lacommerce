@@ -2,56 +2,98 @@
 
 namespace App\Http\Controllers\App;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\Model\Wishlist;
+use App\Repositories\Contracts\WishlistRepositoryInterface;
+use App\Services\WishlistService;
 
 class WishlistController extends Controller
 {
+    /**
+     * @var WishlistRepositoryInterface $wishlistRepository
+     */
+    private $wishlistRepository;
 
-    public function __construct()
-    {
+    /**
+     * @var WishlistService
+     */
+    private $wishlistService;
+
+    /**
+     * @param WishlistRepositoryInterface $wishlistRepository
+     * @param WishlistService $wishlistService
+     */
+    public function __construct(
+        WishlistRepositoryInterface $wishlistRepository,
+        WishlistService $wishlistService
+    ) {
+        $this->wishlistRepository = $wishlistRepository;
+        $this->wishlistService = $wishlistService;
         $this->middleware('auth');
     }
 
-    public function index($id){
+    /**
+     * Index action
+     *
+     * @return \Illuminate\View\View
+     */
+    public function index()
+    {
+        $wishlist = $this->wishlistRepository->findBy('user_id', Auth::user()->id);
 
-        $wishlist = Wishlist::where('user_id', $id)->get();
         return view('app.wishlist.index')->with('wishlist', $wishlist);
-
     }
 
-    public function store($id){
+    /**
+     * Store action
+     *
+     * @param int $productId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function store(int $productId)
+    {
+        $isWishlisted = $this->wishlistService->isWishlisted($productId);
 
-        $user_id = Auth::user()->id;
-
-        $getWishlist = Wishlist::where('product_id', $id)
-                                    ->where('user_id', $user_id)
-                                    ->get();
-
-        if($getWishlist->count() > 0){
-            return response()->json(array('message'=> 'The product is already in your wishlist'), 200);
+        if ($isWishlisted) {
+            return response()
+                ->json(
+                    [
+                        'message' => __('messages.wishlist.product_already_exist')
+                    ],
+                    200
+                );
         }
-        $wishlist = new Wishlist;
-        $wishlist->product_id = $id;
-        $wishlist->user_id = $user_id;
-        $wishlist->save();
+
+        $this->wishlistService->addToWishlist($productId);
         
-        return response()->json(array('message'=> 'The product has been added to your wishlist'), 200);
+        return response()
+            ->json(
+                [
+                    'message' => __('messages.wishlist.product_added_successfully')
+                ],
+                200
+            );
 
     }
 
-    public function delete($id){
-
-        $user_id = Auth::user()->id;
-
-        $deleteWishlist = Wishlist::where('product_id', $id)
-                                    ->where('user_id', $user_id);
-        $deleteWishlist->delete();
+    /**
+     * Delete product from wishlist
+     *
+     * @param int $productId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delete(int $productId)
+    {
+        $this->wishlistService->removeFromWishlist($productId);
         
-        return response()->json(array('message'=> 'The product has been deleted', 'id' => $id), 200);
-
+        return response()
+            ->json(
+                [
+                    'message' => __('messages.wishlist.product_removed'),
+                    'id' => $productId
+                ],
+                200
+            );
     }
 
 }

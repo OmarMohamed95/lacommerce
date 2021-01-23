@@ -31,8 +31,8 @@ Route::group(['namespace' => 'App'], function(){
     Route::post('/review/{productId}', 'ReviewController@review')->name('product_review');
 
     // wishlist
-    Route::get('wishlist/{id}', 'WishlistController@index')->name('wishlist_index');
-    Route::get('wishlist/store/{id}', 'WishlistController@store')->name('wishlist_store');
+    Route::get('wishlist', 'WishlistController@index')->name('wishlist_index');
+    Route::get('wishlist/store/{productId}', 'WishlistController@store')->name('wishlist_store');
     Route::get('wishlist/delete/{id}', 'WishlistController@delete')->name('wishlist_delete');
 
     // cart

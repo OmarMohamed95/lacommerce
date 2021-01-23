@@ -13,5 +13,10 @@ return [
     ],
     'checkout' => [
         'invalid_order_code' => 'The order code is invalid, please try again!',
+    ],
+    'wishlist' => [
+        'product_already_exist' => 'The product is already in your wishlist',
+        'product_added_successfully' => 'The product has been added to your wishlist',
+        'product_removed' => 'The product has been removed',
     ]
 ];

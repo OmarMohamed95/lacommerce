@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Model\Wishlist;
 use App\Repositories\Contracts\WishlistRepositoryInterface;
 use DB;
+use Illuminate\Database\Eloquent\Builder;
 
 class WishlistRepository implements WishlistRepositoryInterface
 {
@@ -69,5 +70,18 @@ class WishlistRepository implements WishlistRepositoryInterface
             ->where('product_id', $productId)
             ->select('product_id')
             ->first() ? true : false;
+    }
+
+    /**
+     * Get wishlist product
+     *
+     * @param int $productId
+     * @param int $userId
+     * @return Builder
+     */
+    public function getWishlistProduct(int $userId, int $productId): Builder
+    {
+        return Wishlist::where('product_id', $productId)
+            ->where('user_id', $userId);
     }
 }

@@ -21,7 +21,6 @@
 
     <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />-->
     <script src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js'></script>
-    <script src="{{ url('js/javascript.js') }}" type="text/javascript"></script>
 </head>
 <body>
     @include('app.inc.msgAjax')
@@ -50,5 +49,6 @@
         });
     </script>
     <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ url('js/javascript.js') }}" type="text/javascript"></script>
 </body>
 </html>

@@ -60,6 +60,7 @@
     </div>    
 @endsection
 @section('script')
+@parent
     <script type="text/javascript">
     $(document).ready(function(){
         // calculate total price

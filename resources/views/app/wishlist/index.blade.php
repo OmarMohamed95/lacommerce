@@ -41,6 +41,7 @@
     @endif
 @endsection
 @section('script')
+@parent
     <script type="text/javascript">
     $(document).ready(function(){
         // delete product from wishlist

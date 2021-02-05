@@ -25,7 +25,7 @@ Route::group(['namespace' => 'App'], function(){
     Route::get('/category/{id}', 'CategoryController@index')->name('category_index');
 
     // product
-    Route::get('/product/index/{id}', 'ProductController@index')->name('product_index');
+    Route::get('/product/{id}', 'ProductController@index')->name('product_index');
 
     // review
     Route::post('/review/{productId}', 'ReviewController@review')->name('product_review');

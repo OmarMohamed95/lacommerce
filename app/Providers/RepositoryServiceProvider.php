@@ -14,10 +14,12 @@ use App\Repositories\ProductRepository;
 use App\Repositories\Contracts\CustomFieldRepositoryInterface;
 use App\Repositories\CustomFieldRepository;
 use App\Repositories\Contracts\CustomFieldCategoryRepositoryInterface;
+use App\Repositories\Contracts\ProductElasticsearchRepositoryInterface;
 use App\Repositories\Contracts\ReviewRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Repositories\CustomFieldCategoryRepository;
 use App\Repositories\Contracts\WishlistRepositoryInterface;
+use App\Repositories\ProductElasticsearchRepository;
 use App\Repositories\ReviewRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\WishlistRepository;
@@ -84,6 +86,11 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(
             UserRepositoryInterface::class,
             UserRepository::class
+        );
+
+        $this->app->bind(
+            ProductElasticsearchRepositoryInterface::class,
+            ProductElasticsearchRepository::class
         );
     }
 }

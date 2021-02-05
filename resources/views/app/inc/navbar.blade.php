@@ -3,10 +3,11 @@
 </a>
 <div class="clearfix visible-xs"></div>
 <div class="row" style="margin-right:0px;">
-    <form action="{{ url('search') }}" method="POST">
+    <form action="{{ url('search') }}" method="POST" id="searchInputForm">
         {{ csrf_field() }}
         <div class="col-xs-6 col-sm-10 col-md-4 col-lg-8">
-            <input name="search" type="text" class="form-control" placeholder="What are you looking for?" style="margin: 5px;" value="{{ request()->input('search') }}">
+            <input id="searchInput" name="search" type="text" class="form-control" placeholder="What are you looking for?" style="margin-top: 5px;" value="{{ request()->input('search') }}" autocomplete="off">
+            <ul id="searchResultsMenu" class="search-results-menu"></ul>
         </div>
         <div class="col-xs-4 col-sm-2 col-md-1 col-lg-1">
             <button type="submit" class="btn btn-success pull-right" style="margin: 5px 33px;">Search</button>
@@ -104,3 +105,7 @@
         </div>
     </div>
 </nav>
+@section('script')
+    @parent
+    <script src="{{ asset('js/search.js') }}" type="text/javascript"></script>
+@endsection

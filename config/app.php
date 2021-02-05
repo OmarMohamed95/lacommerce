@@ -213,6 +213,12 @@ return [
         
         // ReviewService
         App\Providers\ReviewServiceProvider::class,
+
+        // Elasticquent
+        Elasticquent\ElasticquentServiceProvider::class,
+        
+        // ElasticsearchParser
+        App\Providers\ElasticsearchParserProvider::class,
     ],
 
     /*
@@ -263,7 +269,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
-        'Image' => Intervention\Image\Facades\Image::class
+        'Image' => Intervention\Image\Facades\Image::class,
+        'Es' => Elasticquent\ElasticquentElasticsearchFacade::class,
     ],
 
 ];

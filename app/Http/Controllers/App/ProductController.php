@@ -64,7 +64,7 @@ class ProductController extends Controller
             [
                 'product' => $product,
                 'reviews' => $reviews,
-                'isWishlisted' => $isWishlisted,
+                'isWishlisted' => $isWishlisted ?? null,
             ]
         );
     }

@@ -11,11 +11,13 @@ class CustomFieldCategory extends Model
     //protected $primaryKey = null;
     //public $incrementing = false;
 
-    public function customField(){
-        return $this->hasMany('App\Model\CustomField', 'id', 'custom_field_id');
+    public function customField()
+    {
+        return $this->hasMany(CustomField::class, 'id', 'custom_field_id');
     }
 
-    public function customFieldProduct(){
-        return $this->hasMany('App\Model\CustomFieldProduct', 'custom_field_id', 'custom_field_id');
+    public function customFieldProduct()
+    {
+        return $this->hasMany(CustomFieldProduct::class, 'custom_field_id', 'custom_field_id');
     }
 }

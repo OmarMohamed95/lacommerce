@@ -181,21 +181,21 @@ class Product extends Model
 
     public function brand()
     {
-        return $this->belongsTo('App\Model\Brand');
+        return $this->belongsTo(Brand::class);
     }
 
     public function category()
     {
-        return $this->belongsTo('App\Model\Category');
+        return $this->belongsTo(Category::class);
     }
 
     public function productImg()
     {
-        return $this->hasMany('App\Model\ProductImg');
+        return $this->hasMany(ProductImg::class);
     }
 
     public function customField()
     {
-        return $this->belongsToMany('App\Model\CustomField', 'custom_field_products', 'product_id', 'custom_field_id');
+        return $this->belongsToMany(CustomField::class, 'custom_field_products', 'product_id', 'custom_field_id');
     }
 }

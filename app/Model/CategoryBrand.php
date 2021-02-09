@@ -9,7 +9,8 @@ class CategoryBrand extends Model
     protected $table = 'category_brand';
     public $timestamps = false;
 
-    public function brand(){
-        return $this->belongsTo('App\Model\Brand');
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
     }
 }

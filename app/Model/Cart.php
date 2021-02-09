@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cart extends Model
 {
-    public function product(){
-        return $this->hasOne('App\Model\Product', 'id', 'product_id');
+    public function product()
+    {
+        return $this->hasOne(Product::class, 'id', 'product_id');
     }
 }

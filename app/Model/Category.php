@@ -6,23 +6,28 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
-    public function admin(){
-        return $this->belongsTo('App\Model\Admin');
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class);
     }
 
-    public function children() {
-        return $this->hasMany('App\Model\Category','parentID');
+    public function children()
+    {
+        return $this->hasMany(Category::class, 'parentID');
     }
 
-    public function parent() {
-        return $this->belongsTo('App\Model\Category','parentID');
+    public function parent()
+    {
+        return $this->belongsTo(Category::class, 'parentID');
     }
 
-    public function products() {
-        return $this->hasMany('App\Model\Product');
+    public function products()
+    {
+        return $this->hasMany(Product::class);
     }
 
-    public function brands() {
-        return $this->belongsToMany('App\Model\Brand', 'category_brand', 'category_id', 'brand_id');
+    public function brands()
+    {
+        return $this->belongsToMany(Brand::class, 'category_brand', 'category_id', 'brand_id');
     }
 }

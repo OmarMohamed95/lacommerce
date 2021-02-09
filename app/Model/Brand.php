@@ -10,7 +10,8 @@ class Brand extends Model
     //    return $this->belongsTo('App\Model\category', 'category_id');
     //}
 
-    public function category(){
-        return $this->belongsToMany('App\Model\Category', 'category_brand', 'brand_id', 'category_id');
+    public function category()
+    {
+        return $this->belongsToMany(Category::class, 'category_brand', 'brand_id', 'category_id');
     }
 }

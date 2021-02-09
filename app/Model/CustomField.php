@@ -9,11 +9,13 @@ class CustomField extends Model
 
     protected $table = 'custom_fields';
 
-    public function customFieldProduct(){
-        return $this->hasMany('App\Model\CustomFieldProduct');
+    public function customFieldProduct()
+    {
+        return $this->hasMany(CustomFieldProduct::class);
     }
 
-    public function customFieldCategory(){
-        return $this->hasMany('App\Model\CustomFieldCategory', 'custom_field_id', 'id');
+    public function customFieldCategory()
+    {
+        return $this->hasMany(CustomFieldCategory::class, 'custom_field_id', 'id');
     }
 }

@@ -10,6 +10,9 @@ use App\Model\Category;
 use App\Model\CustomFieldProduct;
 use App\Model\CategoryBrand;
 use App\Contracts\PhotoServiceInterface;
+use App\Events\ProductCreated;
+use App\Events\ProductDeleted;
+use App\Events\ProductUpdated;
 use App\Exceptions\PhotoExtensionNotAllowedException;
 use App\Http\Requests\ProductRequest;
 
@@ -129,6 +132,8 @@ class ProductController extends Controller
             }
         }
 
+        event(new ProductCreated($product));
+
         return redirect(aurl('products'));
     }
 
@@ -234,6 +239,8 @@ class ProductController extends Controller
             }
         }
 
+        event(new ProductUpdated($product));
+
         return redirect(aurl('products'))
                     ->with('success', 'product updated');
     }
@@ -255,8 +262,10 @@ class ProductController extends Controller
 
         $productImages->delete();
 
-        $product = Product::where('id', $id);
+        $product = Product::find($id);
+        event(new ProductDeleted($product));
         $product->delete();
+
         return redirect(aurl('products'));
     }
 
@@ -269,8 +278,8 @@ class ProductController extends Controller
      */
     public function deleteMultible(Request $request)
     {
-        $id = $request->id;
-        if (empty($id)) {
+        $ids = $request->id;
+        if (empty($ids)) {
             return redirect(aurl('products'));
         }
 
@@ -281,8 +290,10 @@ class ProductController extends Controller
 
         $productImages->delete();
 
-        $product = Product::whereIn('id', $id);
+        $product = Product::whereIn('id', $ids);
+        event(new ProductDeleted($product->get()));
         $product->delete();
+        
         return redirect(aurl('products'));
     }
 }

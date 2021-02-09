@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use App\Events\CheckoutOccur;
 use App\Events\CheckoutDone;
+use App\Listeners\ProductEventSubscriber;
 use App\Listeners\UpdateProductQuantity;
 use App\Listeners\RemoveCart;
 
@@ -23,6 +24,15 @@ class EventServiceProvider extends ServiceProvider
         CheckoutDone::class => [
             RemoveCart::class,
         ],
+    ];
+
+    /**
+     * The subscriber classes to register.
+     *
+     * @var array
+     */
+    protected $subscribe = [
+        ProductEventSubscriber::class,
     ];
 
     /**

@@ -58,7 +58,7 @@ class CartController extends Controller
     {
         $cartProduct = $this->cartService->getCartProductByUser(
             $request->productId,
-            $request->userId
+            Auth()->user()->id
         );
         $cartProduct->quantity = $request->quantity;
         $cartProduct->save();

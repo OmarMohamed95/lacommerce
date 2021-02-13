@@ -219,6 +219,8 @@ return [
         
         // ElasticsearchParser
         App\Providers\ElasticsearchParserProvider::class,
+
+        Laravel\Passport\PassportServiceProvider::class,
     ],
 
     /*

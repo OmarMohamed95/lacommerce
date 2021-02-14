@@ -4,11 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Contracts\ElasticsearchParserInterface;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Model\Product;
 use App\Repositories\Contracts\ProductElasticsearchRepositoryInterface;
 
-class SearchController extends Controller
+class SearchController extends BaseController
 {
     /**
      * @var ElasticsearchParserInterface $elasticsearchParser
@@ -37,12 +36,12 @@ class SearchController extends Controller
     {
         $query = $request->q;
         if (!$query) {
-            return response()->json([], 204);
+            return $this->respondNoContent();
         }
 
         $products = $this->ProductElasticsearchRepository->search($query);
         $hits = $products->getHits()['hits'];
         $response = $this->elasticsearchParser->parseHits($hits);
-        return response()->json([$response], 200);
+        return $this->respondJson([$response]);
     }
 }

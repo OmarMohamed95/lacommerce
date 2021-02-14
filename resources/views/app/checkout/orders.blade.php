@@ -21,10 +21,10 @@
                         {{ $order->products->name }}
                     </td>
                     <td>
-                        {{ $order->products->price }}
+                        {{ number_format($order->products->price) }}
                     </td>
                     <td>
-                        {{ $order->quantity }}
+                        {{ number_format($order->quantity) }}
                     </td>
                 </tr>            
                 @endforeach

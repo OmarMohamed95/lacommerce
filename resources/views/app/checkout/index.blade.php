@@ -59,25 +59,3 @@
         </form>
     </div>    
 @endsection
-@section('script')
-@parent
-    <script type="text/javascript">
-    $(document).ready(function(){
-        // calculate total price
-        var total = 0;
-        for(var i = 0; i < {{ $cart->count() }}; i++){
-            var productPrice = $(`.price${i}`).text();
-            var quantity = $(`.quantity${i}`).val();
-            if(quantity <= 0){
-                quantity = 1;
-            }
-            var price = productPrice * quantity;
-
-            total += price;
-        }
-
-        $('#total').text(`Total: ${total} EGP`);
-
-    });
-    </script>
-@endsection

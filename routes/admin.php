@@ -59,12 +59,12 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function(){
         Route::get('/admins/create', 'AdminController@create');
         Route::post('/admins/store', 'AdminController@store');
         Route::get('/admins/edit/{id}', 'AdminController@edit');
-        Route::post('/admins/update/{id}', 'admins@update');
+        Route::post('/admins/update/{id}', 'AdminController@update');
         Route::get('/admins/deleteSingle/{id}', 'AdminController@deleteSingle');
         Route::post('/admins/deleteMultible', 'AdminController@deleteMultible');
 
         Route::get('/home', 'HomeController@index');
 
-        Route::get('/logout', 'admins@logout');
+        Route::get('/logout', 'AdminController@logout');
     });
 });

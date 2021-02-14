@@ -20,7 +20,7 @@
                     {{ $product->name }}
                 </td>
                 <td class="price{{$key}}">
-                    {{ $product->price }}
+                    {{ number_format($product->price) }}
                 </td>
                 <td>
                     <div class="form-group row">
@@ -32,11 +32,18 @@
                     <p style="color:black">Available Quantity : {{ $product->quantity }}</p>
                 </td>
                 <td>
-                    <a href="{{ url('cart/delete/' . $product->id) }}" class="deleteCart"><i class="fas fa-trash-alt fa-2x deleteIcon"></i></a>
+                    <a href="{{ route('api_cart_delete', ['id' => $product->id]) }}" class="deleteCart"><i class="fas fa-trash-alt fa-2x deleteIcon"></i></a>
                 </td>
             </tr>            
             @endforeach
         </table>
+        <div class="total-price-container">
+            <p>Total price</p>
+            <p id="totalPrice">{{ number_format($totalPrice) }}</p>
+        </div>
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
         <div class="pull-right">
             <p id="total" style="font-weight: bold;"></p>
             <a href="{{ url('checkout') }}" class="btn btn-success checkout_anchor"><i class="fas fa-shopping-cart fa-1x"></i> CHECKOUT</a>

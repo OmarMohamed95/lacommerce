@@ -78,7 +78,7 @@ class CartRepository implements CartRepositoryInterface
     }
 
     /**
-     * Get cart by column
+     * Get cart query
      *
      * @param int $userId
      * @return Builder

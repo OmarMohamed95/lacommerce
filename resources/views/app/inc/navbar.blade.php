@@ -1,5 +1,5 @@
 <a class="navbar-brand" href="{{ url('/') }}">
-    {{ config('app.name', 'Laravel') }}
+    {{ config('app.name', 'Lacommerce') }}
 </a>
 <div class="clearfix visible-xs"></div>
 <div class="row" style="margin-right:0px;">

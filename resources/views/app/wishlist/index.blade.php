@@ -17,7 +17,7 @@
                     {{ $i->name }}
                 </td>
                 <td>
-                    {{ $i->price }}
+                    {{ number_format($i->price) }}
                 </td>
                 <td>
                     <a href="{{ url('cart/store/' . $i->id) }}" class="cartButton btn btn-success"><i class="fas fa-shopping-cart fa-1x"></i> Buy Now</a>

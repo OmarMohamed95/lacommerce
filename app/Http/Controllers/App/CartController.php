@@ -39,82 +39,19 @@ class CartController extends Controller
     /**
      * Index action
      *
-     * @param int $id
+     * @param int $userId
      * @return \Illuminate\View\View
      */
-    public function index(int $id)
+    public function index(int $userId)
     {
-        $cartProducts = $this->cartRepository->findBy('user_id', $id);
-        return view('app.cart.index')->with('cartProducts', $cartProducts);
-    }
-
-    /**
-     * Update product quantity in cart
-     *
-     * @param Request $request
-     * @return void
-     */
-    public function updateQuantity(cartRequest $request)
-    {
-        $cartProduct = $this->cartService->getCartProductByUser(
-            $request->productId,
-            Auth()->user()->id
-        );
-        $cartProduct->quantity = $request->quantity;
-        $cartProduct->save();
-    }
-
-    /**
-     * Store product in cart
-     *
-     * @param integer $productId
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function store(int $productId)
-    {
-        $userId = Auth::user()->id;
-
-        $cartProduct = $this->cartService->getCartProductByUser($productId, $userId);
-        
-        $product = Product::where('id', $productId)->first();
-
-        if (!$this->cartService->canAddProductToCart($product, $cartProduct)) {
-            return response()->json([], 204);
-        }
-
-        if ($cartProduct) {
-            $cartProduct->quantity++;
-            $cartProduct->save();
-        } else {
-            $cart = new Cart;
-            $cart->product_id = $productId;
-            $cart->user_id = $userId;
-            $cart->quantity++;
-            $cart->save();
-        }
-
-        return response()->json(['redirect' => url('cart/index/' . $userId)], 200);
-    }
-
-    /**
-     * Delete product from cart
-     *
-     * @param int $productId
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function delete(int $productId)
-    {
-        $this
-            ->cartService
-            ->getCartProductByUser($productId, Auth::user()->id)
-            ->delete();
-        
-        return response()->json(
-            [
-                'message'=> __('messages.cart.delete_success_message'),
-                'id' => $productId
-            ],
-            200
-        );
+        $cartProducts = $this->cartRepository->findBy('user_id', $userId);
+        $totalPrice = $this->cartService->getTotalCartPrice($userId);
+        return view('app.cart.index')
+            ->with(
+                [
+                    'cartProducts' => $cartProducts,
+                    'totalPrice' => $totalPrice,
+                ]
+            );
     }
 }

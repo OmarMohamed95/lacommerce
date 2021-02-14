@@ -57,14 +57,19 @@
             @if ($products->count() > 0)
                 @foreach ($products as $p)
                 <div class="col-xs-12 col-md-4 homeProducts">
-                    <img src="{{ uploads("productImg/" . $p->img) }}">
-                    <a href="{{ url('wishlist/store/' . $p->id) }}" class="pull-right wishlistButton"><i class="wishlist {{ (in_array($p->id, $wishlistProductsIds))? 'fas fa-heart':'far fa-heart' }} fa-2x"></i></a>
-                    <p class="brand">{{ $p->brandName }}</p>
-                    <a href="{{ url('product/index/' . $p->id) }}" style="text-decoration:none">
+                    <a href="{{ route('product_index', ['id' => $p->id]) }}" style="text-decoration:none">
+                        <img src="{{ uploads("productImg/" . $p->img) }}">
+                        <a href="{{ url('wishlist/store/' . $p->id) }}" class="pull-right wishlistButton"><i class="wishlist {{ (in_array($p->id, $wishlistProductsIds))? 'fas fa-heart':'far fa-heart' }} fa-2x"></i></a>
+                        <p class="brand">{{ $p->brandName }}</p>
                         <p class="name">{{ strtoupper($p->name) }}</p>
+                        <p class="price">{{ number_format($p->price) }} EGP</p>
+                        <form action="{{ route('api_cart_store') }}" method="POST" class="cart-form">
+                            <input type="hidden" name="id" value="{{ $p->id }}">
+                            <button type="submit" class="cartButton btn btn-success col-xs-12">
+                                <i class="fas fa-shopping-cart fa-1x"></i> Buy Now
+                            </button>
+                        </form>
                     </a>
-                        <p class="price">{{ $p->price }} EGP</p>
-                    <a href="{{ url('cart/store/' . $p->id) }}" class="cartButton btn btn-success col-xs-12"><i class="fas fa-shopping-cart fa-1x"></i> Buy Now</a>
                 </div>
                 @endforeach
                 <div class="clearfix"></div>

@@ -16,7 +16,7 @@
             @foreach ($offers as $key => $v)
             @if($key === 0)
                 <div class="item active">
-                    <a href="{{ url('product/index/' . $v->id) }}" style="text-decoration:none">
+                    <a href="{{ route('product_index', ['id' => $v->id]) }}" style="text-decoration:none">
                         @if ($v->productImg->count() > 0)
                         <img src="{{ uploads('productImg/' . $v->productImg[0]->img) }}" style="width: 100%; height: 500px;">
                         @else
@@ -30,7 +30,7 @@
                 </div>
             @else
                 <div class="item">
-                    <a href="{{ url('product/index/' . $v->id) }}" style="text-decoration:none">
+                    <a href="{{ route('product_index', ['id' => $v->id]) }}" style="text-decoration:none">
                         @if ($v->productImg->count() > 0)
                         <img src="{{ uploads('productImg/' . $v->productImg[0]->img) }}" style="width: 100%; height: 500px;">
                         @else
@@ -65,14 +65,19 @@
             <h3>{{ strtoupper($item->name) }}</h3>
             @foreach ($item->products->take(3) as $p)
             <div class="col-xs-12 col-md-4 homeProducts">
-                <img src="{{ uploads("productImg/" . $p->productImg[0]->img) }}">
-                <a href="{{ url('wishlist/store/' . $p->id) }}" class="wishlistButton pull-right"><i class="wishlist {{ (in_array($p->id, $wishlistProducts))? 'fas fa-heart':'far fa-heart' }} fa-2x"></i></a>
-                <p class="brand">{{ $p->brand->name }}</p>
-                <a href="{{ url('product/index/' . $p->id) }}" style="text-decoration:none">
+                <a href="{{ route('product_index', ['id' => $p->id]) }}" style="text-decoration:none">
+                    <img src="{{ uploads("productImg/" . $p->productImg[0]->img) }}">
+                    <a href="{{ url('wishlist/store/' . $p->id) }}" class="wishlistButton pull-right"><i class="wishlist {{ (in_array($p->id, $wishlistProducts))? 'fas fa-heart':'far fa-heart' }} fa-2x"></i></a>
+                    <p class="brand">{{ $p->brand->name }}</p>
                     <p class="name">{{ strtoupper($p->name) }}</p>
+                    <p class="price">{{ number_format($p->price) }} EGP</p>
+                    <form action="{{ route('api_cart_store') }}" method="POST" class="cart-form">
+                        <input type="hidden" name="id" value="{{ $p->id }}">
+                        <button type="submit" class="cartButton btn btn-success col-xs-12">
+                            <i class="fas fa-shopping-cart fa-1x"></i> Buy Now
+                        </button>
+                    </form>
                 </a>
-                <p class="price">{{ $p->price }} EGP</p>
-                <a href="{{ url('cart/store/' . $p->id) }}" class="cartButton btn btn-success col-xs-12"><i class="fas fa-shopping-cart fa-1x"></i> Buy Now</a>                
             </div>
             @endforeach
         <div class="clearfix"></div>

@@ -37,9 +37,6 @@ Route::group(['namespace' => 'App'], function(){
 
     // cart
     Route::get('cart/index/{id}', 'CartController@index')->name('cart_index');
-    Route::post('cart/updateQuantity', 'CartController@updateQuantity')->name('cart_update_quantity');
-    Route::get('cart/store/{id}', 'CartController@store')->name('cart_index')->name('cart_store');
-    Route::get('cart/delete/{id}', 'CartController@delete')->name('cart_index')->name('cart_delete');
 
     // checkout
     Route::get('checkout', 'CheckoutController@index')->name('checkout_index');

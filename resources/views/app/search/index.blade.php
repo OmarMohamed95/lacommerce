@@ -7,7 +7,7 @@
                 <img src="{{ uploads("productImg/" . $p->productImg[0]->img) }}">
                 <a href="{{ url('wishlist/store/' . $p->id) }}" class="wishlistButton pull-right"><i class="wishlist {{ (in_array($p->id, $wishlists))? 'fas fa-heart':'far fa-heart' }} fa-2x"></i></a>
                 <p class="brand">{{ $p->brand->name }}</p>
-                <a href="{{ url('product/index/' . $p->id) }}" style="text-decoration:none">
+                <a href="{{ route('product_index', ['id' => $p->id]) }}" style="text-decoration:none">
                     <p class="name">{{ strtoupper($p->name) }}</p>
                 </a>
                 <p class="price">{{ $p->price }} EGP</p>

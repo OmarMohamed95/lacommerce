@@ -16,8 +16,13 @@
         <hr>
         <p>{!! $product->desc !!}</p>
         <hr>
-        <p class="productPrice col-xs-3">EGP {{ $product->price }}</p>
-        <a href="{{ url('cart/store/' . $product->id) }}" class="cartButton btn btn-success col-xs-3 pull-right"><i class="fas fa-shopping-cart fa-1x"></i> Buy Now</a>
+        <p class="productPrice col-xs-3">EGP {{ number_format($product->price) }}</p>
+        <form action="{{ route('api_cart_store') }}" method="POST" class="cart-form">
+            <input type="hidden" name="id" value="{{ $product->id }}">
+            <button type="submit" class="cartButton btn btn-success col-xs-3 pull-right">
+                <i class="fas fa-shopping-cart fa-1x"></i> Buy Now
+            </button>
+        </form>
         <div class="clearfix"></div>
         <a style="margin-top: 10px;" href="{{ url('wishlist/store/' . $product->id) }}" class="wishlistButton pull-right"><i class="wishlist {{ ($isWishlisted) ? 'fas fa-heart':'far fa-heart' }} fa-2x"></i></a>
         <p style="color:black">Available Quantity : {{ $product->quantity }}</p>

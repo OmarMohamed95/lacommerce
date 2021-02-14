@@ -98,24 +98,21 @@ $(document).ready(function () {
   $('.deleteCart').on('click', function (e) {
     e.preventDefault();
     var url = $(this).attr('href');
-    $.ajax({
-      url: url,
-      method: 'GET',
-      dataType: 'json',
-      success: function success(data) {
-        $('.' + data.id).remove();
-        $('.messageTop').text(data.message).fadeIn();
-        setTimeout(function () {
-          $('.messageTop').fadeOut();
-        }, 3000);
-      }
+    axios.delete(url).then(function (response) {
+      $('.' + response.data.id).remove();
+      $('.messageTop').text(response.data.message).fadeIn();
+      setTimeout(function () {
+        $('.messageTop').fadeOut();
+      }, 3000);
+    }).catch(function (error) {
+      console.log(error);
     });
   }); // Update product quantity in cart
 
-  $('.quantity').on('change', function () {
+  $('.quantity').on('keyup', function () {
     var productId = $(this).attr('role');
     var data = $(this).val();
-    var url = "/cart/updateQuantity";
+    var url = "/api/cart/updateQuantity";
     $.ajaxSetup({
       headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -127,7 +124,7 @@ $(document).ready(function () {
         productId: productId,
         quantity: data
       },
-      method: 'POST',
+      method: 'PUT',
       success: function success(data) {
         $('#quantity_validate').text('');
         $('.checkout_anchor').off('click');
@@ -138,6 +135,12 @@ $(document).ready(function () {
         });
         $('#quantity_validate').text(e.responseJSON.quantity[0]);
       }
+    }); //Get total price
+
+    axios.get("/api/cart/total-price").then(function (response) {
+      $('#totalPrice').text(new Intl.NumberFormat().format(response.data.totalPrice));
+    }).catch(function (error) {
+      console.log(error);
     });
   });
 });

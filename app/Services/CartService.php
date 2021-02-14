@@ -78,4 +78,25 @@ class CartService
     {
         return $this->cartRepository->getCartQuery(Auth::user()->id);
     }
+
+    /**
+     * Get total cart price for current user
+     *
+     * @param int $userId
+     * @return int
+     */
+    public function getTotalCartPrice(int $userId)
+    {
+        $cartProducts = $this
+            ->cartRepository
+            ->getCartQuery($userId)
+            ->get();
+
+        $totalPrice = 0;
+        foreach ($cartProducts as $cartProduct) {
+            $totalPrice += $cartProduct->quantity * $cartProduct->product->price;
+        }
+
+        return $totalPrice;
+    }
 }

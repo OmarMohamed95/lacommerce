@@ -19,10 +19,10 @@ Route::group(['namespace' => 'Api'], function(){
     
     Route::group(['middleware' => 'auth:api'], function() {
         // cart
-        Route::get('/cart/total-price', 'CartController@getTotalPrice')->name('api_cart_total_price');
-        Route::put('/cart/updateQuantity', 'CartController@updateQuantity')->name('api_cart_update_quantity');
-        Route::post('/cart/store', 'CartController@store')->name('api_cart_store');
-        Route::delete('/cart/delete/{id}', 'CartController@delete')->name('api_cart_delete');
+        Route::get('/carts/total-price', 'CartController@getTotalPrice')->name('api_cart_total_price');
+        Route::put('/carts/{productId}/quantity', 'CartController@updateQuantity')->name('api_cart_update_quantity');
+        Route::post('/carts', 'CartController@store')->name('api_cart_store');
+        Route::delete('/carts/{productId}', 'CartController@delete')->name('api_cart_delete');
         
     });
 });

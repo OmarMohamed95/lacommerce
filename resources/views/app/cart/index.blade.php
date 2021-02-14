@@ -32,7 +32,7 @@
                     <p style="color:black">Available Quantity : {{ $product->quantity }}</p>
                 </td>
                 <td>
-                    <a href="{{ route('api_cart_delete', ['id' => $product->id]) }}" class="deleteCart"><i class="fas fa-trash-alt fa-2x deleteIcon"></i></a>
+                    <a href="{{ route('api_cart_delete', ['productId' => $product->id]) }}" class="deleteCart"><i class="fas fa-trash-alt fa-2x deleteIcon"></i></a>
                 </td>
             </tr>            
             @endforeach

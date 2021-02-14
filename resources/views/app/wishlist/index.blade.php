@@ -20,7 +20,12 @@
                     {{ number_format($i->price) }}
                 </td>
                 <td>
-                    <a href="{{ url('cart/store/' . $i->id) }}" class="cartButton btn btn-success"><i class="fas fa-shopping-cart fa-1x"></i> Buy Now</a>
+                    <form action="{{ route('api_cart_store') }}" method="POST" class="cart-form">
+                        <input type="hidden" name="id" value="{{ $i->id }}">
+                        <button type="submit" class="cartButton btn btn-success col-xs-4">
+                            <i class="fas fa-shopping-cart fa-1x"></i> Buy Now
+                        </button>
+                    </form>
                 </td>
                 <td>
                     <a href="{{ url('wishlist/delete/' . $i->id) }}" class="deleteWishlist"><i class="fas fa-trash-alt fa-2x deleteIcon"></i></a>
@@ -62,66 +67,6 @@
                 },
             });
         });
-
-        // cart: add product to cart
-        $('.cartButton').on('click', function(e){
-                e.preventDefault();
-                var url = $(this).attr('href');
-                $.ajax({
-                    url: url,
-                    method: 'GET',
-                    dataType: 'JSON',
-                    success: function(data){
-                        if(data.available === true){
-
-                        $('body').css('overflow', 'hidden');
-                        $('.opacityBackground').show();
-                        $('.messageConfirm').show().prepend('<p>' + data.msg + '</p>' +
-                        "<button class='cartConfirm btn btn-success'>" + data.confirm + "</button> " +
-                        "<button class='cartCancel btn btn-primary'>" + data.cancel + "</button>"
-                        );
-
-                        // redirect to cart index page
-                        $('.cartConfirm').on('click', function(){
-                            window.location.replace(data.redirect);
-                        });
-
-                        // continue shopping
-                        $('.cartCancel').on('click', function(){
-                            $('body').css('overflow', 'visible');
-                            $('.opacityBackground').hide();
-                            $('.messageConfirm').hide();
-                            $('.messageConfirm').children().remove();
-                        });
-
-                        }else if(data.available === false){
-
-                            $('body').css('overflow', 'hidden');
-                            $('.opacityBackground').show();
-                            $('.messageConfirm').show().prepend('<p>' + data.msg + '</p>' +
-                            "<button class='cartCancel btn btn-primary'>" + data.cancel + "</button>"
-                            );
-
-                            // continue shopping
-                            $('.cartCancel').on('click', function(){
-                            $('body').css('overflow', 'visible');
-                            $('.opacityBackground').hide();
-                            $('.messageConfirm').hide();
-                            $('.messageConfirm').children().remove();
-                        });
-
-                        }
-                    },
-                    error: function(data){
-                        $.each(data.responseJSON, function(k, v){
-                            $('.messageTop').text(v).fadeIn();
-                            setTimeout(function(){
-                                $('.messageTop').fadeOut();
-                            }, 3000);
-                        });
-                    },
-                });
-            });
     });
     </script>
 @endsection

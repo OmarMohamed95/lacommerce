@@ -19,9 +19,9 @@ $(document).ready(function(){
 
     // Update product quantity in cart
     $('.quantity').on('keyup', function(){
-        var productId = $(this).attr('role');
-        var data = $(this).val();
-        var url = "/api/cart/updateQuantity";
+        var productId = $(this).attr('role'),
+            data = $(this).val(),
+            url = `/api/carts/${productId}/quantity`;
 
         $.ajaxSetup({
             headers: {
@@ -32,7 +32,6 @@ $(document).ready(function(){
         $.ajax({
             url: url,
             data: {
-                productId: productId,
                 quantity: data,
             },
             method: 'PUT',
@@ -52,7 +51,7 @@ $(document).ready(function(){
         });
 
         //Get total price
-        axios.get(`/api/cart/total-price`)
+        axios.get(`/api/carts/total-price`)
         .then(function (response) {
             $('#totalPrice').text(new Intl.NumberFormat().format(response.data.totalPrice));
         })

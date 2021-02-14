@@ -11,7 +11,12 @@
                     <p class="name">{{ strtoupper($p->name) }}</p>
                 </a>
                 <p class="price">{{ $p->price }} EGP</p>
-                <a href="{{ url('cart/store/' . $p->id) }}" class="cartButton btn btn-success col-xs-12"><i class="fas fa-shopping-cart fa-1x"></i> Buy Now</a>
+                <form action="{{ route('api_cart_store') }}" method="POST" class="cart-form">
+                    <input type="hidden" name="id" value="{{ $p->id }}">
+                    <button type="submit" class="cartButton btn btn-success col-xs-12">
+                        <i class="fas fa-shopping-cart fa-1x"></i> Buy Now
+                    </button>
+                </form>
             </div>
         @endforeach
     </div>

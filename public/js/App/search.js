@@ -86,10 +86,10 @@
 /************************************************************************/
 /******/ ({
 
-/***/ "./resources/assets/js/search.js":
-/*!***************************************!*\
-  !*** ./resources/assets/js/search.js ***!
-  \***************************************/
+/***/ "./resources/assets/js/App/search.js":
+/*!*******************************************!*\
+  !*** ./resources/assets/js/App/search.js ***!
+  \*******************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -135,13 +135,13 @@ $(document).ready(function () {
 /***/ }),
 
 /***/ 1:
-/*!*********************************************!*\
-  !*** multi ./resources/assets/js/search.js ***!
-  \*********************************************/
+/*!*************************************************!*\
+  !*** multi ./resources/assets/js/App/search.js ***!
+  \*************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /var/www/html/lacommerce/resources/assets/js/search.js */"./resources/assets/js/search.js");
+module.exports = __webpack_require__(/*! /var/www/html/lacommerce/resources/assets/js/App/search.js */"./resources/assets/js/App/search.js");
 
 
 /***/ })

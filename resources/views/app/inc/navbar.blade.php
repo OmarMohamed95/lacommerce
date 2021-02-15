@@ -107,5 +107,5 @@
 </nav>
 @section('script')
     @parent
-    <script src="{{ asset('js/search.js') }}" type="text/javascript"></script>
+    <script src="{{ mix('js/App/search.js') }}" type="text/javascript"></script>
 @endsection

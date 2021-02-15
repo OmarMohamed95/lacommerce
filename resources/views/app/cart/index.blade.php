@@ -61,5 +61,5 @@
 @endsection
 @section('script')
 @parent
-    <script src="{{ asset('js/App/cart.js') }}" type="text/javascript"></script>
+    <script src="{{ mix('js/App/cart.js') }}" type="text/javascript"></script>
 @endsection

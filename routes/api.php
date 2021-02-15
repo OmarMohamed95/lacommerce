@@ -24,5 +24,7 @@ Route::group(['namespace' => 'Api'], function(){
         Route::post('/carts', 'CartController@store')->name('api_cart_store');
         Route::delete('/carts/{productId}', 'CartController@delete')->name('api_cart_delete');
         
+        // review
+        Route::post('/reviews/{productId}', 'ReviewController@review')->name('product_review');
     });
 });

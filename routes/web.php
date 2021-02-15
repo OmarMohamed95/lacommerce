@@ -27,9 +27,6 @@ Route::group(['namespace' => 'App'], function(){
     // product
     Route::get('/product/{id}', 'ProductController@index')->name('product_index');
 
-    // review
-    Route::post('/review/{productId}', 'ReviewController@review')->name('product_review');
-
     // wishlist
     Route::get('wishlist', 'WishlistController@index')->name('wishlist_index');
     Route::get('wishlist/store/{productId}', 'WishlistController@store')->name('wishlist_store');

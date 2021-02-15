@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\App;
+namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\App\ReviewRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Model\Review;
 
-class ReviewController extends Controller
+class ReviewController extends BaseController
 {
     public function __construct()
     {
@@ -23,14 +22,14 @@ class ReviewController extends Controller
      */
     public function review(ReviewRequest $request, int $productId)
     {
-        if ($request->ajax()) {
-            $review = new Review();
-            $review->content = $request->content;
-            $review->product_id = $productId;
-            $review->user_id = Auth::user()->id;
-            $review->save();
+        $review = new Review();
+        $review->content = $request->content;
+        $review->product_id = $productId;
+        $review->user_id = Auth::guard('api')->user()->id;
+        $review->save();
 
-            return response()->json(['review' => $review], 200);   
-        }
+        $review->user;
+
+        return $this->respondJson(['review' => $review]);
     }
 }

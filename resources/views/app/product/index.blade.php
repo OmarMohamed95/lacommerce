@@ -30,7 +30,7 @@
     <div class="col-xs-12">
         <hr>
         <h2 class="text-center reviewH">reviews</h2>
-        <form action="{{ url('review/' . $product->id) }}" method="post" id="review">
+        <form action="{{ route('product_review', ['productId' => $product->id]) }}" method="post" id="review">
             {{ csrf_field() }}
             <div class="form-group row">
                 <div class="col-xs-12 col-md-5">
@@ -68,110 +68,6 @@
 
 @section('script')
     @parent
-    
-    <script type="text/javascript">
-        $(document).ready(function(){
-
-            // image slide show arrows
-            var i = 0;
-            var imgCount = $('.productImgShowSlide').length;
-            var noOfImagesToDisplay = 2;
-
-            $('.productImgShowSlide').slice(noOfImagesToDisplay).hide();
-
-            function up(){
-                if(i >= imgCount - noOfImagesToDisplay){
-
-                    return false;
-                }
-
-                $('#'+i).hide(200);
-                $('#'+parseFloat(i + noOfImagesToDisplay)).show(200);
-
-                i = i + 1;
-                
-            }
-
-            function down(){
-                if(i === 0){
-
-                    return false;
-                }
-
-                $('#'+parseFloat(i + 1)).hide(200);
-                $('#'+parseFloat(i - 1)).show(200);
-
-                i = i - 1;
-                
-            }
-
-            $('#up').on('click', function(){
-                up();
-                $(this).animate({ "color": "#ddd" },100)
-                .delay(1)
-                .animate({ "color": '#636b6f' },100);
-            });
-
-            $('#down').on('click', function(){
-                down();
-                $(this).animate({ "color": "#ddd" },100)
-                .delay(1)
-                .animate({ "color": '#636b6f' },100);
-            });
-
-            // image slide show
-            var productImgShow = $('.productImgShow');
-            $('.productImgShowSlide').on('mouseenter', function(){
-                $(productImgShow).children().remove();
-                $(this).clone().removeClass('productImgShowSlide').appendTo(productImgShow);
-            });
-
-            $('.productImgShowSlide').first().trigger('mouseenter');
-
-            // review ajax
-            $('#review').on('submit',function(e){
-                e.preventDefault();
-                var data = $(this).serialize();
-                var url = $(this).attr('action');
-
-                $.ajax({
-                    url: url,
-                    data: data,
-                    method: 'POST',
-                    dataType: 'json',
-                    success: function(r){
-
-                        $('#errorMsg').hide();
-
-                        var date = new Date(r.review.created_at);
-                        var options = { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' };
-                        var dateToStr = date.toLocaleDateString(false, options);
-
-                        $('.showReviews').prepend("<div class='singleReview'>" +
-                            "<p class='pull-right'>" + dateToStr + "</p>" + 
-                            "<p class='reviewName'>" + r.review.user.name  + "</p>" + 
-                            "<p>" +  r.review.content  + "</p>" + 
-                            "</div>"
-                        );
-
-                    },
-                    error: function(data){
-
-                        $('#errorMsg').show();
-
-                        $.each(data.responseJSON, function(k, v){
-                            $('#errorMsg').addClass('alert alert-danger text-center').text(v);
-                        });
-
-                    },
-                    complete: function(){
-                        $('#review').trigger('reset');
-                        $('#noReviewsMsg').remove();
-                    }
-                });
-
-            });
-
-        });
-    </script>
+    <script src="{{ mix('js/App/photoGallery.js') }}" type="text/javascript"></script>
+    <script src="{{ mix('js/App/review.js') }}" type="text/javascript"></script>
 @endsection

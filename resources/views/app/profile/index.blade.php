@@ -50,26 +50,5 @@
 @endsection
 @section('script')
 @parent
-    <script type="text/javascript">
-        $(document).ready(function(){
-            // edit profile
-            $('.editProfile').on('click', function(e){
-                e.preventDefault();
-
-                $(this).fadeOut(function(){
-                    $('#updateProfile').append(`<div class="form-group row">
-                                                <div class="col-sm-12">
-                                                    <input type="submit" value="submit" class="col-xs-2 col-xs-offset-5 btn btn-primary">
-                                                </div>
-                                            </div>`);
-                });
-
-                $(".editCred").fadeOut(function(){
-                    $(".profileInput").fadeIn();
-                });
-                $(".editCred").children().fadeOut();
-                $(this).remove();
-            });
-        });
-    </script>
+    <script src="{{ mix('js/App/profile.js') }}" type="text/javascript"></script>
 @endsection

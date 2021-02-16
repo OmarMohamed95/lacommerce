@@ -28,7 +28,7 @@
                     </form>
                 </td>
                 <td>
-                    <a href="{{ url('wishlist/delete/' . $i->id) }}" class="deleteWishlist"><i class="fas fa-trash-alt fa-2x deleteIcon"></i></a>
+                    <a href="{{ route('wishlist_product_delete', ['productId' => $i->id]) }}" class="deleteWishlist"><i class="fas fa-trash-alt fa-2x deleteIcon"></i></a>
                 </td>
             </tr>            
             @endforeach
@@ -47,26 +47,6 @@
 @endsection
 @section('script')
 @parent
-    <script type="text/javascript">
-    $(document).ready(function(){
-        // delete product from wishlist
-        $('.deleteWishlist').on('click', function(e){
-            e.preventDefault();
-
-            var url = $(this).attr('href');
-            $.ajax({
-                url: url,
-                method: 'GET',
-                dataType: 'json',
-                success: function(data){
-                    $('.' + data.id).remove();
-                    $('.messageTop').text(data.message).fadeIn();
-                    setTimeout(function(){
-                        $('.messageTop').fadeOut();
-                            }, 3000);
-                },
-            });
-        });
-    });
-    </script>
+    <script src="{{ mix('js/App/wishlist.js') }}" type="text/javascript"></script>
+    <script src="{{ mix('js/App/addToCart.js') }}" type="text/javascript"></script>
 @endsection

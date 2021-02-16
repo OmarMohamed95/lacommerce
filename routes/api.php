@@ -26,5 +26,9 @@ Route::group(['namespace' => 'Api'], function(){
         
         // review
         Route::post('/reviews/{productId}', 'ReviewController@review')->name('product_review');
+        
+        // wishlist
+        Route::post('wishlists/{productId}', 'WishlistController@store')->name('wishlist_product_store');
+        Route::delete('wishlists/{productId}', 'WishlistController@delete')->name('wishlist_product_delete');
     });
 });

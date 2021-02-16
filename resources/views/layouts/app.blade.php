@@ -36,18 +36,5 @@
         </div>
     </div>
     @yield('script')
-    <!-- Scripts -->
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $('#disableCart').on('click', function(e){
-                e.preventDefault();
-                $('.messageTop').text("Login to be able to view your cart!").fadeIn();
-                setTimeout(function(){
-                    $('.messageTop').fadeOut();
-                        }, 3000);
-            });
-        });
-    </script>
-    <script src="{{ url('js/javascript.js') }}" type="text/javascript"></script>
 </body>
 </html>

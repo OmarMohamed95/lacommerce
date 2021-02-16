@@ -24,7 +24,7 @@
             </button>
         </form>
         <div class="clearfix"></div>
-        <a style="margin-top: 10px;" href="{{ url('wishlist/store/' . $product->id) }}" class="wishlistButton pull-right"><i class="wishlist {{ ($isWishlisted) ? 'fas fa-heart':'far fa-heart' }} fa-2x"></i></a>
+        <a style="margin-top: 10px;" href="{{ route('wishlist_product_store', ['productId' => $product->id]) }}" class="wishlistButton pull-right"><i class="wishlist {{ ($isWishlisted) ? 'fas fa-heart':'far fa-heart' }} fa-2x"></i></a>
         <p style="color:black">Available Quantity : {{ $product->quantity }}</p>
     </div>
     <div class="col-xs-12">
@@ -70,4 +70,6 @@
     @parent
     <script src="{{ mix('js/App/photoGallery.js') }}" type="text/javascript"></script>
     <script src="{{ mix('js/App/review.js') }}" type="text/javascript"></script>
+    <script src="{{ mix('js/App/wishlist.js') }}" type="text/javascript"></script>
+    <script src="{{ mix('js/App/addToCart.js') }}" type="text/javascript"></script>
 @endsection

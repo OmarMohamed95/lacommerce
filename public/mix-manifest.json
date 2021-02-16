@@ -1,9 +1,12 @@
 {
+    "/js/App/addToCart.js": "/js/App/addToCart.js",
     "/js/App/cart.js": "/js/App/cart.js",
+    "/js/App/cartShared.js": "/js/App/cartShared.js",
     "/js/App/photoGallery.js": "/js/App/photoGallery.js",
     "/js/App/profile.js": "/js/App/profile.js",
     "/js/App/review.js": "/js/App/review.js",
     "/js/App/search.js": "/js/App/search.js",
+    "/js/App/wishlist.js": "/js/App/wishlist.js",
     "/js/app.js": "/js/app.js",
     "/css/app.css": "/css/app.css"
 }

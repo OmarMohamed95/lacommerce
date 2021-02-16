@@ -108,4 +108,5 @@
 @section('script')
     @parent
     <script src="{{ mix('js/App/search.js') }}" type="text/javascript"></script>
+    <script src="{{ mix('js/App/cartShared.js') }}" type="text/javascript"></script>
 @endsection

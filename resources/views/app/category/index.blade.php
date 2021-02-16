@@ -59,7 +59,7 @@
                 <div class="col-xs-12 col-md-4 homeProducts">
                     <a href="{{ route('product_index', ['id' => $p->id]) }}" style="text-decoration:none">
                         <img src="{{ uploads("productImg/" . $p->img) }}">
-                        <a href="{{ url('wishlist/store/' . $p->id) }}" class="pull-right wishlistButton"><i class="wishlist {{ (in_array($p->id, $wishlistProductsIds))? 'fas fa-heart':'far fa-heart' }} fa-2x"></i></a>
+                        <a href="{{ route('wishlist_product_store', ['productId' => $p->id]) }}" class="pull-right wishlistButton"><i class="wishlist {{ (in_array($p->id, $wishlistProductsIds))? 'fas fa-heart':'far fa-heart' }} fa-2x"></i></a>
                         <p class="brand">{{ $p->brandName }}</p>
                         <p class="name">{{ strtoupper($p->name) }}</p>
                         <p class="price">{{ number_format($p->price) }} EGP</p>
@@ -83,4 +83,9 @@
             @endif
             <div class="clearfix"></div>
         </div>
+@endsection
+@section('script')
+    @parent
+    <script src="{{ mix('js/App/wishlist.js') }}" type="text/javascript"></script>
+    <script src="{{ mix('js/App/addToCart.js') }}" type="text/javascript"></script>
 @endsection

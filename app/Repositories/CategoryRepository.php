@@ -53,4 +53,16 @@ class CategoryRepository implements CategoryRepositoryInterface
             ->whereNotNull('parentID')
             ->get();
     }
+
+    /**
+     * Get sub categories
+     *
+     * @return Collection
+     */
+    public function getSubCategories()
+    {
+        return Category::whereNotNull('parentID')
+        ->where('status', true)
+        ->get();
+    }
 }

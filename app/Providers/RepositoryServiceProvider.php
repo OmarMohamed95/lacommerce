@@ -2,12 +2,16 @@
 
 namespace App\Providers;
 
+use App\Repositories\BrandRepository;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\Contracts\CartRepositoryInterface;
 use App\Repositories\CartRepository;
+use App\Repositories\CategoryBrandRepository;
 use App\Repositories\Contracts\CategoryRepositoryInterface;
 use App\Repositories\CategoryRepository;
 use App\Repositories\CheckoutRepository;
+use App\Repositories\Contracts\BrandRepositoryInterface;
+use App\Repositories\Contracts\CategoryBrandRepositoryInterface;
 use App\Repositories\Contracts\CheckoutRepositoryInterface;
 use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Repositories\ProductRepository;
@@ -91,6 +95,16 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(
             ProductElasticsearchRepositoryInterface::class,
             ProductElasticsearchRepository::class
+        );
+
+        $this->app->bind(
+            BrandRepositoryInterface::class,
+            BrandRepository::class
+        );
+
+        $this->app->bind(
+            CategoryBrandRepositoryInterface::class,
+            CategoryBrandRepository::class
         );
     }
 }

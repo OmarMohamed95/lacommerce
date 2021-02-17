@@ -18,7 +18,7 @@
                 <li><a href="{{ aurl('categories') }}">categores</a></li>
                 <li><a href="{{ aurl('products') }}">products</a></li>
                 <li><a href="{{ aurl('offers') }}">offers</a></li>
-                <li><a href="{{ aurl('brands') }}">brands</a></li>
+                <li><a href="{{ route('admin_brand_index') }}">brands</a></li>
                 <li><a href="{{ aurl('custom_field') }}">custom field</a></li>
                 <li><a href="{{ aurl('reviews') }}">reviews</a></li>
                 <li><a href="{{ aurl('checkout') }}">checkouts</a></li>

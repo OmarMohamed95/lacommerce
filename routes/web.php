@@ -18,9 +18,6 @@ Route::group(['namespace' => 'App'], function(){
     // home
     Route::get('/home', 'DefaultController@index')->name('home_index');
 
-    // search
-    Route::post('/search', 'SearchController@search')->name('search_action');
-
     // category
     Route::get('/category/{id}', 'CategoryController@index')->name('category_index');
 

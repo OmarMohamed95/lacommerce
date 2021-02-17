@@ -2,7 +2,7 @@
 @section('content')
 <h1 class="alert alert-info pageH">Create brand</h1>
 <div class="col-xs-offset-2">
-    <form action="{{ aurl('brands') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('admin_brand_store') }}" method="POST" enctype="multipart/form-data">
         {{ csrf_field() }}
         <div class="form-group row">
             <label for="name" class="col-xs-2 col-form-label">Name</label>
@@ -20,10 +20,8 @@
             <label class="col-xs-2 col-form-label" for="Category">Category</label>
             <div class="col-xs-6">
                 <select name="category_id[]" class="form-control multipleSelect" multiple>
-                    @foreach ($allcategories as $item)
-                    @if (! in_array($item->id, $parentID))
-                        <option value="{{ $item->id }}">{{ $item->name }}</option>                        
-                    @endif
+                    @foreach ($categories as $category)
+                        <option value="{{ $category->id }}">{{ $category->name }}</option>                        
                     @endforeach
                 </select>
             </div>

@@ -1,10 +1,10 @@
 @extends('admin.layouts.adminTemplate')
 @section('content')
-<form action="{{ aurl('brands/deleteMultible') }}" method="POST">
+<form action="{{ route('admin_brand_delete') }}" method="POST">
         {{ csrf_field() }}
         <div class="alert alert-info pageH">
             <h1>Brands</h1>
-            <a class="btn btn-primary col-xs-offset-10" href="{{ aurl('brands/create')}}">Create</a>
+            <a class="btn btn-primary col-xs-offset-10" href="{{ route('admin_brand_create')}}">Create</a>
             <input type="submit" value="Delete" class="btn btn-danger">
         </div>
         <table class="table table-hover">
@@ -17,29 +17,29 @@
                 <th>Date</th>
                 <th><small>edit | delete</small></th>
             </tr>
-            @foreach ($allBrands as $item)
+            @foreach ($brands as $brand)
                 <tr>
-                    <th><input class="singleCB" type="checkbox" name="id[]" value="{{ $item->id}}"></th>
-                    <td>{{ $item->id }}</td>
-                    <td>{{ $item->name }}</td>
+                    <th><input class="singleCB" type="checkbox" name="id[]" value="{{ $brand->id}}"></th>
+                    <td>{{ $brand->id }}</td>
+                    <td>{{ $brand->name }}</td>
                     <td>
                         <ul>
-                            @foreach ($item->category as $c)
-                                <li>{{ $c->name }}</li>
+                            @foreach ($brand->category as $category)
+                                <li>{{ $category->name }}</li>
                             @endforeach
                         </ul>    
                     </td>
-                    <td><img src="{{ url("/uploads/brandImg/$item->img") }}" class='showEditImg'></td>
-                    <td>{{ $item->created_at }}</td>
+                    <td><img src="{{ url("/uploads/brandImg/$brand->img") }}" class='showEditImg'></td>
+                    <td>{{ $brand->created_at }}</td>
                     <td>
-                        <a href="{{ aurl('brands')}}/{{ $item->id }}/edit"><i class="fas fa-edit fa-lg editIcon"></i></a>
-                        <a href="{{ aurl('brands/deleteSingle')}}/{{ $item->id }}"><i class="far fa-trash-alt fa-lg deleteIcon"></i></a>
+                        <a href="{{ route('admin_brand_edit', ['brandId' => $brand->id]) }}"><i class="fas fa-edit fa-lg editIcon"></i></a>
+                        <a href="{{ route('admin_brand_delete', ['brandId' => $brand->id]) }}"><i class="far fa-trash-alt fa-lg deleteIcon"></i></a>
                     </td>
                 </tr>
             @endforeach
         </table>
     </form>
-    {{ $allBrands->links() }}
+    {{ $brands->links() }}
 @endsection
 @section('script')
 <script type="text/javascript">

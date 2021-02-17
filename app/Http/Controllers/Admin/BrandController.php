@@ -11,6 +11,9 @@ use App\Model\CategoryBrand;
 use Illuminate\Support\Facades\Storage;
 use App\Exceptions\PhotoExtensionNotAllowedException;
 use App\Contracts\PhotoServiceInterface;
+use App\Repositories\Contracts\BrandRepositoryInterface;
+use App\Repositories\Contracts\CategoryBrandRepositoryInterface;
+use App\Services\CategoryService;
 
 /**
  * Brands Controller
@@ -19,66 +22,88 @@ use App\Contracts\PhotoServiceInterface;
  */
 class BrandController extends Controller
 {
+    const DEFAULT_IMAGE = 'no-image-available.jpg';
+
+    /**
+     * Brand Repository
+     *
+     * @param BrandRepositoryInterface $brandRepository
+     */
+    private $brandRepository;
+    
     /**
      * Photo Service
      *
-     * @param PhotoServiceInterface $PhotoService
+     * @param PhotoServiceInterface $photoService
      */
-    private $PhotoService;
+    private $photoService;
+    
+    /**
+     * Category Service
+     *
+     * @param CategoryService $categoryService
+     */
+    private $categoryService;
+    
+    /**
+     * CategoryBrand Repository
+     *
+     * @param CategoryBrandRepositoryInterface $categoryBrandRepository
+     */
+    private $categoryBrandRepository;
 
-    public function __construct(PhotoServiceInterface $PhotoService)
-    {
-        $this->PhotoService = $PhotoService;
+    public function __construct(
+        BrandRepositoryInterface $brandRepository,
+        PhotoServiceInterface $photoService,
+        CategoryService $categoryService,
+        CategoryBrandRepositoryInterface $categoryBrandRepository
+    ) {
+        $this->brandRepository = $brandRepository;
+        $this->photoService = $photoService;
+        $this->categoryService = $categoryService;
+        $this->categoryBrandRepository = $categoryBrandRepository;
     }
 
     /**
-     * Display a listing of the resource.
+     * Index action
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function index()
     {
-        $allBrands = Brand::paginate(10);
-        return view('admin.brands.index')->with('allBrands', $allBrands);
+        $allBrands = $this->brandRepository->getAllPaginated(10);
+        return view('admin.brands.index')->with('brands', $allBrands);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Create action
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function create()
     {
-        $allCategories = Category::all();
-        $parents = Category::whereNotNull('parentID')->get();
-        foreach ($parents as $item) {
-            $parentId[] = $item->parentID; 
-        }
-    
-        $data = [
-            'allcategories' => $allCategories,
-            'parentID' => $parentId ?? [],
-        ];
-        return view('admin.brands.create')->with($data);
+        $subCategories = $this->categoryService->getSubCategories();
+
+        return view('admin.brands.create')->with('categories', $subCategories);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store action
      *
-     * @param App\Http\Requests\BrandRequest $request Request object
-     * 
-     * @return \Illuminate\Http\Response
+     * @param BrandRequest $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(BrandRequest $request)
     {
-        $storedPhotosNames[] = 'no-image-available.jpg';
+        $storedPhotosNames[] = self::DEFAULT_IMAGE;
         if ($request->hasFile('img')) {
             try {
-                $storedPhotosNames = $this->PhotoService
+                $storedPhotosNames = $this->photoService
                     ->setStorePath('brandImg/')
                     ->store();
             } catch (PhotoExtensionNotAllowedException $th) {
-                return redirect(aurl("brands/create"))
+                return redirect()
+                    ->route("admin_brand_create")
                     ->with('error', __('messages.error.ext_not_allowed', ['ext' => $th->getMessage()]));
             }
         }
@@ -88,64 +113,56 @@ class BrandController extends Controller
         $brand->img = $storedPhotosNames[0];
         $brand->save();
         
-        foreach ($request->category_id as $v) {
+        foreach ($request->category_id as $categoryId) {
             $categoryBrand = new CategoryBrand();
-            $categoryBrand->category_id = $v;
+            $categoryBrand->category_id = $categoryId;
             $categoryBrand->brand_id = $brand->id;
             $categoryBrand->save();
         }
 
-        return redirect(aurl('brands'));
+        return redirect()->route('admin_brand_index');
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Edit page
      *
-     * @param int $id The brand id
-     * 
-     * @return \Illuminate\Http\Response
+     * @param int $brandId
+     * @return \Illuminate\View\View
      */
-    public function edit($id)
+    public function edit(int $brandId)
     {
-        $brand = Brand::find($id);
-        $allCategories = Category::all();
-        $parents = Category::whereNotNull('parentID')->get();
+        $brand = $this->brandRepository->find($brandId);
+        $subCategories = $this->categoryService->getSubCategories();
 
-        if ($parents) {
-            foreach ($parents as $parent) {
-                $parentId[] = $parent->parentID; 
-            }
-        }
-
-        $data = [
-            'single' => $brand,
-            'allcategories' => $allCategories,
-            'parentID' => $parentId ?? []
-        ];
-
-        return view('admin.brands.edit')->with($data);
+        return view('admin.brands.edit')->with(
+            [
+                'brand' => $brand,
+                'categories' => $subCategories,
+            ]
+        );
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update action
      *
-     * @param App\Http\Requests\BrandRequest $request Request object
-     * @param int $id Brand id
+     * @param BrandRequest $request
+     * @param int $brandId
      * 
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(BrandRequest $request, $id)
+    public function update(BrandRequest $request, int $brandId)
     {
-        $brand = Brand::find($id);
+        $brand = $this->brandRepository->find($brandId);
 
         $storedPhotosNames[] = $brand->img;
         if ($request->hasFile('img')) {
             try {
-                $storedPhotosNames = $this->PhotoService
+                $storedPhotosNames = $this->photoService
                     ->setStorePath('brandImg/')
                     ->store();
             } catch (PhotoExtensionNotAllowedException $th) {
-                return redirect(aurl("brands/$id/edit"))
+                return redirect()
+                    ->route("admin_brand_edit", ['brandId' => $brandId])
                     ->with('error', __('messages.error.ext_not_allowed', ['ext' => $th->getMessage()]));
             }
         }
@@ -154,8 +171,7 @@ class BrandController extends Controller
         $brand->img = $storedPhotosNames[0];
         $brand->save();
 
-        $categoryBrand = CategoryBrand::where('brand_id', $id);
-        $categoryBrand->delete();
+        $this->categoryBrandRepository->findByBrandQuery([$brandId])->delete();
         
         foreach ($request->category_id as $v) {
             $categoryBrand = new CategoryBrand();
@@ -164,47 +180,28 @@ class BrandController extends Controller
             $categoryBrand->save();
         }
 
-        return redirect(aurl('brands'));
+        return redirect()->route('admin_brand_index');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete action
      *
-     * @param int $brandId Brand id
+     * @param Request $request
+     * @param int $brandId
      * 
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function deleteSingle($brandId)
+    public function delete(Request $request, int $brandId = null)
     {
-        $brand = Brand::find($brandId);
-        $brand->delete();
-
-        $categoryBrand = CategoryBrand::where('brand_id', $brandId);
-        $categoryBrand->delete();
-
-        return redirect(aurl('brands'));
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param \Illuminate\Http\Request $request Request object
-     * 
-     * @return \Illuminate\Http\Response
-     */
-    public function deleteMultible(Request $request)
-    {
-        $brandIDs = $request->id;
-        if (empty($brandIDs)) {
-            return redirect(aurl('brands'));
+        $brandIds = $brandId ? [$brandId] : $request->id;
+        if (empty($brandIds)) {
+            return redirect()->route('admin_brand_index');
         }
 
-        $brand = Brand::whereIn('id', $brandIDs);
-        $brand->delete();
+        $this->brandRepository->getBrandsQuery($brandIds)->delete();
 
-        $categoryBrand = CategoryBrand::whereIn('brand_id', $brandIDs);
-        $categoryBrand->delete();
+        $this->categoryBrandRepository->findByBrandQuery($brandIds)->delete();
 
-        return redirect(aurl('brands'));
+        return redirect()->route('admin_brand_index');
     }
 }

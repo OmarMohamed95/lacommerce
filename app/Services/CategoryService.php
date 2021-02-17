@@ -29,4 +29,14 @@ class CategoryService
     {
         return $this->categoryRepository->getCategoryWithProductsForHomePage();
     }
+
+    /**
+     * Get sub categories
+     *
+     * @return Collection
+     */
+    public function getSubCategories()
+    {
+        return $this->categoryRepository->getSubCategories();
+    }
 }

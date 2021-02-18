@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Model\Category;
 use DB;
 use App\Http\Requests\CategoryRequest;
+use App\Repositories\Contracts\CategoryRepositoryInterface;
 
 /**
  * Categories Controller
@@ -17,133 +18,119 @@ use App\Http\Requests\CategoryRequest;
 class CategoryController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * @var CategoryRepositoryInterface $categoryRepository
+     */
+    private $categoryRepository;
+
+    public function __construct(CategoryRepositoryInterface $categoryRepository)
+    {
+        $this->categoryRepository = $categoryRepository;
+    }
+
+    /**
+     * Index action
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function index()
     {
-        $allCategories = Category::paginate(10);
-        return view('admin.categories.index')->with('allCategories', $allCategories);
+        $categories = $this->categoryRepository->getAllPaginated(10);
+        return view('admin.categories.index')->with('categories', $categories);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Create page
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function create()
     {
-        $allCategories = DB::select("SELECT * FROM categories where parentID is NULL");
+        $parentCategories = $this->categoryRepository->getParentCategories();
 
-        return view('admin.categories.create')->with('allCategores', $allCategories);
+        return view('admin.categories.create')
+            ->with('parentCategores', $parentCategories);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store action
      *
-     * @param App\Http\Requests\CategoryRequest $request 
+     * @param CategoryRequest $request 
      * 
-     * @return Redirect
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(CategoryRequest $request)
     {
         $category = new Category;
         $category->name = $request->name;
-
-        if ($request->parentID === 'FALSE') {
-            $category->parentID = null;
-        } else {
-            $category->parentID = $request->parentID;
-        }
-        
+        $category->parentID = ($request->parentID == 'none') ? null : $request->parentID;
         $category->status = $request->status;
         $category->sort = $request->sort;
         $category->home = $request->home;
         $category->admin_id = Auth::guard('admin')->user()->id;
         $category->save();
 
-        return redirect(aurl('categories'));
+        return redirect()->route('admin_category_index');
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * edit page
      *
-     * @param int $id Category id
+     * @param int $categoryId
      * 
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
-    public function edit($id)
+    public function edit($categoryId)
     {
-        $allCategories = DB::select("SELECT * FROM categories where parentID is NULL");
-        $single = Category::where('id', $id)->first();
-        $data = [
-            'allCat' => $allCategories,
-            'single' => $single
-        ];
+        $parentCategories = $this->categoryRepository->getParentCategories();
+        $category = $this->categoryRepository->find($categoryId);
         
-        return view('admin.categories.edit')->with($data);
+        return view('admin.categories.edit')->with(
+            [
+                'parentCategories' => $parentCategories,
+                'category' => $category
+            ]
+        );
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update action
      *
-     * @param App\Http\Requests\CategoryRequest $request 
-     * @param int $id Category id
+     * @param CategoryRequest $request
+     * @param int $categoryId
      * 
-     * @return Redirect
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(CategoryRequest $request, $id)
+    public function update(CategoryRequest $request, int $categoryId)
     {
-        $category = Category::find($id);
+        $category = $this->categoryRepository->find($categoryId);
+
         $category->name = $request->name;
-
-        if ($request->parentID === 'FALSE') {
-            $category->parentID = null;
-        } else {
-            $category->parentID = $request->parentID;
-        }
-
+        $category->parentID = ($request->parentID == 'none') ? null : $request->parentID;
         $category->status = $request->status;
         $category->sort = $request->sort;
         $category->home = $request->home;
         $category->admin_id = Auth::guard('admin')->user()->id;
         $category->save();
 
-        return redirect(aurl('categories'));
+        return redirect()->route('admin_category_index');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete action
      *
-     * @param int $id Category id
-     * 
-     * @return Redirect
+     * @param Request $request
+     * @param int|null $categoryId
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function deleteSingle($id)
+    public function delete(Request $request, int $categoryId = null)
     {
-        $delete = Category::where('id', $id);
-        $delete->delete();
-        return redirect(aurl('categories'));
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param \Illuminate\Http\Request $request 
-     * 
-     * @return Redirect
-     */
-    public function deleteMultible(Request $request)
-    {
-        $id = $request->id;
-
-        if (empty($id)) {
-            return redirect(aurl('categories'));
+        $categoryIds = $categoryId ? [$categoryId] : $request->id;
+        if (empty($categoryIds)) {
+            return redirect()->route('admin_category_index');
         }
 
-        $delete = Category::whereIn('id', $id);
-        $delete->delete();
-        return redirect(aurl('categories'));
+        $this->categoryRepository->getCategoriesByIdsQuery($categoryIds)->delete();
+        
+        return redirect()->route('admin_category_index');
     }
 }

@@ -11,9 +11,12 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function(){
     Route::group(['middleware' => 'admin:admin'], function(){
 
         // categories
-        Route::resource('categories', 'CategoryController');
-        Route::get('/categories/deleteSingle/{id}', 'CategoryController@deleteSingle');
-        Route::post('/categories/deleteMultible', 'CategoryController@deleteMultible');
+        Route::get('/categories', 'CategoryController@index')->name('admin_category_index');
+        Route::get('/categories/create', 'CategoryController@create')->name('admin_category_create');
+        Route::post('/categories/store', 'CategoryController@store')->name('admin_category_store');
+        Route::get('/categories/{categoryId}/edit', 'CategoryController@edit')->name('admin_category_edit');
+        Route::put('/categories/{categoryId}', 'CategoryController@update')->name('admin_category_update');
+        Route::any('/categories/delete/{categoryId?}', 'CategoryController@delete')->name('admin_category_delete');
 
         // products
         Route::resource('products', 'ProductController');

@@ -2,7 +2,7 @@
 @section('content')
 <h1 class="alert alert-info pageH">Create category</h1>
 <div class="col-xs-offset-2">
-    <form action="{{ route('categories.store') }}" method="POST">
+    <form action="{{ route('admin_category_store') }}" method="POST">
         {{ csrf_field() }}
         <div class="form-group row">
             <label for="name" class="col-xs-2 col-form-label">Name</label>
@@ -14,9 +14,9 @@
             <label class="col-xs-2 col-form-label" for="Parent">Parent section</label>
             <div class="col-xs-6">
                 <select name="parentID" class="form-control" id="parent_section">
-                    <option value="FALSE" selected>none</option>
-                    @foreach ($allCategores as $item)
-                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                    <option selected>none</option>
+                    @foreach ($parentCategores as $parentCategory)
+                        <option value="{{ $parentCategory->id }}">{{ $parentCategory->name }}</option>
                     @endforeach
                 </select>
             </div>
@@ -64,10 +64,10 @@
             });
 
             function parent_section(){
-                if($('#parent_section').val() === 'FALSE'){
-                    $('#disable').attr('disabled','disabled');
-                }else{
-                    $('#disable').attr('disabled',null);
+                if ($('#parent_section').val() === 'none') {
+                    $('#disable').attr('disabled', 'disabled');
+                } else {
+                    $('#disable').attr('disabled', null);
                 }
             }
         });

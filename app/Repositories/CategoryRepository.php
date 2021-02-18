@@ -65,4 +65,38 @@ class CategoryRepository implements CategoryRepositoryInterface
         ->where('status', true)
         ->get();
     }
+
+    /**
+     * Get all paginated
+     *
+     * @param int $countPerPage
+     * @return Collection
+     */
+    public function getAllPaginated(int $countPerPage)
+    {
+        return Category::paginate($countPerPage);
+    }
+
+    /**
+     * Get parent categories
+     *
+     * @return Collection
+     */
+    public function getParentCategories()
+    {
+        return Category::where('parentID', null)
+            ->where('status', true)
+            ->get();
+    }
+
+    /**
+     * Get categories by IDs query
+     *
+     * @param array $categoryIds
+     * @return Collection
+     */
+    public function getCategoriesByIdsQuery(array $categoryIds)
+    {
+        return Category::whereIn('id', $categoryIds);
+    }
 }

@@ -30,12 +30,12 @@ Route::group(['namespace' => 'App'], function(){
     // cart
     Route::get('cart/index/{id}', 'CartController@index')->name('cart_index');
 
-    // checkout
-    Route::get('checkout', 'CheckoutController@index')->name('checkout_index');
-    Route::get('checkout/orders/{id}', 'CheckoutController@myOrders')->name('checkout_orders');
-    Route::get('checkout/done/{order_code}', 'CheckoutController@done')->name('checkout_done');
-    Route::any('checkouts/trackOrder/{orderCode?}', 'CheckoutController@trackOrderByCode')->name('checkout_track_code');
-    Route::post('checkout/checkout/{id}', 'CheckoutController@checkout')->name('checkout_action');
+    // order
+    Route::get('order', 'OrderController@index')->name('order_index');
+    Route::get('order/orders/{id}', 'OrderController@myOrders')->name('order_orders');
+    Route::get('order/done/{orderId}', 'OrderController@done')->name('order_done');
+    Route::any('orders/trackOrder/{orderId?}', 'OrderController@trackOrderByCode')->name('order_track');
+    Route::post('order/checkout', 'OrderController@checkout')->name('order_checkout_action');
 
     //profile
     Route::get('profile', 'ProfileController@index')->name('profile_index');

@@ -2,7 +2,7 @@
 
 namespace App\Constants;
 
-final class CheckoutStates
+final class OrderStatus
 {
     const PENDING = 0;
     const PREPARING = 1;

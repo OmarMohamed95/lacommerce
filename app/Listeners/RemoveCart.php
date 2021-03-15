@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Events\CheckoutDone;
+use App\Events\OrderDone;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -21,10 +21,10 @@ class RemoveCart
     /**
      * Handle the event.
      *
-     * @param  CheckoutDone  $event
+     * @param  OrderDone  $event
      * @return void
      */
-    public function handle(CheckoutDone $event)
+    public function handle(OrderDone $event)
     {
         $cart = $event->getCart();
         $cart->delete();

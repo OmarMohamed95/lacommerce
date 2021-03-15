@@ -4,11 +4,11 @@ namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Checkout extends Model
+class Order extends Model
 {
     public function products()
     {
-        return $this->belongsTo(Product::class, 'product_id', 'id');
+        return $this->hasMany(OrderProduct::class);
     }
 
     public function user()

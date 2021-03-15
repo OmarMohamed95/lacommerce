@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Events\CheckoutOccur;
+use App\Events\OrderOccur;
 use App\Events\Event;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -25,7 +25,7 @@ class UpdateProductQuantity
      * @param  Event  $event
      * @return void
      */
-    public function handle(CheckoutOccur $event)
+    public function handle(OrderOccur $event)
     {
         $product = $event->getProduct();
         $cartQuantity = $event->getCartProductQuantity();

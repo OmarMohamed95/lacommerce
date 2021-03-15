@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use App\Services\CheckoutService;
+use App\Services\OrderService;
 use Illuminate\Support\ServiceProvider;
 
-class CheckoutServiceProvider extends ServiceProvider
+class OrderServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -25,7 +25,7 @@ class CheckoutServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(
-            CheckoutService::class
+            OrderService::class
         );
     }
 }

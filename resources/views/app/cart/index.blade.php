@@ -46,7 +46,7 @@
         </div>
         <div class="pull-right">
             <p id="total" style="font-weight: bold;"></p>
-            <a href="{{ url('checkout') }}" class="btn btn-success checkout_anchor"><i class="fas fa-shopping-cart fa-1x"></i> CHECKOUT</a>
+            <a href="{{ url('order') }}" class="btn btn-success checkout_anchor"><i class="fas fa-shopping-cart fa-1x"></i> CHECKOUT</a>
         </div>
     @else
     <div class="row">

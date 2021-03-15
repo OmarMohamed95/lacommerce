@@ -1,8 +1,8 @@
 @extends('layouts.app')
 @section('content')
-    @inject('orderStates', 'App\Constants\CheckoutStates')
+    @inject('orderStates', 'App\Constants\OrderStatus')
     @php
-        $orderState = $order->first()->state;
+        $orderState = $order->status;
     @endphp
     <div class="addressDetails">
         <h3>ORDER State</h3>
@@ -27,32 +27,36 @@
     </div>
     <div class="addressDetails">
         <h3>ORDER DETAILS</h3>
-        <h3>ORDER CODE : {{ $order->first()->order_code }}</h3>
+        <h3>ORDER ID : {{ $order->id }}</h3>
         <table class="wishlistTable table" style="background-color: white">
             <tr>
                 <th>Product Name</th>
                 <th>Price</th>
                 <th>Quantity</th>
             </tr>
-            @foreach ($order as $i)
+            @foreach ($order->products as $orderProduct)
+            @php
+                $product = $orderProduct->product;
+            @endphp
             <tr>
                 <td>
-                    {{ $i->products->name }}
+                    {{ $product->name }}
                 </td>
                 <td>
-                    {{ $i->products->price }}
+                    {{ $orderProduct->price }}
                 </td>
                 <td>
-                    {{ $i->quantity }}
+                    {{ $orderProduct->quantity }}
                 </td>
             </tr>            
             @endforeach
         </table>
+        <p>Total price: {{ number_format($totalPrice) }}</p> 
     </div>    
     <div class="addressDetails">
         <h3>Personal Details</h3>
-        <p>Address : {{ $order->first()->address }}</p>
-        <p>Phone : {{ $order->first()->phone }}</p>
+        <p>Address : {{ $order->address }}</p>
+        <p>Phone : {{ $order->phone }}</p>
     </div>    
 
 @endsection

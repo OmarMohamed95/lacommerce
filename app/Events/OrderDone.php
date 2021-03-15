@@ -12,7 +12,7 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Database\Eloquent\Builder;
 
-class CheckoutDone
+class OrderDone
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

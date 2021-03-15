@@ -205,8 +205,8 @@ return [
         // SearchFilter
         App\Providers\SearchFilterServiceProvider::class,
         
-        // CheckoutService
-        App\Providers\CheckoutServiceProvider::class,
+        // OrderService
+        App\Providers\OrderServiceProvider::class,
         
         // CategoryService
         App\Providers\CategoryServiceProvider::class,
@@ -221,6 +221,8 @@ return [
         App\Providers\ElasticsearchParserProvider::class,
 
         Laravel\Passport\PassportServiceProvider::class,
+
+        \VladimirYuldashev\LaravelQueueRabbitMQ\LaravelQueueRabbitMQServiceProvider::class,
     ],
 
     /*

@@ -37,7 +37,7 @@
     </div>
     <div class="addressDetails">
         <h3>ADDRESS DETAILS</h3>
-        <form action="{{ url('checkout/checkout/' . auth()->user()->id) }}" method="POST">
+        <form action="{{ route('order_checkout_action') }}" method="POST">
             {{ csrf_field() }}
             <div class="form-group row">
                 <label for="Address" class="col-xs-2 col-form-label">Address</label>

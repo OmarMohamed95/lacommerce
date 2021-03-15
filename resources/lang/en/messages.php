@@ -12,7 +12,7 @@ return [
         'delete_success_message' => 'The product has been deleted',
     ],
     'checkout' => [
-        'invalid_order_code' => 'The order code is invalid, please try again!',
+        'invalid_order_id' => 'The order ID is invalid, please try again!',
     ],
     'wishlist' => [
         'product_already_exist' => 'The product is already in your wishlist',

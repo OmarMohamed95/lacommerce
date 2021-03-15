@@ -82,10 +82,10 @@
                                 <a href="{{ url('wishlist') }}">
                                     My Wishlist
                                 </a>
-                                <a href="{{ url('checkout/orders/' . Auth::user()->id) }}">
+                                <a href="{{ url('order/orders/' . Auth::user()->id) }}">
                                     My orders
                                 </a>
-                                <a href="{{ route('checkout_track_code') }}">
+                                <a href="{{ route('order_track') }}">
                                     track order
                                 </a>
                                 <a href="{{ route('logout') }}"

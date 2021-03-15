@@ -9,10 +9,10 @@ use App\Repositories\CartRepository;
 use App\Repositories\CategoryBrandRepository;
 use App\Repositories\Contracts\CategoryRepositoryInterface;
 use App\Repositories\CategoryRepository;
-use App\Repositories\CheckoutRepository;
+use App\Repositories\OrderRepository;
 use App\Repositories\Contracts\BrandRepositoryInterface;
 use App\Repositories\Contracts\CategoryBrandRepositoryInterface;
-use App\Repositories\Contracts\CheckoutRepositoryInterface;
+use App\Repositories\Contracts\OrderRepositoryInterface;
 use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Repositories\ProductRepository;
 use App\Repositories\Contracts\CustomFieldRepositoryInterface;
@@ -78,8 +78,8 @@ class RepositoryServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(
-            CheckoutRepositoryInterface::class,
-            CheckoutRepository::class
+            OrderRepositoryInterface::class,
+            OrderRepository::class
         );
 
         $this->app->bind(

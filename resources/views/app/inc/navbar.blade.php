@@ -14,15 +14,7 @@
         </div>
     </form>
     <div class="col-xs-2 col-sm-2 col-md-1 col-lg-1 pull-right homeCart">
-        @if (Auth::guest())
-
-        <a id='disableCart' href="{{ url('cart') }}"><i class="fas fa-shopping-cart fa-2x"></i> Cart</a>
-        
-        @else
-
-        <a href="{{ url('cart/index/' . auth()->user()->id) }}"><i class="fas fa-shopping-cart fa-2x"></i> Cart</a>
-        
-        @endif
+        <a @if (Auth::guest()) id='disableCart' @endif href="{{ route('cart_index') }}"><i class="fas fa-shopping-cart fa-2x"></i> Cart</a>
     </div>
 </div>
 <nav class="navbar navbar-default navbar-static-top">

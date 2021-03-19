@@ -69,6 +69,10 @@ class OrderController extends Controller
     {
         $cart = $this->cartService->getCart();
 
+        if ($cart->isEmpty()) {
+            return redirect()->route('cart_index');
+        }
+
         return view('app.order.index')->with('cart', $cart);
     }
     

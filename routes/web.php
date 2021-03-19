@@ -28,7 +28,7 @@ Route::group(['namespace' => 'App'], function(){
     Route::get('wishlist', 'WishlistController@index')->name('wishlist_index');
 
     // cart
-    Route::get('cart/index/{id}', 'CartController@index')->name('cart_index');
+    Route::get('cart', 'CartController@index')->name('cart_index');
 
     // order
     Route::get('order', 'OrderController@index')->name('order_index');

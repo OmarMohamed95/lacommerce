@@ -39,11 +39,11 @@ class CartController extends Controller
     /**
      * Index action
      *
-     * @param int $userId
      * @return \Illuminate\View\View
      */
-    public function index(int $userId)
+    public function index()
     {
+        $userId = Auth::id();
         $cartProducts = $this->cartRepository->findBy('user_id', $userId);
         $totalPrice = $this->cartService->getTotalCartPrice($userId);
         return view('app.cart.index')

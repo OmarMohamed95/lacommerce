@@ -1,76 +1,58 @@
 <?php
 
-Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function(){
+Route::group(['middleware' => ['role:admin'], 'prefix' => 'admin', 'namespace' => 'Admin'], function(){
+    
+    Route::get('/', 'DefaultController@index');
 
-    Config::set('auth.defines', 'admin');
+    // categories
+    Route::get('/categories', 'CategoryController@index')->name('admin_category_index');
+    Route::get('/categories/create', 'CategoryController@create')->name('admin_category_create');
+    Route::post('/categories/store', 'CategoryController@store')->name('admin_category_store');
+    Route::get('/categories/{categoryId}/edit', 'CategoryController@edit')->name('admin_category_edit');
+    Route::put('/categories/{categoryId}', 'CategoryController@update')->name('admin_category_update');
+    Route::any('/categories/delete/{categoryId?}', 'CategoryController@delete')->name('admin_category_delete');
 
-    Route::get('/login', 'AdminController@index');
-    Route::post('/login', 'AdminController@checkLogin')->name('admin.login.submit');
-    Route::get('/', 'AdminController@index');
+    // products
+    Route::resource('products', 'ProductController');
+    Route::get('/products/getBrandsByCat/{id}', 'ProductController@getBrandsByCat');
+    Route::get('/products/deleteSingle/{id}', 'ProductController@deleteSingle');
+    Route::post('/products/deleteMultible', 'ProductController@deleteMultible');
 
-    Route::group(['middleware' => 'admin:admin'], function(){
+    // offers
+    Route::resource('offers', 'OfferController');
+    Route::get('/offers/deleteSingle/{id}', 'OfferController@deleteSingle');
+    Route::post('/offers/deleteMultible', 'OfferController@deleteMultible');
 
-        // categories
-        Route::get('/categories', 'CategoryController@index')->name('admin_category_index');
-        Route::get('/categories/create', 'CategoryController@create')->name('admin_category_create');
-        Route::post('/categories/store', 'CategoryController@store')->name('admin_category_store');
-        Route::get('/categories/{categoryId}/edit', 'CategoryController@edit')->name('admin_category_edit');
-        Route::put('/categories/{categoryId}', 'CategoryController@update')->name('admin_category_update');
-        Route::any('/categories/delete/{categoryId?}', 'CategoryController@delete')->name('admin_category_delete');
+    // brands
+    Route::get('/brands', 'BrandController@index')->name('admin_brand_index');
+    Route::get('/brands/create', 'BrandController@create')->name('admin_brand_create');
+    Route::post('/brands/store', 'BrandController@store')->name('admin_brand_store');
+    Route::get('/brands/{brandId}/edit', 'BrandController@edit')->name('admin_brand_edit');
+    Route::put('/brands/{brandId}', 'BrandController@update')->name('admin_brand_update');
+    Route::any('/brands/delete/{brandId?}', 'BrandController@delete')->name('admin_brand_delete');
 
-        // products
-        Route::resource('products', 'ProductController');
-        Route::get('/products/getBrandsByCat/{id}', 'ProductController@getBrandsByCat');
-        Route::get('/products/deleteSingle/{id}', 'ProductController@deleteSingle');
-        Route::post('/products/deleteMultible', 'ProductController@deleteMultible');
+    // custom field
+    Route::resource('custom_field', 'CustomFieldController');
+    Route::get('/custom_field/editProduct/{id}/{product_id}', 'CustomFieldController@editProduct');
+    Route::get('/custom_field/deleteSingle/{id}', 'CustomFieldController@deleteSingle');
+    Route::post('/custom_field/deleteMultible', 'CustomFieldController@deleteMultible');
 
-        // offers
-        Route::resource('offers', 'OfferController');
-        Route::get('/offers/deleteSingle/{id}', 'OfferController@deleteSingle');
-        Route::post('/offers/deleteMultible', 'OfferController@deleteMultible');
+    // reviews
+    Route::get('/reviews', 'ReviewController@index');
+    Route::get('/reviews/overview/{id}', 'ReviewController@overview');
+    Route::get('/reviews/deleteSingle/{id}', 'ReviewController@deleteSingle');
+    Route::post('/reviews/deleteMultible', 'ReviewController@deleteMultible');
 
-        // brands
-        Route::get('/brands', 'BrandController@index')->name('admin_brand_index');
-        Route::get('/brands/create', 'BrandController@create')->name('admin_brand_create');
-        Route::post('/brands/store', 'BrandController@store')->name('admin_brand_store');
-        Route::get('/brands/{brandId}/edit', 'BrandController@edit')->name('admin_brand_edit');
-        Route::put('/brands/{brandId}', 'BrandController@update')->name('admin_brand_update');
-        Route::any('/brands/delete/{brandId?}', 'BrandController@delete')->name('admin_brand_delete');
+    // order
+    Route::get('/order', 'OrderController@index')->name('admin_order_index');
+    Route::get('/order/{order}/overview', 'OrderController@overview')->name('admin_order_overview');
+    Route::post('/order/state_multible', 'OrderController@updateStatus')->name('admin_order_multiple_state');
 
-        // custom field
-        Route::resource('custom_field', 'CustomFieldController');
-        Route::get('/custom_field/editProduct/{id}/{product_id}', 'CustomFieldController@editProduct');
-        Route::get('/custom_field/deleteSingle/{id}', 'CustomFieldController@deleteSingle');
-        Route::post('/custom_field/deleteMultible', 'CustomFieldController@deleteMultible');
+    // sittings
+    Route::get('/sittings', 'SettingController@index');
+    Route::post('/sittings/create', 'SettingController@create');
+    Route::post('/sittings/update/{id}', 'SettingController@update');
 
-        // reviews
-        Route::get('/reviews', 'ReviewController@index');
-        Route::get('/reviews/overview/{id}', 'ReviewController@overview');
-        Route::get('/reviews/deleteSingle/{id}', 'ReviewController@deleteSingle');
-        Route::post('/reviews/deleteMultible', 'ReviewController@deleteMultible');
-
-        // checkout
-        Route::get('/checkout', 'CheckoutController@index');
-        Route::get('/checkout/overview/{id}', 'CheckoutController@overview');
-        Route::post('/checkout/state_multible', 'CheckoutController@state_multible');
-        Route::post('/checkout/state_single/{state}', 'CheckoutController@state_single');
-
-        // sittings
-        Route::get('/sittings', 'SettingController@index');
-        Route::post('/sittings/create', 'SettingController@create');
-        Route::post('/sittings/update/{id}', 'SettingController@update');
-
-        // admins
-        Route::get('/admins/allAdmins', 'AdminController@allAdmins');
-        Route::get('/admins/create', 'AdminController@create');
-        Route::post('/admins/store', 'AdminController@store');
-        Route::get('/admins/edit/{id}', 'AdminController@edit');
-        Route::post('/admins/update/{id}', 'AdminController@update');
-        Route::get('/admins/deleteSingle/{id}', 'AdminController@deleteSingle');
-        Route::post('/admins/deleteMultible', 'AdminController@deleteMultible');
-
-        Route::get('/home', 'HomeController@index');
-
-        Route::get('/logout', 'AdminController@logout');
-    });
+    // admins
+    Route::get('/user', 'UserController@index')->name('admin_user_index');
 });

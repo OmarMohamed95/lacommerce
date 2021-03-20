@@ -15,15 +15,15 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li class="active"><a target="_blank" href="{{ url('') }}">Browse Website <span class="sr-only">(current)</span></a></li>
-                <li><a href="{{ aurl('categories') }}">categores</a></li>
+                <li><a href="{{ route('admin_category_index') }}">categores</a></li>
                 <li><a href="{{ aurl('products') }}">products</a></li>
                 <li><a href="{{ aurl('offers') }}">offers</a></li>
                 <li><a href="{{ route('admin_brand_index') }}">brands</a></li>
                 <li><a href="{{ aurl('custom_field') }}">custom field</a></li>
                 <li><a href="{{ aurl('reviews') }}">reviews</a></li>
-                <li><a href="{{ aurl('checkout') }}">checkouts</a></li>
+                <li><a href="{{ route('admin_order_index') }}">orders</a></li>
                 <li><a href="{{ aurl('sittings') }}">settings</a></li>
-                <li><a href="{{ aurl('admins/allAdmins') }}">admins</a></li>
+                <li><a href="{{ route('admin_user_index') }}">admins</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="{{ aurl('logout')}}">Logout</a></li>

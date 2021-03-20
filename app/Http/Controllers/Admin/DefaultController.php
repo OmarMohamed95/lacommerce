@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 /**
- * Home Controller
+ * Default Controller
  * 
  * @author Omar Mohamed <omar.mo9516@gmail.com>
  */
-class HomeController extends Controller
+class DefaultController extends Controller
 {
     /**
-     * Index method.
+     * Index method
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function index()
     {

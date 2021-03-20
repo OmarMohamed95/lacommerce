@@ -222,6 +222,8 @@ return [
 
         Laravel\Passport\PassportServiceProvider::class,
 
+        jeremykenedy\LaravelRoles\RolesServiceProvider::class,
+
         \VladimirYuldashev\LaravelQueueRabbitMQ\LaravelQueueRabbitMQServiceProvider::class,
     ],
 

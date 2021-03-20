@@ -66,7 +66,7 @@ class CategoryController extends Controller
         $category->status = $request->status;
         $category->sort = $request->sort;
         $category->home = $request->home;
-        $category->admin_id = Auth::guard('admin')->user()->id;
+        $category->admin_id = Auth::id();
         $category->save();
 
         return redirect()->route('admin_category_index');

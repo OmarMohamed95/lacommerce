@@ -74,7 +74,7 @@
                                 <a href="{{ url('wishlist') }}">
                                     My Wishlist
                                 </a>
-                                <a href="{{ url('order/orders/' . Auth::user()->id) }}">
+                                <a href="{{ route('order_my_orders') }}">
                                     My orders
                                 </a>
                                 <a href="{{ route('order_track') }}">

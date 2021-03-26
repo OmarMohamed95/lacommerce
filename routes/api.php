@@ -30,5 +30,8 @@ Route::group(['namespace' => 'Api'], function(){
         // wishlist
         Route::post('wishlists/{productId}', 'WishlistController@store')->name('wishlist_product_store');
         Route::delete('wishlists/{productId}', 'WishlistController@delete')->name('wishlist_product_delete');
+
+        //order
+        Route::put('/orders/{order}/status', 'OrderController@updateStatus')->name('api_order_update_status');
     });
 });

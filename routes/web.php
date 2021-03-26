@@ -14,9 +14,7 @@
 Route::group(['namespace' => 'App'], function(){
     
     // home
-    Route::get('/', 'DefaultController@index');
-    // home
-    Route::get('/home', 'DefaultController@index')->name('home_index');
+    Route::get('/', 'DefaultController@index')->name('home_index');
 
     // category
     Route::get('/category/{id}', 'CategoryController@index')->name('category_index');
@@ -32,7 +30,7 @@ Route::group(['namespace' => 'App'], function(){
 
     // order
     Route::get('order', 'OrderController@index')->name('order_index');
-    Route::get('order/orders/{id}', 'OrderController@myOrders')->name('order_orders');
+    Route::get('order/my-orders', 'OrderController@myOrders')->name('order_my_orders');
     Route::get('order/done/{orderId}', 'OrderController@done')->name('order_done');
     Route::any('orders/trackOrder/{orderId?}', 'OrderController@trackOrderByCode')->name('order_track');
     Route::post('order/checkout', 'OrderController@checkout')->name('order_checkout_action');

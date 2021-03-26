@@ -14,6 +14,7 @@ let mix = require('laravel-mix');
 mix.js('resources/assets/js/app.js', 'public/js')
    .sass('resources/assets/sass/app.scss', 'public/css',{ implementation: require('node-sass') });
 
+// App
 mix.js('resources/assets/js/App/search.js', 'public/js/App');
 mix.js('resources/assets/js/App/cart.js', 'public/js/App');
 mix.js('resources/assets/js/App/photoGallery.js', 'public/js/App');
@@ -22,3 +23,6 @@ mix.js('resources/assets/js/App/profile.js', 'public/js/App');
 mix.js('resources/assets/js/App/wishlist.js', 'public/js/App');
 mix.js('resources/assets/js/App/cartShared.js', 'public/js/App');
 mix.js('resources/assets/js/App/addToCart.js', 'public/js/App');
+
+// Admin
+mix.js('resources/assets/js/Admin/order.js', 'public/js/Admin');

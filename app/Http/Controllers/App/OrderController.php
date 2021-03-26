@@ -89,7 +89,7 @@ class OrderController extends Controller
         $cart = $cartQuery->get();
 
         $order = new Order;
-        $order->user_id = Auth::user()->id;
+        $order->user_id = Auth::id();
         $order->address = $request->address;
         $order->phone = $request->phone;
         $order->status = OrderStatus::PENDING;
@@ -136,12 +136,11 @@ class OrderController extends Controller
     /**
      * My orders
      *
-     * @param int $userId
      * @return \Illuminate\View\View
      */
-    public function myOrders($userId)
+    public function myOrders()
     {
-        $orders =  $this->orderService->getAllOrdersByUser($userId);
+        $orders =  $this->orderService->getAllOrdersByUser(Auth::id());
 
         return view('app.order.orders')->with('orders', $orders);
     }

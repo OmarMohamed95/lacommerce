@@ -25,7 +25,12 @@ class ProductEventSubscriber
      */
     public function onProductUpdated($event)
     {
-        $event->getProduct()->updateIndex();
+        $product = $event->getProduct();
+        if ($this->isDocumentFound($product)) {
+            $product->updateIndex();
+        } else {
+            $product->addToIndex();
+        }
     }
     
     /**
@@ -36,11 +41,32 @@ class ProductEventSubscriber
         $products = $event->getProduct();
         if ($products instanceof ElasticquentCollection) {
             foreach ($products as $product) {
-                $product->removeFromIndex();
+                if ($this->isDocumentFound($product)) {
+                    $product->removeFromIndex();
+                }
             }
         } elseif ($products instanceof Product) {
-            $products->removeFromIndex();
+            if ($this->isDocumentFound($products)) {
+                $products->removeFromIndex();
+            }
         }
+    }
+
+    /**
+     * Check if the document exists
+     *
+     * @param Product $product
+     * @return bool
+     */
+    private function isDocumentFound(Product $product)
+    {
+        try {
+            $isDocumentFound = $product->getIndexedDocument();
+        } catch (\Exception $th) {
+            $isDocumentFound = false;
+        }
+
+        return $isDocumentFound;
     }
 
     /**

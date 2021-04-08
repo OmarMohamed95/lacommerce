@@ -25,10 +25,10 @@
                     <th><input class="singleCB" type="checkbox" name="id[]" value="{{ $item->id}}"></th>
                     <td>{{ $item->id }}</td>
                     <td>{{ $item->name }}</td>
-                    <td>{{ (isset($item->category->name))? $item->category->name : '' }}</td>
+                    <td>{{ $item->category->name ?? '' }}</td>
                     <td>{{ $item->price }}</td>
                     <td>{{ $item->quantity }}</td>
-                    <td>{{ $item->brand->name }}</td>
+                    <td>{{ $item->brand->name ?? '' }}</td>
                     <td>{{ $item->created_at }}</td>
                     <td><a href="{{ aurl('products')}}/{{ $item->id }}" class="btn btn-success">preview</a></td>
                     <td>

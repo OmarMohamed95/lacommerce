@@ -225,6 +225,8 @@ return [
         jeremykenedy\LaravelRoles\RolesServiceProvider::class,
 
         \VladimirYuldashev\LaravelQueueRabbitMQ\LaravelQueueRabbitMQServiceProvider::class,
+
+        App\Providers\ElasticsearchServiceProvider::class,
     ],
 
     /*

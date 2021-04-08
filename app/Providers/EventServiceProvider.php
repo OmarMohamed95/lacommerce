@@ -7,7 +7,6 @@ use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvi
 use App\Events\OrderOccur;
 use App\Events\OrderDone;
 use App\Jobs\TestJob;
-use App\Listeners\ProductEventSubscriber;
 use App\Listeners\UpdateProductQuantity;
 use App\Listeners\RemoveCart;
 
@@ -33,7 +32,7 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $subscribe = [
-        ProductEventSubscriber::class,
+
     ];
 
     /**

@@ -132,8 +132,6 @@ class ProductController extends Controller
             }
         }
 
-        event(new ProductCreated($product));
-
         return redirect(aurl('products'));
     }
 
@@ -239,8 +237,6 @@ class ProductController extends Controller
             }
         }
 
-        event(new ProductUpdated($product));
-
         return redirect(aurl('products'))
                     ->with('success', 'product updated');
     }
@@ -263,7 +259,6 @@ class ProductController extends Controller
         $productImages->delete();
 
         $product = Product::find($id);
-        event(new ProductDeleted($product));
         $product->delete();
 
         return redirect(aurl('products'));
@@ -290,9 +285,14 @@ class ProductController extends Controller
 
         $productImages->delete();
 
-        $product = Product::whereIn('id', $ids);
-        event(new ProductDeleted($product->get()));
-        $product->delete();
+        $products = Product::whereIn('id', $ids)->get();
+
+        // loop through the products and delete them one by one
+        // instaed of calling delete() on many products
+        // to dispatch the deleting event
+        foreach ($products as $product) {
+            $product->delete();
+        }
         
         return redirect(aurl('products'));
     }

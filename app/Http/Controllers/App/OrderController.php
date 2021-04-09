@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\App;
 
 use App\Constants\OrderStatus;
+use App\Constants\Queues;
 use App\Events\OrderDone;
 use App\Events\OrderOccur;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Jobs\SendOrderStatusEmail;
 use App\Model\Order;
 use App\Model\Cart;
 use App\Model\OrderProduct;
@@ -110,8 +112,10 @@ class OrderController extends Controller
 
             event(new OrderOccur($product, $cartItem->quantity));
         }
-        
+
         event(new OrderDone($cartQuery));
+
+        SendOrderStatusEmail::dispatch($order)->onQueue(Queues::ORDER_STATUS);
         
         return redirect()
             ->route(

@@ -45,7 +45,7 @@ class EventServiceProvider extends ServiceProvider
         parent::boot();
 
         $this->app->bind(
-            TestJob::class . '@handle', function ($job) { 
+            SendOrderStatusEmail::class . '@handle', function ($job) { 
                 return $job->handle();
             }
         );
